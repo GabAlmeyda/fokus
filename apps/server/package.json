@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "server:test": "echo \"Error: no test specified\" && exit 1",
     "server:dev": "nodemon --exec tsx src/index.ts",
     "server:build": "tsc -p tsconfig.json",
     "server:start": "node dist/index.js"
@@ -12,5 +12,19 @@
   "author": "Gabriel Almeida",
   "license": "ISC",
   "type": "module",
-  "description": "Parte back-end do projeto Fokus, responsável pela arquitetura do servidor e comunicação com o banco de dados, usando Express, Mongoose, Node e TypeScript."
+  "description": "Parte back-end do projeto Fokus, responsável pela arquitetura do servidor e comunicação com o banco de dados, usando Express, Mongoose, Node e TypeScript.",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/mongoose": "^5.11.96",
+    "nodemon": "^3.1.11",
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "@fokus/shared": "*",
+    "@types/node": "^25.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "mongoose": "^9.0.1"
+  }
 }

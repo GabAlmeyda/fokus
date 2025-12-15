@@ -22,5 +22,10 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@fokus/shared": ["packages/shared/dist"]
+    }
   }
 }
