@@ -11,3 +11,13 @@ export type ResponseUserDTO = {
   email: string;
   themeMode: string;
 };
+
+export type ResponseAuthDTO = {
+  user: ResponseUserDTO;
+  token: string;
+};
+
+export type TokenPayload = {
+  id: string;
+  email: string;
+};

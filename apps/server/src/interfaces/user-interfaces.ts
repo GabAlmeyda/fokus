@@ -1,9 +1,9 @@
 import type {
   RegisterUserDTO,
-  ResponseUserDTO,
   HTTPRequest,
   HTTPErrorResponse,
   HTTPSuccessResponse,
+  ResponseAuthDTO,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 
@@ -12,11 +12,13 @@ export interface IUserRepository {
 }
 
 export interface IUserService {
-  registerUser(user?: RegisterUserDTO): Promise<UserDocument>;
+  registerUser(
+    user?: RegisterUserDTO,
+  ): Promise<{ userDoc: UserDocument; token: string }>;
 }
 
 export interface IUserController {
   registerUser(
     req?: HTTPRequest<RegisterUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
 }

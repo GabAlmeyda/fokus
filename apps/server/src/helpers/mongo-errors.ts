@@ -39,15 +39,15 @@ export class MongoRepositoryError extends Error {
 
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue)[0] as string;
-      const value = Object.values(err.keyValue)[1] as string;
+      const value = Object.values(err.keyValue)[0] as string;
 
       return new MongoRepositoryError(
         'CONFLICT',
-        `Dupliated value '${value}' for field '${field}'`,
+        `Dupliated value for field '${field}'`,
         [
           {
             field,
-            message: `'${field}' already has a value equal to '${value}'.`,
+            message: `Field '${field}' already has a value equal to '${value}'.`,
           },
         ],
       );

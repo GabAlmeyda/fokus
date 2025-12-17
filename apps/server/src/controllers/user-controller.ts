@@ -2,9 +2,9 @@ import {
   type HTTPRequest,
   type RegisterUserDTO,
   type HTTPSuccessResponse,
-  type ResponseUserDTO,
   type HTTPErrorResponse,
   HTTPStatusCode,
+  type ResponseAuthDTO,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
@@ -16,14 +16,14 @@ export class UserController implements IUserController {
 
   async registerUser(
     req?: HTTPRequest<RegisterUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
-      const userDoc = await this.userService.registerUser(req?.body);
+      const { userDoc, token } = await this.userService.registerUser(req?.body);
       const registeredUser = mapUserDocToPublicDTO(userDoc);
 
       return {
         statusCode: 201,
-        body: registeredUser,
+        body: { user: registeredUser, token },
       };
     } catch (err) {
       if (err instanceof ServiceError) {
