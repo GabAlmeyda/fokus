@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import { API_URL } from '@fokus/shared';
 import { connectToMongoDB } from './config/connect-mongo.js';
+import userRoutes from './routes/user-routes.js';
 
 async function main() {
   await connectToMongoDB();
@@ -24,6 +25,8 @@ async function main() {
       credentials: true,
     }),
   );
+
+  app.use('/users', userRoutes);
 
   app.listen(PORT, () => console.log(`\nServer running at '${API_URL}'`));
 }

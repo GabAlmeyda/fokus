@@ -24,6 +24,7 @@
     "@fokus/shared": "*",
     "@types/node": "^25.0.2",
     "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
     "express": "^5.2.1",
     "mongoose": "^9.0.1"
   }

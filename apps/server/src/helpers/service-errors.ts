@@ -1,0 +1,18 @@
+import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
+
+export class ServiceError extends Error {
+  public readonly errorType: keyof typeof HTTPStatusCode;
+  public readonly invalidFields: InvalidField[] | undefined;
+  constructor(
+    errorType: keyof typeof HTTPStatusCode,
+    message: string,
+    invalidFields?: InvalidField[],
+  ) {
+    super(message);
+    this.errorType = errorType;
+    this.invalidFields = invalidFields;
+
+    Object.setPrototypeOf(this, new.target.prototype);
+    Error.captureStackTrace(this);
+  }
+}
