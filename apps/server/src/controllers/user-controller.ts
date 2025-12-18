@@ -5,6 +5,7 @@ import {
   type HTTPErrorResponse,
   HTTPStatusCode,
   type ResponseAuthDTO,
+  type LoginUserDTO,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
@@ -39,6 +40,33 @@ export class UserController implements IUserController {
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
         body: { message: 'An unknown error occurred.' },
+      };
+    }
+  }
+
+  async loginUser(
+    req?: HTTPRequest<LoginUserDTO>,
+  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
+    try {
+      const { userDoc, token } = await this.userService.loginUser(req?.body);
+      const loggedUser = mapUserDocToPublicDTO(userDoc);
+
+      return {
+        statusCode: 200,
+        body: { user: loggedUser, token },
+      };
+    } catch (err) {
+      if (err instanceof ServiceError) {
+        return {
+          statusCode: HTTPStatusCode[err.errorType],
+          body: { message: err.message },
+          ...(err.invalidFields && { invalidFields: err.invalidFields }),
+        };
+      }
+
+      return {
+        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
+        body: { message: 'An unknown error ocurred.' },
       };
     }
   }

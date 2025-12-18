@@ -5,6 +5,11 @@ export type RegisterUserDTO = {
   themeMode: 'light' | 'dark';
 };
 
+export type LoginUserDTO = {
+  email: string;
+  password: string;
+};
+
 export type ResponseUserDTO = {
   id: string;
   name: string;
