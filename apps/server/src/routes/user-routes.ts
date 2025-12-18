@@ -32,7 +32,14 @@ userRoutes.post('/auth/login', async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 15,
     });
-  }
+  } 
+
+  return res.status(response.statusCode).json(response.body);
+});
+
+userRoutes.get('/:userId', async (req, res) => {
+  const userId = req?.params?.userId;
+  const response = await userController.findUserById({ params: { userId } });
 
   return res.status(response.statusCode).json(response.body);
 });

@@ -56,7 +56,11 @@ export class MongoRepositoryError extends Error {
     if (err instanceof mongoose.Error.CastError) {
       const invalidField = {
         field: err.path,
-        message: `Expect type was '${err.kind}', got '${typeof err.value}' instead.`,
+        message: `
+          Invalid format in the field.
+          Expected type: '${err.kind}', got '${typeof err.value}' instead. 
+          If the types are equal, the format of the provided field was invalid.
+        `,
       };
 
       return new MongoRepositoryError(

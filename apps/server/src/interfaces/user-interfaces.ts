@@ -5,13 +5,17 @@ import type {
   HTTPSuccessResponse,
   ResponseAuthDTO,
   LoginUserDTO,
+  ResponseUserDTO,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
+import type { Types } from 'mongoose';
 
 export interface IUserRepository {
   registerUser(user: RegisterUserDTO): Promise<UserDocument>;
 
-  findByEmail(email: string): Promise<UserDocument | null>;
+  findUserByEmail(email: string): Promise<UserDocument | null>;
+
+  findUserById(userId: Types.ObjectId): Promise<UserDocument | null>;
 }
 
 export interface IUserService {
@@ -22,6 +26,8 @@ export interface IUserService {
   loginUser(
     user?: LoginUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }>;
+
+  findUserById(userId?: string): Promise<UserDocument>;
 }
 
 export interface IUserController {
@@ -32,4 +38,8 @@ export interface IUserController {
   loginUser(
     req?: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
+
+  findUserById(
+    req?: HTTPRequest<null>,
+  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 }

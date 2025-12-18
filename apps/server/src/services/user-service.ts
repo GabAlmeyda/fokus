@@ -14,6 +14,7 @@ import { ServiceError } from '../helpers/service-errors.js';
 import argon2 from 'argon2';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
 import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 
 export class UserService implements IUserService {
   private readonly userRepository = new UserRepository();
@@ -81,7 +82,9 @@ export class UserService implements IUserService {
     }
 
     try {
-      const loggedUserDoc = await this.userRepository.findByEmail(user.email);
+      const loggedUserDoc = await this.userRepository.findUserByEmail(
+        user.email,
+      );
       if (!loggedUserDoc) {
         throw new ServiceError('UNAUTHORIZED', 'Incorret email or password.', [
           { field: 'email', message: 'Email may be incorrect.' },
@@ -113,6 +116,40 @@ export class UserService implements IUserService {
       });
 
       return { userDoc: loggedUserDoc, token };
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      if (err instanceof ServiceError) {
+        throw err;
+      }
+
+      throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
+    }
+  }
+
+  async findUserById(userId?: string): Promise<UserDocument> {
+    if (
+      !userId ||
+      typeof userId !== 'string' ||
+      !Types.ObjectId.isValid(userId)
+    ) {
+      throw new ServiceError('BAD_REQUEST', 'Invalid id provided.');
+    }
+
+    try {
+      const user = await this.userRepository.findUserById(
+        new Types.ObjectId(userId),
+      );
+      if (!user) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `User with id '${userId}' not found.`,
+        );
+      }
+
+      return user;
     } catch (err) {
       if (err instanceof MongoRepositoryError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
