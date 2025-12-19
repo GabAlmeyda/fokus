@@ -209,4 +209,34 @@ export class UserService implements IUserService {
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error');
     }
   }
+
+  async deleteUser(userId?: string): Promise<UserDocument> {
+    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
+    }
+
+    try {
+      const deletedUserDoc = await this.userRepository.deleteUser(
+        new Types.ObjectId(userId),
+      );
+      if (!deletedUserDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `User with ID '${userId}' not found.`,
+        );
+      }
+
+      return deletedUserDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      if (err instanceof ServiceError) {
+        throw err;
+      }
+
+      throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
+    }
+  }
 }

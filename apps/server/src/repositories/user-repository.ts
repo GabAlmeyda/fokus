@@ -53,4 +53,15 @@ export class UserRepository implements IUserRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async deleteUser(userId: Types.ObjectId): Promise<UserDocument | null> {
+    try {
+      const deletedUserDoc: UserDocument | null =
+        await UserModel.findOneAndDelete({ _id: userId });
+
+      return deletedUserDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }

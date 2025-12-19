@@ -139,4 +139,37 @@ export class UserController implements IUserController {
       };
     }
   }
+
+  async deleteUser(
+    req?: HTTPRequest<null>,
+  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+    const userId = req?.params?.userId;
+
+    try {
+      const deletedUserDoc = await this.userService.deleteUser(userId);
+      const deletedUser = mapUserDocToPublicDTO(deletedUserDoc);
+
+      return {
+        statusCode: HTTPStatusCode.OK,
+        body: deletedUser,
+      };
+    } catch (err) {
+      if (err instanceof ServiceError) {
+        return {
+          statusCode: HTTPStatusCode[err.errorType],
+          body: {
+            message: err.message,
+            invalidFields: err.invalidFields,
+          },
+        };
+      }
+
+      return {
+        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
+        body: {
+          message: 'An unexpected error occurred.',
+        },
+      };
+    }
+  }
 }

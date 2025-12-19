@@ -22,6 +22,8 @@ export interface IUserRepository {
     userId: Types.ObjectId,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null>;
+
+  deleteUser(userId: Types.ObjectId): Promise<UserDocument | null>;
 }
 
 export interface IUserService {
@@ -36,6 +38,8 @@ export interface IUserService {
   findUserById(userId?: string): Promise<UserDocument>;
 
   updateUser(userId?: string, newData?: UpdateUserDTO): Promise<UserDocument>;
+
+  deleteUser(userId?: string): Promise<UserDocument>;
 }
 
 export interface IUserController {
@@ -53,5 +57,9 @@ export interface IUserController {
 
   updateUser(
     req?: HTTPRequest<UpdateUserDTO>,
+  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
+
+  deleteUser(
+    req?: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 }

@@ -56,4 +56,11 @@ userRoutes.patch('/:userId', async (req, res) => {
   return res.status(response.statusCode).json(response.body);
 });
 
+userRoutes.delete('/:userId', async (req, res) => {
+  const userId = req?.params?.userId;
+  const response = await userController.deleteUser({ params: { userId } });
+
+  return res.status(response.statusCode).json(response.body);
+});
+
 export default userRoutes;
