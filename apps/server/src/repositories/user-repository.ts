@@ -1,4 +1,4 @@
-import type { RegisterUserDTO } from '@fokus/shared';
+import type { RegisterUserDTO, UpdateUserDTO } from '@fokus/shared';
 import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
@@ -30,9 +30,25 @@ export class UserRepository implements IUserRepository {
 
   async findUserById(userId: Types.ObjectId): Promise<UserDocument | null> {
     try {
-      const user: UserDocument | null = await UserModel.findById(userId);
+      const userDoc: UserDocument | null = await UserModel.findById(userId);
 
-      return user;
+      return userDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async updateUser(
+    userId: Types.ObjectId,
+    newData: UpdateUserDTO,
+  ): Promise<UserDocument | null> {
+    try {
+      const updatedUserDoc: UserDocument | null =
+        await UserModel.findOneAndUpdate({ _id: userId }, newData, {
+          new: true,
+        });
+
+      return updatedUserDoc;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }

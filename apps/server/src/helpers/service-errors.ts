@@ -2,11 +2,11 @@ import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
 
 export class ServiceError extends Error {
   public readonly errorType: keyof typeof HTTPStatusCode;
-  public readonly invalidFields: InvalidField[] | undefined;
+  public readonly invalidFields: InvalidField[];
   constructor(
     errorType: keyof typeof HTTPStatusCode,
     message: string,
-    invalidFields?: InvalidField[],
+    invalidFields: InvalidField[] = [],
   ) {
     super(message);
     this.errorType = errorType;

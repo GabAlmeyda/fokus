@@ -12,7 +12,7 @@ export type HTTPSuccessResponse<B> = {
 
 export type HTTPErrorResponse = {
   statusCode: (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];
-  body: { message: string; invalidFields?: InvalidField[] };
+  body: { message: string; invalidFields: InvalidField[] };
 };
 
 export const HTTPStatusCode = {

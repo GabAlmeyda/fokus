@@ -5,6 +5,8 @@ export type RegisterUserDTO = {
   themeMode: 'light' | 'dark';
 };
 
+export type UpdateUserDTO = Partial<RegisterUserDTO>;
+
 export type LoginUserDTO = {
   email: string;
   password: string;

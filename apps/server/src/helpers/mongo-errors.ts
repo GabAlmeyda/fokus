@@ -3,11 +3,11 @@ import { HTTPStatusCode, type InvalidField } from '@fokus/shared';
 
 export class MongoRepositoryError extends Error {
   public readonly errorType: keyof typeof HTTPStatusCode;
-  public readonly invalidFields: InvalidField[] | undefined;
+  public readonly invalidFields: InvalidField[];
   constructor(
     errorType: keyof typeof HTTPStatusCode,
     message: string,
-    invalidFields?: InvalidField[] | undefined,
+    invalidFields: InvalidField[] = [],
   ) {
     super(message);
     this.errorType = errorType;

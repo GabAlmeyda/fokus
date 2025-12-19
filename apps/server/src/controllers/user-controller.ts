@@ -7,6 +7,7 @@ import {
   type ResponseAuthDTO,
   type LoginUserDTO,
   type ResponseUserDTO,
+  type UpdateUserDTO,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
@@ -20,8 +21,9 @@ export class UserController implements IUserController {
     req?: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
-      const { userDoc, token } = await this.userService.registerUser(req?.body);
-      const registeredUser = mapUserDocToPublicDTO(userDoc);
+      const { userDoc: registeredUserDoc, token } =
+        await this.userService.registerUser(req?.body);
+      const registeredUser = mapUserDocToPublicDTO(registeredUserDoc);
 
       return {
         statusCode: 201,
@@ -33,7 +35,7 @@ export class UserController implements IUserController {
           statusCode: HTTPStatusCode[err.errorType],
           body: {
             message: err.message,
-            ...(err.invalidFields && { invalidFields: err.invalidFields }),
+            invalidFields: err.invalidFields,
           },
         };
       }
@@ -49,8 +51,9 @@ export class UserController implements IUserController {
     req?: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
-      const { userDoc, token } = await this.userService.loginUser(req?.body);
-      const loggedUser = mapUserDocToPublicDTO(userDoc);
+      const { userDoc: loggedUserDoc, token } =
+        await this.userService.loginUser(req?.body);
+      const loggedUser = mapUserDocToPublicDTO(loggedUserDoc);
 
       return {
         statusCode: 200,
@@ -60,8 +63,10 @@ export class UserController implements IUserController {
       if (err instanceof ServiceError) {
         return {
           statusCode: HTTPStatusCode[err.errorType],
-          body: { message: err.message },
-          ...(err.invalidFields && { invalidFields: err.invalidFields }),
+          body: {
+            message: err.message,
+            invalidFields: err.invalidFields,
+          },
         };
       }
 
@@ -91,7 +96,7 @@ export class UserController implements IUserController {
           statusCode: HTTPStatusCode[err.errorType],
           body: {
             message: err.message,
-            ...(err.invalidFields && { invalidFields: err.invalidFields }),
+            invalidFields: err.invalidFields,
           },
         };
       }
@@ -99,6 +104,38 @@ export class UserController implements IUserController {
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
         body: { message: 'An unknown error occurred.' },
+      };
+    }
+  }
+
+  async updateUser(
+    req?: HTTPRequest<UpdateUserDTO>,
+  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+    const userId = req?.params?.userId;
+    const newData = req?.body;
+
+    try {
+      const updatedUserDoc = await this.userService.updateUser(userId, newData);
+      const updatedUser = mapUserDocToPublicDTO(updatedUserDoc);
+
+      return {
+        statusCode: HTTPStatusCode.OK,
+        body: updatedUser,
+      };
+    } catch (err) {
+      if (err instanceof ServiceError) {
+        return {
+          statusCode: HTTPStatusCode[err.errorType],
+          body: {
+            message: err.message,
+            invalidFields: err.invalidFields,
+          },
+        };
+      }
+
+      return {
+        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
+        body: { message: 'An unexpected error occurred.' },
       };
     }
   }

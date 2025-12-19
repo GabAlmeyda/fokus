@@ -3,6 +3,7 @@ import type {
   LoginUserDTO,
   RegisterUserDTO,
   ResponseAuthDTO,
+  UpdateUserDTO,
 } from '../types/user-types.js';
 import emailValidator from 'email-validator';
 
@@ -65,6 +66,75 @@ export function validateRegisterUserData(
   }
 
   if (!user.themeMode || !USER_THEME_MODES.includes(user.themeMode)) {
+    invalidFields.push({
+      field: 'themeMode',
+      message: 'Invalid theme mode provided.',
+    });
+  }
+
+  return invalidFields;
+}
+
+export function isUpdateUserDTO(user: unknown): user is UpdateUserDTO {
+  if (typeof user !== 'object' || user === null) {
+    return false;
+  }
+
+  const u = user as Record<string, unknown>;
+
+  if (
+    ('name' in u && typeof u.name !== 'string') ||
+    ('email' in u && typeof u.email !== 'string') ||
+    ('password' in u && typeof u.password !== 'string') ||
+    ('themeMode' in u && typeof u.themeMode !== 'string')
+  ) {
+    return false;
+  }
+
+  const fields = Object.keys(u);
+  const validFields = ['name', 'email', 'password', 'themeMode'];
+  if (fields.some((f) => !validFields.includes(f))) {
+    return false;
+  }
+
+  if (!USER_THEME_MODES.includes(u.themeMode as UserThemesType)) {
+    return false;
+  }
+
+  return true;
+}
+
+export function validateUpdateuserData(user: UpdateUserDTO): InvalidField[] {
+  const invalidFields: InvalidField[] = [];
+
+  if ('name' in user && (!user.name || user.name.length < 2)) {
+    invalidFields.push({
+      field: 'name',
+      message: 'field too short. Minimum of 2 characters.',
+    });
+  }
+
+  if (
+    'email' in user &&
+    (!user.email || !emailValidator.validate(user.email))
+  ) {
+    invalidFields.push({
+      field: 'email',
+      message: 'Invalid email provided.',
+    });
+  }
+
+  if ('password' in user && (!user.password || user.password.length < 8)) {
+    invalidFields.push({
+      field: 'password',
+      message: 'password too short. Minimum of 8 characters.',
+    });
+  }
+
+  if (
+    'themeMode' in user &&
+    (!user.themeMode || !USER_THEME_MODES.includes(user.themeMode))
+  ) {
     invalidFields.push({
       field: 'themeMode',
       message: 'Invalid theme mode provided.',

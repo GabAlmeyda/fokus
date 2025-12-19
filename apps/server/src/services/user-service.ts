@@ -6,6 +6,9 @@ import {
   validateLoginUserData,
   isRegisterUserDTO,
   validateRegisterUserData,
+  type UpdateUserDTO,
+  isUpdateUserDTO,
+  validateUpdateuserData,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 import type { IUserService } from '../interfaces/user-interfaces.js';
@@ -30,7 +33,7 @@ export class UserService implements IUserService {
     if (invalidFields.length !== 0) {
       throw new ServiceError(
         'UNPROCESSABLE',
-        'Invalid data provided.',
+        'Invalid register data provided.',
         invalidFields,
       );
     }
@@ -39,7 +42,7 @@ export class UserService implements IUserService {
     const registerUserData = { ...user, password: hashedPassword };
 
     try {
-      const createdUserDoc =
+      const registeredUserDoc =
         await this.userRepository.registerUser(registerUserData);
 
       const JWT_SECRET = process.env.JWT_SECRET;
@@ -50,12 +53,12 @@ export class UserService implements IUserService {
         process.exit(1);
       }
       const tokenPayload: TokenPayload = {
-        id: createdUserDoc._id.toString(),
-        email: createdUserDoc.email,
+        id: registeredUserDoc._id.toString(),
+        email: registeredUserDoc.email,
       };
       const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '15m' });
 
-      return { userDoc: createdUserDoc, token };
+      return { userDoc: registeredUserDoc, token };
     } catch (err) {
       if (err instanceof MongoRepositoryError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
@@ -76,7 +79,7 @@ export class UserService implements IUserService {
     if (invalidFields.length !== 0) {
       throw new ServiceError(
         'UNPROCESSABLE',
-        'Invalid data provided.',
+        'Invalid login data provided.',
         invalidFields,
       );
     }
@@ -130,26 +133,22 @@ export class UserService implements IUserService {
   }
 
   async findUserById(userId?: string): Promise<UserDocument> {
-    if (
-      !userId ||
-      typeof userId !== 'string' ||
-      !Types.ObjectId.isValid(userId)
-    ) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid id provided.');
+    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
     }
 
     try {
-      const user = await this.userRepository.findUserById(
+      const userDoc = await this.userRepository.findUserById(
         new Types.ObjectId(userId),
       );
-      if (!user) {
+      if (!userDoc) {
         throw new ServiceError(
           'NOT_FOUND',
-          `User with id '${userId}' not found.`,
+          `User with ID '${userId}' not found.`,
         );
       }
 
-      return user;
+      return userDoc;
     } catch (err) {
       if (err instanceof MongoRepositoryError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
@@ -160,6 +159,54 @@ export class UserService implements IUserService {
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
+    }
+  }
+
+  async updateUser(
+    userId?: string,
+    newData?: UpdateUserDTO,
+  ): Promise<UserDocument> {
+    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
+    }
+
+    if (!isUpdateUserDTO(newData)) {
+      throw new ServiceError('BAD_REQUEST', 'Invalid payload provided.');
+    }
+
+    const invalidFields = validateUpdateuserData(newData);
+    if (invalidFields.length !== 0) {
+      throw new ServiceError(
+        'UNPROCESSABLE',
+        'Invalid new user data provided.',
+        invalidFields,
+      );
+    }
+
+    try {
+      const updatedUserDoc = await this.userRepository.updateUser(
+        new Types.ObjectId(userId),
+        newData,
+      );
+
+      if (!updatedUserDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `User with ID '${userId}' not found.`,
+        );
+      }
+
+      return updatedUserDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      if (err instanceof ServiceError) {
+        throw err;
+      }
+
+      throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error');
     }
   }
 }

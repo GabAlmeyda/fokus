@@ -32,7 +32,7 @@ userRoutes.post('/auth/login', async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 15,
     });
-  } 
+  }
 
   return res.status(response.statusCode).json(response.body);
 });
@@ -40,6 +40,18 @@ userRoutes.post('/auth/login', async (req, res) => {
 userRoutes.get('/:userId', async (req, res) => {
   const userId = req?.params?.userId;
   const response = await userController.findUserById({ params: { userId } });
+
+  return res.status(response.statusCode).json(response.body);
+});
+
+userRoutes.patch('/:userId', async (req, res) => {
+  const userId = req?.params?.userId;
+  const newData = req?.body;
+
+  const response = await userController.updateUser({
+    params: { userId },
+    body: newData,
+  });
 
   return res.status(response.statusCode).json(response.body);
 });
