@@ -44,9 +44,13 @@ export class UserRepository implements IUserRepository {
   ): Promise<UserDocument | null> {
     try {
       const updatedUserDoc: UserDocument | null =
-        await UserModel.findOneAndUpdate({ _id: userId }, newData, {
-          new: true,
-        });
+        await UserModel.findOneAndUpdate(
+          { _id: userId },
+          { $set: newData },
+          {
+            new: true,
+          },
+        );
 
       return updatedUserDoc;
     } catch (err) {

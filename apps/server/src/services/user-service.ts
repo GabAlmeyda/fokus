@@ -1,14 +1,12 @@
 import {
+  formatZodError,
+  LoginUserSchema,
+  RegisterUserSchema,
+  UpdateUserSchema,
   type LoginUserDTO,
   type RegisterUserDTO,
-  type TokenPayload,
-  isLoginUserDTO,
-  validateLoginUserData,
-  isRegisterUserDTO,
-  validateRegisterUserData,
+  type TokenPayloadDTO,
   type UpdateUserDTO,
-  isUpdateUserDTO,
-  validateUpdateuserData,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 import type { IUserService } from '../interfaces/user-interfaces.js';
@@ -25,21 +23,17 @@ export class UserService implements IUserService {
   async registerUser(
     user?: RegisterUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
-    if (!isRegisterUserDTO(user)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid payload provided.');
-    }
-
-    const invalidFields = validateRegisterUserData(user);
-    if (invalidFields.length !== 0) {
-      throw new ServiceError(
-        'UNPROCESSABLE',
-        'Invalid register data provided.',
-        invalidFields,
+    const validation = RegisterUserSchema.safeParse(user);
+    if (!validation.success) {
+      const { errorType, message, invalidFields } = formatZodError(
+        validation.error,
       );
+
+      throw new ServiceError(errorType, message, invalidFields);
     }
 
-    const hashedPassword = await argon2.hash(user.password);
-    const registerUserData = { ...user, password: hashedPassword };
+    const hashedPassword = await argon2.hash(validation.data.password);
+    const registerUserData = { ...validation.data, password: hashedPassword };
 
     try {
       const registeredUserDoc =
@@ -52,7 +46,7 @@ export class UserService implements IUserService {
         );
         process.exit(1);
       }
-      const tokenPayload: TokenPayload = {
+      const tokenPayload: TokenPayloadDTO = {
         id: registeredUserDoc._id.toString(),
         email: registeredUserDoc.email,
       };
@@ -71,22 +65,18 @@ export class UserService implements IUserService {
   async loginUser(
     user?: LoginUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
-    if (!isLoginUserDTO(user)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid payload provided.');
-    }
-
-    const invalidFields = validateLoginUserData(user);
-    if (invalidFields.length !== 0) {
-      throw new ServiceError(
-        'UNPROCESSABLE',
-        'Invalid login data provided.',
-        invalidFields,
+    const validation = LoginUserSchema.safeParse(user);
+    if (!validation.success) {
+      const { errorType, message, invalidFields } = formatZodError(
+        validation.error,
       );
+
+      throw new ServiceError(errorType, message, invalidFields);
     }
 
     try {
       const loggedUserDoc = await this.userRepository.findUserByEmail(
-        user.email,
+        validation.data.email,
       );
       if (!loggedUserDoc) {
         throw new ServiceError('UNAUTHORIZED', 'Incorret email or password.', [
@@ -95,7 +85,10 @@ export class UserService implements IUserService {
         ]);
       }
 
-      const verify = await argon2.verify(loggedUserDoc.password, user.password);
+      const verify = await argon2.verify(
+        loggedUserDoc.password,
+        validation.data.password,
+      );
       if (!verify) {
         throw new ServiceError('UNAUTHORIZED', 'Incorret email or password.', [
           { field: 'email', message: 'Email may be incorrect.' },
@@ -110,7 +103,7 @@ export class UserService implements IUserService {
         );
         process.exit(1);
       }
-      const tokenPayload: TokenPayload = {
+      const tokenPayload: TokenPayloadDTO = {
         email: loggedUserDoc.email,
         id: loggedUserDoc._id.toString(),
       };
@@ -170,23 +163,19 @@ export class UserService implements IUserService {
       throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
     }
 
-    if (!isUpdateUserDTO(newData)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid payload provided.');
-    }
-
-    const invalidFields = validateUpdateuserData(newData);
-    if (invalidFields.length !== 0) {
-      throw new ServiceError(
-        'UNPROCESSABLE',
-        'Invalid new user data provided.',
-        invalidFields,
+    const validation = UpdateUserSchema.safeParse(newData);
+    if (!validation.success) {
+      const { errorType, message, invalidFields } = formatZodError(
+        validation.error,
       );
+
+      throw new ServiceError(errorType, message, invalidFields);
     }
 
     try {
       const updatedUserDoc = await this.userRepository.updateUser(
         new Types.ObjectId(userId),
-        newData,
+        validation.data,
       );
 
       if (!updatedUserDoc) {

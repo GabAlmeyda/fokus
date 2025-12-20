@@ -42,7 +42,7 @@ export class UserController implements IUserController {
 
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error occurred.' },
+        body: { message: 'An unknown error occurred.', invalidFields: [] },
       };
     }
   }
@@ -72,7 +72,7 @@ export class UserController implements IUserController {
 
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error ocurred.' },
+        body: { message: 'An unknown error ocurred.', invalidFields: [] },
       };
     }
   }
@@ -103,7 +103,7 @@ export class UserController implements IUserController {
 
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error occurred.' },
+        body: { message: 'An unknown error occurred.', invalidFields: [] },
       };
     }
   }
@@ -135,7 +135,7 @@ export class UserController implements IUserController {
 
       return {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unexpected error occurred.' },
+        body: { message: 'An unexpected error occurred.', invalidFields: [] },
       };
     }
   }
@@ -168,6 +168,7 @@ export class UserController implements IUserController {
         statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
         body: {
           message: 'An unexpected error occurred.',
+          invalidFields: [],
         },
       };
     }
