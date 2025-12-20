@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { HTTPStatusCode, type InvalidField } from '@fokus/shared';
+import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
 
 export class MongoRepositoryError extends Error {
   public readonly errorType: keyof typeof HTTPStatusCode;

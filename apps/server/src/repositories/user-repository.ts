@@ -3,7 +3,7 @@ import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 export class UserRepository implements IUserRepository {
   async registerUser(user: RegisterUserDTO): Promise<UserDocument> {

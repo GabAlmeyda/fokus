@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierPlugin from 'eslint-plugin-prettier';
+import globals from 'globals';
 
 export default [
   {
@@ -8,11 +9,20 @@ export default [
   },
 
   js.configs.recommended,
-
   ...tseslint.configs.recommended,
 
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js'],
     plugins: {
       prettier: prettierPlugin,
     },
@@ -24,8 +34,8 @@ export default [
         { argsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
-
       'no-console': 'off',
+      'no-undef': 'error',
     },
   },
 ];
