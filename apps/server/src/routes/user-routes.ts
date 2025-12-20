@@ -8,8 +8,10 @@ const userController = new UserController();
 userRoutes.post('/auth/register', async (req, res) => {
   const registerData = req?.body;
 
-  const response = await userController.registerUser({ body: registerData });
-  const validation = ResponseAuthSchema.safeParse(response.body);
+  const { statusCode, body } = await userController.registerUser({
+    body: registerData,
+  });
+  const validation = ResponseAuthSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
       httpOnly: true,
@@ -19,14 +21,16 @@ userRoutes.post('/auth/register', async (req, res) => {
     });
   }
 
-  return res.status(response.statusCode).json(response.body);
+  return res.status(statusCode).json(body);
 });
 
 userRoutes.post('/auth/login', async (req, res) => {
   const loginData = req?.body;
 
-  const response = await userController.loginUser({ body: loginData });
-  const validation = ResponseAuthSchema.safeParse(response.body);
+  const { statusCode, body } = await userController.loginUser({
+    body: loginData,
+  });
+  const validation = ResponseAuthSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
       httpOnly: true,
@@ -36,33 +40,37 @@ userRoutes.post('/auth/login', async (req, res) => {
     });
   }
 
-  return res.status(response.statusCode).json(response.body);
+  return res.status(statusCode).json(body);
 });
 
 userRoutes.get('/:userId', async (req, res) => {
   const userId = req?.params?.userId;
-  const response = await userController.findUserById({ params: { userId } });
+  const { statusCode, body } = await userController.findUserById({
+    params: { userId },
+  });
 
-  return res.status(response.statusCode).json(response.body);
+  return res.status(statusCode).json(body);
 });
 
 userRoutes.patch('/:userId', async (req, res) => {
   const userId = req?.params?.userId;
   const newData = req?.body;
 
-  const response = await userController.updateUser({
+  const { statusCode, body } = await userController.updateUser({
     params: { userId },
     body: newData,
   });
 
-  return res.status(response.statusCode).json(response.body);
+  return res.status(statusCode).json(body);
 });
 
 userRoutes.delete('/:userId', async (req, res) => {
   const userId = req?.params?.userId;
-  const response = await userController.deleteUser({ params: { userId } });
+  const { statusCode, body } = await userController.deleteUser({
+    params: { userId },
+  });
 
-  return res.status(response.statusCode).json(response.body);
+  return res.status(statusCode).json(body);
 });
 
 export default userRoutes;

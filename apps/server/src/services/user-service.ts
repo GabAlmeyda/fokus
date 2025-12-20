@@ -23,19 +23,19 @@ export class UserService implements IUserService {
   async registerUser(
     user?: RegisterUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
-    const validation = RegisterUserSchema.safeParse(user);
-    if (!validation.success) {
-      const { errorType, message, invalidFields } = formatZodError(
-        validation.error,
-      );
-
-      throw new ServiceError(errorType, message, invalidFields);
-    }
-
-    const hashedPassword = await argon2.hash(validation.data.password);
-    const registerUserData = { ...validation.data, password: hashedPassword };
-
     try {
+      const validation = RegisterUserSchema.safeParse(user);
+      if (!validation.success) {
+        const { errorType, message, invalidFields } = formatZodError(
+          validation.error,
+        );
+
+        throw new ServiceError(errorType, message, invalidFields);
+      }
+
+      const hashedPassword = await argon2.hash(validation.data.password);
+      const registerUserData = { ...validation.data, password: hashedPassword };
+
       const registeredUserDoc =
         await this.userRepository.registerUser(registerUserData);
 
@@ -58,6 +58,10 @@ export class UserService implements IUserService {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
+      if (err instanceof ServiceError) {
+        throw err;
+      }
+
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
     }
   }
@@ -65,16 +69,16 @@ export class UserService implements IUserService {
   async loginUser(
     user?: LoginUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
-    const validation = LoginUserSchema.safeParse(user);
-    if (!validation.success) {
-      const { errorType, message, invalidFields } = formatZodError(
-        validation.error,
-      );
-
-      throw new ServiceError(errorType, message, invalidFields);
-    }
-
     try {
+      const validation = LoginUserSchema.safeParse(user);
+      if (!validation.success) {
+        const { errorType, message, invalidFields } = formatZodError(
+          validation.error,
+        );
+
+        throw new ServiceError(errorType, message, invalidFields);
+      }
+
       const loggedUserDoc = await this.userRepository.findUserByEmail(
         validation.data.email,
       );
@@ -126,11 +130,11 @@ export class UserService implements IUserService {
   }
 
   async findUserById(userId?: string): Promise<UserDocument> {
-    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
-    }
-
     try {
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
+      }
+
       const userDoc = await this.userRepository.findUserById(
         new Types.ObjectId(userId),
       );
@@ -159,20 +163,20 @@ export class UserService implements IUserService {
     userId?: string,
     newData?: UpdateUserDTO,
   ): Promise<UserDocument> {
-    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
-    }
-
-    const validation = UpdateUserSchema.safeParse(newData);
-    if (!validation.success) {
-      const { errorType, message, invalidFields } = formatZodError(
-        validation.error,
-      );
-
-      throw new ServiceError(errorType, message, invalidFields);
-    }
-
     try {
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
+      }
+
+      const validation = UpdateUserSchema.safeParse(newData);
+      if (!validation.success) {
+        const { errorType, message, invalidFields } = formatZodError(
+          validation.error,
+        );
+
+        throw new ServiceError(errorType, message, invalidFields);
+      }
+
       const updatedUserDoc = await this.userRepository.updateUser(
         new Types.ObjectId(userId),
         validation.data,
@@ -200,11 +204,11 @@ export class UserService implements IUserService {
   }
 
   async deleteUser(userId?: string): Promise<UserDocument> {
-    if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
-      throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
-    }
-
     try {
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
+      }
+
       const deletedUserDoc = await this.userRepository.deleteUser(
         new Types.ObjectId(userId),
       );
