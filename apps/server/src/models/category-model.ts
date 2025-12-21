@@ -39,6 +39,11 @@ const categorySchema = new Schema(
   },
 );
 
+categorySchema.index(
+  { userId: 1, name: 1 },
+  { background: true, unique: true },
+);
+
 type CategorySchemaType = InferSchemaType<typeof categorySchema>;
 export type CategoryDocument = HydratedDocument<CategorySchemaType>;
 export const CategoryModel = model<CategoryDocument>(

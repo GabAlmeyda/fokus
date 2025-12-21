@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { UserModel } from '../models/user-model.js';
+import { CategoryModel } from '../models/category-model.js';
 
 export async function connectToMongoDB() {
   const MONGO_URI = process.env.MONGO_URI;
@@ -19,12 +20,19 @@ export async function connectToMongoDB() {
         collections.map((c) => console.log(`- ${c.collectionName}`));
       }
 
-      console.log('\nCreated indexes:');
+      console.log('\n\nCreated indexes:');
 
       console.log('- USER INDEXES:');
       await UserModel.syncIndexes();
       const userIndexes = Object.keys(await UserModel.collection.getIndexes());
       userIndexes.forEach((index) => console.log(` * ${index}`));
+
+      console.log('\n- CATEGORY INDEXES:');
+      await CategoryModel.syncIndexes();
+      const categoryIndexes = Object.keys(
+        await CategoryModel.collection.getIndexes(),
+      );
+      categoryIndexes.forEach((index) => console.log(` * ${index}`));
     }
   } catch (err) {
     console.error('Error when attempting to connect to MongoDB: ', err);
