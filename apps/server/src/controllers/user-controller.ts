@@ -12,17 +12,17 @@ import {
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
-import { ServiceError } from '../helpers/service-errors.js';
+import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 
 export class UserController implements IUserController {
   private readonly userService = new UserService();
 
   async registerUser(
-    req?: HTTPRequest<RegisterUserDTO>,
+    req: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
       const { userDoc: registeredUserDoc, token } =
-        await this.userService.registerUser(req?.body);
+        await this.userService.registerUser(req.body);
       const registeredUser = mapUserDocToPublicDTO(registeredUserDoc);
 
       return {
@@ -30,29 +30,16 @@ export class UserController implements IUserController {
         body: { user: registeredUser, token },
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error occurred.', invalidFields: [] },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 
   async loginUser(
-    req?: HTTPRequest<LoginUserDTO>,
+    req: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
       const { userDoc: loggedUserDoc, token } =
-        await this.userService.loginUser(req?.body);
+        await this.userService.loginUser(req.body);
       const loggedUser = mapUserDocToPublicDTO(loggedUserDoc);
 
       return {
@@ -60,27 +47,14 @@ export class UserController implements IUserController {
         body: { user: loggedUser, token },
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error ocurred.', invalidFields: [] },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 
   async findUserById(
-    req?: HTTPRequest<null>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req?.params?.userId;
+    const userId = req.params?.userId;
 
     try {
       const userDoc = await this.userService.findUserById(userId);
@@ -91,28 +65,15 @@ export class UserController implements IUserController {
         body: user,
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unknown error occurred.', invalidFields: [] },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 
   async updateUser(
-    req?: HTTPRequest<UpdateUserDTO>,
+    req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req?.params?.userId;
-    const newData = req?.body;
+    const userId = req.params?.userId;
+    const newData = req.body;
 
     try {
       const updatedUserDoc = await this.userService.updateUser(userId, newData);
@@ -123,27 +84,14 @@ export class UserController implements IUserController {
         body: updatedUser,
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: { message: 'An unexpected error occurred.', invalidFields: [] },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 
   async deleteUser(
-    req?: HTTPRequest<null>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req?.params?.userId;
+    const userId = req.params?.userId;
 
     try {
       const deletedUserDoc = await this.userService.deleteUser(userId);
@@ -154,23 +102,7 @@ export class UserController implements IUserController {
         body: deletedUser,
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: {
-          message: 'An unexpected error occurred.',
-          invalidFields: [],
-        },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 }

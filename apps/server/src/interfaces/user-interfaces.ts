@@ -44,22 +44,22 @@ export interface IUserService {
 
 export interface IUserController {
   registerUser(
-    req?: HTTPRequest<RegisterUserDTO>,
+    req: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
 
   loginUser(
-    req?: HTTPRequest<LoginUserDTO>,
+    req: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
 
   findUserById(
-    req?: HTTPRequest<null>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 
   updateUser(
-    req?: HTTPRequest<UpdateUserDTO>,
+    req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 
   deleteUser(
-    req?: HTTPRequest<null>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 }

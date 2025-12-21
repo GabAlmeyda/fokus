@@ -5,11 +5,11 @@ import {
   type ResponseCategoryDTO,
   type HTTPErrorResponse,
   HTTPStatusCode,
-} from 'packages/shared/dist/index.js';
+} from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
-import { ServiceError } from '../helpers/service-errors.js';
+import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
@@ -28,23 +28,7 @@ export class CategoryController implements ICategoryController {
         body: createdCategory,
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: {
-          message: 'An unexpected error occurred.',
-          invalidFields: [],
-        },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 
@@ -63,23 +47,7 @@ export class CategoryController implements ICategoryController {
         body: category,
       };
     } catch (err) {
-      if (err instanceof ServiceError) {
-        return {
-          statusCode: HTTPStatusCode[err.errorType],
-          body: {
-            message: err.message,
-            invalidFields: err.invalidFields,
-          },
-        };
-      }
-
-      return {
-        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-        body: {
-          message: 'An unexpected error occurred.',
-          invalidFields: [],
-        },
-      };
+      return formatHTTPErrorResponse(err);
     }
   }
 }

@@ -54,12 +54,8 @@ export class UserService implements IUserService {
 
       return { userDoc: registeredUserDoc, token };
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      if (err instanceof ServiceError) {
-        throw err;
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
@@ -117,12 +113,8 @@ export class UserService implements IUserService {
 
       return { userDoc: loggedUserDoc, token };
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      if (err instanceof ServiceError) {
-        throw err;
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
@@ -147,12 +139,8 @@ export class UserService implements IUserService {
 
       return userDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      if (err instanceof ServiceError) {
-        throw err;
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
@@ -191,12 +179,8 @@ export class UserService implements IUserService {
 
       return updatedUserDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      if (err instanceof ServiceError) {
-        throw err;
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error');
@@ -221,12 +205,8 @@ export class UserService implements IUserService {
 
       return deletedUserDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      if (err instanceof ServiceError) {
-        throw err;
       }
 
       throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
