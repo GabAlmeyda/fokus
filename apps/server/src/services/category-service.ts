@@ -8,6 +8,7 @@ import type { CategoryDocument } from '../models/category-model.js';
 import { CategoryRepository } from '../repositories/category-repository.js';
 import { ServiceError } from '../helpers/service-errors.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
+import { Types } from 'mongoose';
 
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
@@ -34,11 +35,36 @@ export class CategoryService implements ICategoryService {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
-      if (err instanceof ServiceError) {
-        throw err;
+      throw err;
+    }
+  }
+
+  async findCategoryById(categoryId?: string): Promise<CategoryDocument> {
+    try {
+      if (
+        typeof categoryId !== 'string' ||
+        !Types.ObjectId.isValid(categoryId)
+      ) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
       }
 
-      throw new ServiceError('INTERNAL_SERVER_ERROR', 'Unexpected error.');
+      const categoryDoc = await this.categoryRepository.findCategoryById(
+        new Types.ObjectId(categoryId),
+      );
+      if (!categoryDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `Category with ID '${categoryId}' not found.`,
+        );
+      }
+
+      return categoryDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
     }
   }
 }

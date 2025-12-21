@@ -47,4 +47,39 @@ export class CategoryController implements ICategoryController {
       };
     }
   }
+
+  async findCategoryById(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
+    try {
+      const categoryId = req.params?.categoryId;
+
+      const categoryDoc =
+        await this.categoryService.findCategoryById(categoryId);
+      const category = mapCategoryDocToPublicDTO(categoryDoc);
+
+      return {
+        statusCode: HTTPStatusCode.OK,
+        body: category,
+      };
+    } catch (err) {
+      if (err instanceof ServiceError) {
+        return {
+          statusCode: HTTPStatusCode[err.errorType],
+          body: {
+            message: err.message,
+            invalidFields: err.invalidFields,
+          },
+        };
+      }
+
+      return {
+        statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
+        body: {
+          message: 'An unexpected error occurred.',
+          invalidFields: [],
+        },
+      };
+    }
+  }
 }
