@@ -20,7 +20,7 @@ import { Types } from 'mongoose';
 export class UserService implements IUserService {
   private readonly userRepository = new UserRepository();
 
-  async registerUser(
+  async register(
     user?: RegisterUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
     try {
@@ -37,7 +37,7 @@ export class UserService implements IUserService {
       const registerUserData = { ...validation.data, password: hashedPassword };
 
       const registeredUserDoc =
-        await this.userRepository.registerUser(registerUserData);
+        await this.userRepository.register(registerUserData);
 
       const JWT_SECRET = process.env.JWT_SECRET as string;
       const tokenPayload: TokenPayloadDTO = {
@@ -56,7 +56,7 @@ export class UserService implements IUserService {
     }
   }
 
-  async loginUser(
+  async login(
     user?: LoginUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
     try {
@@ -69,7 +69,7 @@ export class UserService implements IUserService {
         throw new ServiceError(errorType, message, invalidFields);
       }
 
-      const loggedUserDoc = await this.userRepository.findUserByEmail(
+      const loggedUserDoc = await this.userRepository.findOneByEmail(
         validation.data.email,
       );
       if (!loggedUserDoc) {
@@ -109,13 +109,13 @@ export class UserService implements IUserService {
     }
   }
 
-  async findUserById(userId?: string): Promise<UserDocument> {
+  async findOneById(userId?: string): Promise<UserDocument> {
     try {
       if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
         throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
       }
 
-      const userDoc = await this.userRepository.findUserById(
+      const userDoc = await this.userRepository.findOneById(
         new Types.ObjectId(userId),
       );
       if (!userDoc) {
@@ -135,7 +135,7 @@ export class UserService implements IUserService {
     }
   }
 
-  async updateUser(
+  async update(
     userId?: string,
     newData?: UpdateUserDTO,
   ): Promise<UserDocument> {
@@ -153,7 +153,7 @@ export class UserService implements IUserService {
         throw new ServiceError(errorType, message, invalidFields);
       }
 
-      const updatedUserDoc = await this.userRepository.updateUser(
+      const updatedUserDoc = await this.userRepository.update(
         new Types.ObjectId(userId),
         validation.data,
       );
@@ -175,13 +175,13 @@ export class UserService implements IUserService {
     }
   }
 
-  async deleteUser(userId?: string): Promise<UserDocument> {
+  async delete(userId?: string): Promise<UserDocument> {
     try {
       if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
         throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
       }
 
-      const deletedUserDoc = await this.userRepository.deleteUser(
+      const deletedUserDoc = await this.userRepository.delete(
         new Types.ObjectId(userId),
       );
       if (!deletedUserDoc) {

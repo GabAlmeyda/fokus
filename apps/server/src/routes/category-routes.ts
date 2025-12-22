@@ -1,21 +1,30 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/category-controller.js';
+import authMiddleware from '../middlewares/auth-middleware.js';
+import type { AuthRequest } from '../types/express-types.js';
 
 const categoryController = new CategoryController();
 const categoryRoutes = Router({ mergeParams: true });
 
-categoryRoutes.post('/', async (req, res) => {
-  const { statusCode, body } = await categoryController.createCategory({
-    body: req?.body,
+categoryRoutes.post('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const categoryData = { ...authReq.body, userId: authReq.user.id };
+
+  const { statusCode, body } = await categoryController.create({
+    body: categoryData,
   });
 
   return res.status(statusCode).json(body);
 });
 
-categoryRoutes.get('/:categoryId', async (req, res) => {
-  const categoryId = req?.params?.categoryId;
-  const { statusCode, body } = await categoryController.findCategoryById({
+categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const categoryId = authReq.params?.categoryId;
+  const { statusCode, body } = await categoryController.findOneByIdAndUser({
     params: { categoryId },
+    userId,
   });
 
   return res.status(statusCode).json(body);

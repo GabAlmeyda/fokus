@@ -13,9 +13,7 @@ import { Types } from 'mongoose';
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
 
-  async createCategory(
-    category?: CreateCategoryDTO,
-  ): Promise<CategoryDocument> {
+  async create(category?: CreateCategoryDTO): Promise<CategoryDocument> {
     try {
       const validation = CreateCategorySchema.safeParse(category);
       if (!validation.success) {
@@ -26,7 +24,7 @@ export class CategoryService implements ICategoryService {
         throw new ServiceError(errorType, message, invalidFields);
       }
 
-      const createdCategoryDoc = await this.categoryRepository.createCategory(
+      const createdCategoryDoc = await this.categoryRepository.create(
         validation.data,
       );
       return createdCategoryDoc;
@@ -39,7 +37,10 @@ export class CategoryService implements ICategoryService {
     }
   }
 
-  async findCategoryById(categoryId?: string): Promise<CategoryDocument> {
+  async findOneByIdAndUser(
+    categoryId?: string,
+    userId?: string,
+  ): Promise<CategoryDocument> {
     try {
       if (
         typeof categoryId !== 'string' ||
@@ -47,9 +48,13 @@ export class CategoryService implements ICategoryService {
       ) {
         throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
       }
+      if (typeof userId !== 'string') {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
 
-      const categoryDoc = await this.categoryRepository.findCategoryById(
+      const categoryDoc = await this.categoryRepository.findOneByIdAndUser(
         new Types.ObjectId(categoryId),
+        new Types.ObjectId(userId),
       );
       if (!categoryDoc) {
         throw new ServiceError(

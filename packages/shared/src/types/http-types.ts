@@ -1,7 +1,7 @@
 export type HTTPRequest<B> = {
   headers?: Record<string, string | undefined>;
-  params?: Record<string, string>;
-  query?: Record<string, string | string[]>;
+  params?: Record<string, string | undefined>;
+  query?: Record<string, string | string[] | undefined>;
   body?: B;
   userId?: string;
 };

@@ -12,54 +12,52 @@ import type { UserDocument } from '../models/user-model.js';
 import type { Types } from 'mongoose';
 
 export interface IUserRepository {
-  registerUser(user: RegisterUserDTO): Promise<UserDocument>;
+  register(user: RegisterUserDTO): Promise<UserDocument>;
 
-  findUserByEmail(email: string): Promise<UserDocument | null>;
+  findOneByEmail(email: string): Promise<UserDocument | null>;
 
-  findUserById(userId: Types.ObjectId): Promise<UserDocument | null>;
+  findOneById(userId: Types.ObjectId): Promise<UserDocument | null>;
 
-  updateUser(
+  update(
     userId: Types.ObjectId,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null>;
 
-  deleteUser(userId: Types.ObjectId): Promise<UserDocument | null>;
+  delete(userId: Types.ObjectId): Promise<UserDocument | null>;
 }
 
 export interface IUserService {
-  registerUser(
+  register(
     user?: RegisterUserDTO,
   ): Promise<{ userDoc: UserDocument; token: string }>;
 
-  loginUser(
-    user?: LoginUserDTO,
-  ): Promise<{ userDoc: UserDocument; token: string }>;
+  login(user?: LoginUserDTO): Promise<{ userDoc: UserDocument; token: string }>;
 
-  findUserById(userId?: string): Promise<UserDocument>;
+  findOneById(userId?: string): Promise<UserDocument>;
 
-  updateUser(userId?: string, newData?: UpdateUserDTO): Promise<UserDocument>;
+  update(userId?: string, newData?: UpdateUserDTO): Promise<UserDocument>;
 
-  deleteUser(userId?: string): Promise<UserDocument>;
+  delete(userId?: string): Promise<UserDocument>;
 }
 
 export interface IUserController {
-  registerUser(
+  register(
     req: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
 
-  loginUser(
+  login(
     req: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
 
-  findUserById(
+  findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 
-  updateUser(
+  update(
     req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 
-  deleteUser(
+  delete(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
 }

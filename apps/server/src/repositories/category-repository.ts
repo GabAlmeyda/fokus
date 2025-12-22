@@ -8,7 +8,7 @@ import { MongoRepositoryError } from '../helpers/mongo-errors.js';
 import type { Types } from 'mongoose';
 
 export class CategoryRepository implements ICategoryRepository {
-  async createCategory(category: CreateCategoryDTO): Promise<CategoryDocument> {
+  async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
     try {
       const createdCategoryDoc: CategoryDocument =
         await CategoryModel.create(category);
@@ -19,12 +19,15 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findCategoryById(
+  async findOneByIdAndUser(
     categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
   ): Promise<CategoryDocument | null> {
     try {
-      const categoryDoc: CategoryDocument | null =
-        await CategoryModel.findById(categoryId);
+      const categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
+        _id: categoryId,
+        userId,
+      });
 
       return categoryDoc;
     } catch (err) {

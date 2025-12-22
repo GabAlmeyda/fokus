@@ -10,7 +10,7 @@ const userController = new UserController();
 userRoutes.post('/auth/register', async (req, res) => {
   const registerData = req?.body;
 
-  const { statusCode, body } = await userController.registerUser({
+  const { statusCode, body } = await userController.register({
     body: registerData,
   });
   const validation = ResponseAuthSchema.safeParse(body);
@@ -29,7 +29,7 @@ userRoutes.post('/auth/register', async (req, res) => {
 userRoutes.post('/auth/login', async (req, res) => {
   const loginData = req?.body;
 
-  const { statusCode, body } = await userController.loginUser({
+  const { statusCode, body } = await userController.login({
     body: loginData,
   });
   const validation = ResponseAuthSchema.safeParse(body);
@@ -49,7 +49,7 @@ userRoutes.get('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await userController.findUserById({
+  const { statusCode, body } = await userController.findOneById({
     params: { userId },
     userId,
   });
@@ -62,7 +62,7 @@ userRoutes.patch('/', authMiddleware, async (req, res) => {
   const userId = authReq.user.id;
   const newData = req?.body;
 
-  const { statusCode, body } = await userController.updateUser({
+  const { statusCode, body } = await userController.update({
     body: newData,
     userId,
   });
@@ -74,7 +74,7 @@ userRoutes.delete('/', async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await userController.deleteUser({
+  const { statusCode, body } = await userController.delete({
     userId,
   });
 

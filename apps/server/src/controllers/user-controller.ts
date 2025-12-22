@@ -17,12 +17,12 @@ import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 export class UserController implements IUserController {
   private readonly userService = new UserService();
 
-  async registerUser(
+  async register(
     req: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
       const { userDoc: registeredUserDoc, token } =
-        await this.userService.registerUser(req.body);
+        await this.userService.register(req.body);
       const registeredUser = mapUserDocToPublicDTO(registeredUserDoc);
 
       return {
@@ -34,12 +34,13 @@ export class UserController implements IUserController {
     }
   }
 
-  async loginUser(
+  async login(
     req: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
     try {
-      const { userDoc: loggedUserDoc, token } =
-        await this.userService.loginUser(req.body);
+      const { userDoc: loggedUserDoc, token } = await this.userService.login(
+        req.body,
+      );
       const loggedUser = mapUserDocToPublicDTO(loggedUserDoc);
 
       return {
@@ -51,13 +52,13 @@ export class UserController implements IUserController {
     }
   }
 
-  async findUserById(
+  async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
     const userId = req?.userId;
 
     try {
-      const userDoc = await this.userService.findUserById(userId);
+      const userDoc = await this.userService.findOneById(userId);
       const user = mapUserDocToPublicDTO(userDoc);
 
       return {
@@ -69,14 +70,14 @@ export class UserController implements IUserController {
     }
   }
 
-  async updateUser(
+  async update(
     req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
     const userId = req?.userId;
     const newData = req.body;
 
     try {
-      const updatedUserDoc = await this.userService.updateUser(userId, newData);
+      const updatedUserDoc = await this.userService.update(userId, newData);
       const updatedUser = mapUserDocToPublicDTO(updatedUserDoc);
 
       return {
@@ -88,13 +89,13 @@ export class UserController implements IUserController {
     }
   }
 
-  async deleteUser(
+  async delete(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
     const userId = req?.userId;
 
     try {
-      const deletedUserDoc = await this.userService.deleteUser(userId);
+      const deletedUserDoc = await this.userService.delete(userId);
       const deletedUser = mapUserDocToPublicDTO(deletedUserDoc);
 
       return {

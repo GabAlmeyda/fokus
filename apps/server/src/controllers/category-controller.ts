@@ -14,13 +14,11 @@ import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
 
-  async createCategory(
-    req?: HTTPRequest<CreateCategoryDTO>,
+  async create(
+    req: HTTPRequest<CreateCategoryDTO>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
     try {
-      const createdCategoryDoc = await this.categoryService.createCategory(
-        req?.body,
-      );
+      const createdCategoryDoc = await this.categoryService.create(req.body);
       const createdCategory = mapCategoryDocToPublicDTO(createdCategoryDoc);
 
       return {
@@ -32,14 +30,17 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findCategoryById(
+  async findOneByIdAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
     try {
       const categoryId = req.params?.categoryId;
+      const userId = req.userId;
 
-      const categoryDoc =
-        await this.categoryService.findCategoryById(categoryId);
+      const categoryDoc = await this.categoryService.findOneByIdAndUser(
+        categoryId,
+        userId,
+      );
       const category = mapCategoryDocToPublicDTO(categoryDoc);
 
       return {

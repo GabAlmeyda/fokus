@@ -6,7 +6,7 @@ import { MongoRepositoryError } from '../helpers/mongo-errors.js';
 import type { Types } from 'mongoose';
 
 export class UserRepository implements IUserRepository {
-  async registerUser(user: RegisterUserDTO): Promise<UserDocument> {
+  async register(user: RegisterUserDTO): Promise<UserDocument> {
     try {
       const createdUserDoc: UserDocument = await UserModel.create(user);
 
@@ -16,7 +16,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findUserByEmail(email: string): Promise<UserDocument | null> {
+  async findOneByEmail(email: string): Promise<UserDocument | null> {
     try {
       const loggedUserDoc: UserDocument | null = await UserModel.findOne({
         email,
@@ -28,7 +28,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findUserById(userId: Types.ObjectId): Promise<UserDocument | null> {
+  async findOneById(userId: Types.ObjectId): Promise<UserDocument | null> {
     try {
       const userDoc: UserDocument | null = await UserModel.findById(userId);
 
@@ -38,7 +38,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateUser(
+  async update(
     userId: Types.ObjectId,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null> {
@@ -58,7 +58,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async deleteUser(userId: Types.ObjectId): Promise<UserDocument | null> {
+  async delete(userId: Types.ObjectId): Promise<UserDocument | null> {
     try {
       const deletedUserDoc: UserDocument | null =
         await UserModel.findOneAndDelete({ _id: userId });

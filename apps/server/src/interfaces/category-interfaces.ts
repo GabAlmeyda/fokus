@@ -9,10 +9,11 @@ import type { CategoryDocument } from '../models/category-model.js';
 import type { Types } from 'mongoose';
 
 export interface ICategoryRepository {
-  createCategory(category: CreateCategoryDTO): Promise<CategoryDocument>;
+  create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
-  findCategoryById(
+  findOneByIdAndUser(
     categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
   ): Promise<CategoryDocument | null>;
 
   // findCategoryByUserAndName(
@@ -22,9 +23,12 @@ export interface ICategoryRepository {
 }
 
 export interface ICategoryService {
-  createCategory(category?: CreateCategoryDTO): Promise<CategoryDocument>;
+  create(category?: CreateCategoryDTO): Promise<CategoryDocument>;
 
-  findCategoryById(categoryId?: string): Promise<CategoryDocument>;
+  findOneByIdAndUser(
+    categoryId?: string,
+    userId?: string,
+  ): Promise<CategoryDocument>;
 
   // findCategoryByUserAndName(
   //   userId?: string,
@@ -33,11 +37,11 @@ export interface ICategoryService {
 }
 
 export interface ICategoryController {
-  createCategory(
+  create(
     req: HTTPRequest<CreateCategoryDTO>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
 
-  findCategoryById(
+  findOneByIdAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
 
