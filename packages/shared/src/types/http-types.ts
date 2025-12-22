@@ -3,6 +3,7 @@ export type HTTPRequest<B> = {
   params?: Record<string, string>;
   query?: Record<string, string | string[]>;
   body?: B;
+  userId?: string;
 };
 
 export type HTTPSuccessResponse<B> = {

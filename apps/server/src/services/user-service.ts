@@ -39,13 +39,7 @@ export class UserService implements IUserService {
       const registeredUserDoc =
         await this.userRepository.registerUser(registerUserData);
 
-      const JWT_SECRET = process.env.JWT_SECRET;
-      if (!JWT_SECRET) {
-        console.error(
-          "[user-service (server)] JWT secret not defined in the '.env' file",
-        );
-        process.exit(1);
-      }
+      const JWT_SECRET = process.env.JWT_SECRET as string;
       const tokenPayload: TokenPayloadDTO = {
         id: registeredUserDoc._id.toString(),
         email: registeredUserDoc.email,
@@ -96,13 +90,7 @@ export class UserService implements IUserService {
         ]);
       }
 
-      const JWT_SECRET = process.env.JWT_SECRET;
-      if (!JWT_SECRET) {
-        console.error(
-          "[user-service (server)] JWT secret not defined in the '.env' file",
-        );
-        process.exit(1);
-      }
+      const JWT_SECRET = process.env.JWT_SECRET as string;
       const tokenPayload: TokenPayloadDTO = {
         email: loggedUserDoc.email,
         id: loggedUserDoc._id.toString(),

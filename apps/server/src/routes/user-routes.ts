@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/user-controller.js';
 import { ResponseAuthSchema } from 'packages/shared/dist/index.js';
+import authMiddleware from '../middlewares/auth-middleware.js';
+import type { AuthRequest } from '../types/express-types.js';
 
 const userRoutes = Router({ mergeParams: true });
 const userController = new UserController();
@@ -43,31 +45,37 @@ userRoutes.post('/auth/login', async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-userRoutes.get('/:userId', async (req, res) => {
-  const userId = req?.params?.userId;
+userRoutes.get('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
   const { statusCode, body } = await userController.findUserById({
     params: { userId },
+    userId,
   });
 
   return res.status(statusCode).json(body);
 });
 
-userRoutes.patch('/:userId', async (req, res) => {
-  const userId = req?.params?.userId;
+userRoutes.patch('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
   const newData = req?.body;
 
   const { statusCode, body } = await userController.updateUser({
-    params: { userId },
     body: newData,
+    userId,
   });
 
   return res.status(statusCode).json(body);
 });
 
-userRoutes.delete('/:userId', async (req, res) => {
-  const userId = req?.params?.userId;
+userRoutes.delete('/', async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
   const { statusCode, body } = await userController.deleteUser({
-    params: { userId },
+    userId,
   });
 
   return res.status(statusCode).json(body);

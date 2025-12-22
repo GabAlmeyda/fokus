@@ -54,7 +54,7 @@ export class UserController implements IUserController {
   async findUserById(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req.params?.userId;
+    const userId = req?.userId;
 
     try {
       const userDoc = await this.userService.findUserById(userId);
@@ -72,7 +72,7 @@ export class UserController implements IUserController {
   async updateUser(
     req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req.params?.userId;
+    const userId = req?.userId;
     const newData = req.body;
 
     try {
@@ -91,7 +91,7 @@ export class UserController implements IUserController {
   async deleteUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
-    const userId = req.params?.userId;
+    const userId = req?.userId;
 
     try {
       const deletedUserDoc = await this.userService.deleteUser(userId);

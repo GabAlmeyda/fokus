@@ -14,12 +14,22 @@ export interface ICategoryRepository {
   findCategoryById(
     categoryId: Types.ObjectId,
   ): Promise<CategoryDocument | null>;
+
+  // findCategoryByUserAndName(
+  //   userId: Types.ObjectId,
+  //   name: string,
+  // ): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {
   createCategory(category?: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findCategoryById(categoryId?: string): Promise<CategoryDocument>;
+
+  // findCategoryByUserAndName(
+  //   userId?: string,
+  //   name?: string,
+  // ): Promise<CategoryDocument>;
 }
 
 export interface ICategoryController {
@@ -30,4 +40,8 @@ export interface ICategoryController {
   findCategoryById(
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
+
+  // findCategoryByUserAndName(
+  //   req: HTTPRequest<null>,
+  // ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
 }

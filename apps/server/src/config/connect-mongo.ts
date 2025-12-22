@@ -3,11 +3,7 @@ import { UserModel } from '../models/user-model.js';
 import { CategoryModel } from '../models/category-model.js';
 
 export async function connectToMongoDB() {
-  const MONGO_URI = process.env.MONGO_URI;
-  if (!MONGO_URI) {
-    console.error("[connect-mongo] MongoDB URI not defined in '.env' file");
-    process.exit(1);
-  }
+  const MONGO_URI = process.env.MONGO_URI as string;
 
   try {
     await mongoose.connect(MONGO_URI, { autoIndex: false });
@@ -35,7 +31,10 @@ export async function connectToMongoDB() {
       categoryIndexes.forEach((index) => console.log(` * ${index}`));
     }
   } catch (err) {
-    console.error('Error when attempting to connect to MongoDB: ', err);
+    console.error(
+      '[connect-mongo.ts (server)] Error when attempting to connect to MongoDB: ',
+      err,
+    );
     process.exit(8080);
   }
 }
