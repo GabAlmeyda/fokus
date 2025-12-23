@@ -50,4 +50,16 @@ export class CategoryRepository implements ICategoryRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async findAllByUser(userId: Types.ObjectId): Promise<CategoryDocument[]> {
+    try {
+      const categoryDocs: CategoryDocument[] = await CategoryModel.find({
+        userId,
+      });
+
+      return categoryDocs;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }

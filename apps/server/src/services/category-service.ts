@@ -108,4 +108,24 @@ export class CategoryService implements ICategoryService {
       throw err;
     }
   }
+
+  async findAllByUser(userId?: string): Promise<CategoryDocument[]> {
+    try {
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const categoryDocs = await this.categoryRepository.findAllByUser(
+        new Types.ObjectId(userId),
+      );
+
+      return categoryDocs;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
 }

@@ -1,22 +1,21 @@
 import {
   type HTTPRequest,
   type CreateCategoryDTO,
-  type HTTPSuccessResponse,
   type ResponseCategoryDTO,
-  type HTTPErrorResponse,
   HTTPStatusCode,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import type { HTTPResponse } from '../types/controller-types.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
 
   async create(
     req: HTTPRequest<CreateCategoryDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
       const createdCategoryDoc = await this.categoryService.create(req.body);
       const createdCategory = mapCategoryDocToPublicDTO(createdCategoryDoc);
@@ -32,7 +31,7 @@ export class CategoryController implements ICategoryController {
 
   async findOneByIdAndUser(
     req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
       const categoryId = req.params?.categoryId;
       const userId = req.userId;
@@ -54,7 +53,7 @@ export class CategoryController implements ICategoryController {
 
   async findOneByUserAndName(
     req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
       const userId = req.userId;
       const name = req.params?.name;
@@ -66,6 +65,21 @@ export class CategoryController implements ICategoryController {
       const category = mapCategoryDocToPublicDTO(categoryDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: category };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findAllByUser(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
+    try {
+      const userId = req.userId;
+
+      const categoryDocs = await this.categoryService.findAllByUser(userId);
+      const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
+
+      return { statusCode: HTTPStatusCode.OK, body: categories };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

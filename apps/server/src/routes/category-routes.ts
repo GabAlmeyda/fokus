@@ -6,12 +6,25 @@ import type { AuthRequest } from '../types/express-types.js';
 const categoryController = new CategoryController();
 const categoryRoutes = Router({ mergeParams: true });
 
-categoryRoutes.post('/', authMiddleware, async (req, res) => {
+categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
-  const categoryData = { ...authReq.body, userId: authReq.user.id };
+  const userId = authReq.user.id;
+  const name = authReq.params?.name;
 
-  const { statusCode, body } = await categoryController.create({
-    body: categoryData,
+  const { statusCode, body } = await categoryController.findOneByUserAndName({
+    params: { name },
+    userId,
+  });
+
+  return res.status(statusCode).json(body);
+});
+
+categoryRoutes.get('/users', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await categoryController.findAllByUser({
+    userId,
   });
 
   return res.status(statusCode).json(body);
@@ -30,14 +43,12 @@ categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
+categoryRoutes.post('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-  const name = authReq.params?.name;
+  const categoryData = { ...authReq.body, userId: authReq.user.id };
 
-  const { statusCode, body } = await categoryController.findOneByUserAndName({
-    params: { name },
-    userId,
+  const { statusCode, body } = await categoryController.create({
+    body: categoryData,
   });
 
   return res.status(statusCode).json(body);

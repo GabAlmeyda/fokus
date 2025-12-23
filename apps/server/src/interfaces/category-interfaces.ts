@@ -1,12 +1,11 @@
 import type {
   CreateCategoryDTO,
-  HTTPErrorResponse,
   HTTPRequest,
-  HTTPSuccessResponse,
   ResponseCategoryDTO,
 } from 'packages/shared/dist/index.js';
 import type { CategoryDocument } from '../models/category-model.js';
 import type { Types } from 'mongoose';
+import type { HTTPResponse } from '../types/controller-types.js';
 
 export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
@@ -20,6 +19,8 @@ export interface ICategoryRepository {
     userId: Types.ObjectId,
     name: string,
   ): Promise<CategoryDocument | null>;
+
+  findAllByUser(userId: Types.ObjectId): Promise<CategoryDocument[]>;
 }
 
 export interface ICategoryService {
@@ -34,18 +35,24 @@ export interface ICategoryService {
     userId?: string,
     name?: string,
   ): Promise<CategoryDocument>;
+
+  findAllByUser(userId?: string): Promise<CategoryDocument[]>;
 }
 
 export interface ICategoryController {
   create(
     req: HTTPRequest<CreateCategoryDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
   findOneByIdAndUser(
     req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
   findOneByUserAndName(
     req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
+
+  findAllByUser(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
 }

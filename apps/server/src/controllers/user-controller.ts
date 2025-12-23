@@ -1,8 +1,6 @@
 import {
   type HTTPRequest,
   type RegisterUserDTO,
-  type HTTPSuccessResponse,
-  type HTTPErrorResponse,
   HTTPStatusCode,
   type ResponseAuthDTO,
   type LoginUserDTO,
@@ -13,13 +11,14 @@ import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import type { HTTPResponse } from '../types/controller-types.js';
 
 export class UserController implements IUserController {
   private readonly userService = new UserService();
 
   async register(
     req: HTTPRequest<RegisterUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseAuthDTO>> {
     try {
       const { userDoc: registeredUserDoc, token } =
         await this.userService.register(req.body);
@@ -36,7 +35,7 @@ export class UserController implements IUserController {
 
   async login(
     req: HTTPRequest<LoginUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseAuthDTO>> {
     try {
       const { userDoc: loggedUserDoc, token } = await this.userService.login(
         req.body,
@@ -54,7 +53,7 @@ export class UserController implements IUserController {
 
   async findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseUserDTO>> {
     const userId = req?.userId;
 
     try {
@@ -72,7 +71,7 @@ export class UserController implements IUserController {
 
   async update(
     req: HTTPRequest<UpdateUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+  ): Promise<HTTPResponse<ResponseUserDTO>> {
     const userId = req?.userId;
     const newData = req.body;
 
@@ -89,9 +88,7 @@ export class UserController implements IUserController {
     }
   }
 
-  async delete(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse> {
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>> {
     const userId = req?.userId;
 
     try {

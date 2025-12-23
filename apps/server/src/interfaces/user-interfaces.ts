@@ -1,8 +1,6 @@
 import type {
   RegisterUserDTO,
   HTTPRequest,
-  HTTPErrorResponse,
-  HTTPSuccessResponse,
   ResponseAuthDTO,
   LoginUserDTO,
   ResponseUserDTO,
@@ -10,6 +8,7 @@ import type {
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 import type { Types } from 'mongoose';
+import type { HTTPResponse } from '../types/controller-types.js';
 
 export interface IUserRepository {
   register(user: RegisterUserDTO): Promise<UserDocument>;
@@ -43,21 +42,15 @@ export interface IUserService {
 export interface IUserController {
   register(
     req: HTTPRequest<RegisterUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPResponse<ResponseAuthDTO>>;
 
-  login(
-    req: HTTPRequest<LoginUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseAuthDTO> | HTTPErrorResponse>;
+  login(req: HTTPRequest<LoginUserDTO>): Promise<HTTPResponse<ResponseAuthDTO>>;
 
-  findOneById(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
+  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>>;
 
   update(
     req: HTTPRequest<UpdateUserDTO>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
+  ): Promise<HTTPResponse<ResponseUserDTO>>;
 
-  delete(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPSuccessResponse<ResponseUserDTO> | HTTPErrorResponse>;
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>>;
 }
