@@ -50,7 +50,6 @@ userRoutes.get('/', authMiddleware, async (req, res) => {
   const userId = authReq.user.id;
 
   const { statusCode, body } = await userController.findOneById({
-    params: { userId },
     userId,
   });
 
@@ -70,7 +69,7 @@ userRoutes.patch('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-userRoutes.delete('/', async (req, res) => {
+userRoutes.delete('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
 

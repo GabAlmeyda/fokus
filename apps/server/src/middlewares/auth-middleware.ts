@@ -12,7 +12,7 @@ export default function authMiddleware(
   const authReq = req as AuthRequest;
 
   try {
-    const token = authReq.cookies.access_token;
+    const token = authReq.cookies?.access_token;
     if (!token) {
       throw new ServiceError('UNAUTHORIZED', 'Authentication token missing.');
     }

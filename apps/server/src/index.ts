@@ -12,6 +12,7 @@ import { connectToMongoDB } from './config/connect-mongo.js';
 import userRoutes from './routes/user-routes.js';
 import categoryRoutes from './routes/category-routes.js';
 import { ServiceError } from './helpers/service-errors.js';
+import cookieParser from 'cookie-parser';
 
 async function main() {
   await connectToMongoDB();
@@ -27,6 +28,7 @@ async function main() {
       credentials: true,
     }),
   );
+  app.use(cookieParser());
 
   app.use('/users', userRoutes);
   app.use('/categories', categoryRoutes);
