@@ -20,10 +20,23 @@ categoryRoutes.post('/', authMiddleware, async (req, res) => {
 categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
-
   const categoryId = authReq.params?.categoryId;
+
   const { statusCode, body } = await categoryController.findOneByIdAndUser({
     params: { categoryId },
+    userId,
+  });
+
+  return res.status(statusCode).json(body);
+});
+
+categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+  const name = authReq.params?.name;
+
+  const { statusCode, body } = await categoryController.findOneByUserAndName({
+    params: { name },
     userId,
   });
 

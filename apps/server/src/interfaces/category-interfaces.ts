@@ -16,10 +16,10 @@ export interface ICategoryRepository {
     userId: Types.ObjectId,
   ): Promise<CategoryDocument | null>;
 
-  // findCategoryByUserAndName(
-  //   userId: Types.ObjectId,
-  //   name: string,
-  // ): Promise<CategoryDocument | null>;
+  findOneByUserAndName(
+    userId: Types.ObjectId,
+    name: string,
+  ): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {
@@ -30,10 +30,10 @@ export interface ICategoryService {
     userId?: string,
   ): Promise<CategoryDocument>;
 
-  // findCategoryByUserAndName(
-  //   userId?: string,
-  //   name?: string,
-  // ): Promise<CategoryDocument>;
+  findOneByUserAndName(
+    userId?: string,
+    name?: string,
+  ): Promise<CategoryDocument>;
 }
 
 export interface ICategoryController {
@@ -45,7 +45,7 @@ export interface ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
 
-  // findCategoryByUserAndName(
-  //   req: HTTPRequest<null>,
-  // ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
+  findOneByUserAndName(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse>;
 }

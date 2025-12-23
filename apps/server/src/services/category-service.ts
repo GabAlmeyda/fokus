@@ -72,4 +72,40 @@ export class CategoryService implements ICategoryService {
       throw err;
     }
   }
+
+  async findOneByUserAndName(
+    userId?: string,
+    name?: string,
+  ): Promise<CategoryDocument> {
+    try {
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+      if (!name || typeof name !== 'string') {
+        throw new ServiceError(
+          'BAD_REQUEST',
+          'Invalid category name provided.',
+        );
+      }
+
+      const categoryDoc = await this.categoryRepository.findOneByUserAndName(
+        new Types.ObjectId(userId),
+        name,
+      );
+      if (!categoryDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `Category with name '${name}' not found.`,
+        );
+      }
+
+      return categoryDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
 }

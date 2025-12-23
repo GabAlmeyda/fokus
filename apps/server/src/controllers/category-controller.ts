@@ -51,4 +51,23 @@ export class CategoryController implements ICategoryController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async findOneByUserAndName(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPSuccessResponse<ResponseCategoryDTO> | HTTPErrorResponse> {
+    try {
+      const userId = req.userId;
+      const name = req.params?.name;
+
+      const categoryDoc = await this.categoryService.findOneByUserAndName(
+        userId,
+        name,
+      );
+      const category = mapCategoryDocToPublicDTO(categoryDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: category };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }
