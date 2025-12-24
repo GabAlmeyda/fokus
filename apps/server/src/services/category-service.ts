@@ -1,7 +1,9 @@
 import {
   CreateCategorySchema,
   formatZodError,
+  UpdateCategorySchema,
   type CreateCategoryDTO,
+  type UpdateCategoryDTO,
 } from 'packages/shared/dist/index.js';
 import type { ICategoryService } from '../interfaces/category-interfaces.js';
 import type { CategoryDocument } from '../models/category-model.js';
@@ -120,6 +122,54 @@ export class CategoryService implements ICategoryService {
       );
 
       return categoryDocs;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
+
+  async update(
+    newData?: UpdateCategoryDTO,
+    categoryId?: string,
+    userId?: string,
+  ): Promise<CategoryDocument> {
+    try {
+      const validation = UpdateCategorySchema.safeParse(newData);
+      if (!validation.success) {
+        const { errorType, message, invalidFields } = formatZodError(
+          validation.error,
+        );
+
+        throw new ServiceError(errorType, message, invalidFields);
+      }
+
+      if (
+        typeof categoryId !== 'string' ||
+        !Types.ObjectId.isValid(categoryId)
+      ) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
+      }
+
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const updatedCategoryDoc = await this.categoryRepository.update(
+        validation.data,
+        new Types.ObjectId(categoryId),
+        new Types.ObjectId(userId),
+      );
+      if (!updatedCategoryDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `Category with id '${categoryId}' not found.`,
+        );
+      }
+
+      return updatedCategoryDoc;
     } catch (err) {
       if (err instanceof MongoRepositoryError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);

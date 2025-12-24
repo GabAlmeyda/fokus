@@ -1,4 +1,7 @@
-import type { CreateCategoryDTO } from 'packages/shared/dist/index.js';
+import type {
+  CreateCategoryDTO,
+  UpdateCategoryDTO,
+} from 'packages/shared/dist/index.js';
 import type { ICategoryRepository } from '../interfaces/category-interfaces.js';
 import {
   CategoryModel,
@@ -58,6 +61,25 @@ export class CategoryRepository implements ICategoryRepository {
       });
 
       return categoryDocs;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async update(
+    newData: UpdateCategoryDTO,
+    categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<CategoryDocument | null> {
+    try {
+      const updatedCategoryDoc: CategoryDocument | null =
+        await CategoryModel.findOneAndUpdate(
+          { _id: categoryId, userId },
+          { $set: newData },
+          { new: true, runValidators: true },
+        );
+
+      return updatedCategoryDoc;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }

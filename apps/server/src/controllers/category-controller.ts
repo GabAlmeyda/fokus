@@ -3,6 +3,7 @@ import {
   type CreateCategoryDTO,
   type ResponseCategoryDTO,
   HTTPStatusCode,
+  type UpdateCategoryDTO,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
@@ -80,6 +81,27 @@ export class CategoryController implements ICategoryController {
       const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
 
       return { statusCode: HTTPStatusCode.OK, body: categories };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async update(
+    req: HTTPRequest<UpdateCategoryDTO>,
+  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+    try {
+      const newData = req.body;
+      const categoryId = req.params?.categoryId;
+      const userId = req.userId;
+
+      const updatedCategoryDoc = await this.categoryService.update(
+        newData,
+        categoryId,
+        userId,
+      );
+      const updatedCategory = mapCategoryDocToPublicDTO(updatedCategoryDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: updatedCategory };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

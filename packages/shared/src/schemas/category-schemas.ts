@@ -12,6 +12,10 @@ export const CreateCategorySchema = z.object({
     .toLowerCase(),
 });
 
+export const UpdateCategorySchema = CreateCategorySchema.pick({
+  name: true,
+}).partial();
+
 export const ResponseCategorySchema = CreateCategorySchema.extend({
   id: z
     .string("Expected type was 'string'.")
@@ -19,4 +23,5 @@ export const ResponseCategorySchema = CreateCategorySchema.extend({
 });
 
 export type CreateCategoryDTO = z.infer<typeof CreateCategorySchema>;
+export type UpdateCategoryDTO = z.infer<typeof UpdateCategorySchema>;
 export type ResponseCategoryDTO = z.infer<typeof ResponseCategorySchema>;

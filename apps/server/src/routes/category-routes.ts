@@ -54,4 +54,19 @@ categoryRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+categoryRoutes.patch('/:categoryId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const newData = authReq.body;
+  const categoryId = authReq.params?.categoryId;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await categoryController.update({
+    body: newData,
+    params: { categoryId },
+    userId,
+  });
+
+  return res.status(statusCode).json(body);
+});
+
 export default categoryRoutes;

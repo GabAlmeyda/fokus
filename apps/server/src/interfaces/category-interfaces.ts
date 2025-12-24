@@ -1,5 +1,6 @@
 import type {
   CreateCategoryDTO,
+  UpdateCategoryDTO,
   HTTPRequest,
   ResponseCategoryDTO,
 } from 'packages/shared/dist/index.js';
@@ -21,6 +22,12 @@ export interface ICategoryRepository {
   ): Promise<CategoryDocument | null>;
 
   findAllByUser(userId: Types.ObjectId): Promise<CategoryDocument[]>;
+
+  update(
+    newData: UpdateCategoryDTO,
+    categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {
@@ -37,6 +44,12 @@ export interface ICategoryService {
   ): Promise<CategoryDocument>;
 
   findAllByUser(userId?: string): Promise<CategoryDocument[]>;
+
+  update(
+    newData?: UpdateCategoryDTO,
+    categoryId?: string,
+    userID?: string,
+  ): Promise<CategoryDocument>;
 }
 
 export interface ICategoryController {
@@ -55,4 +68,8 @@ export interface ICategoryController {
   findAllByUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
+
+  update(
+    req: HTTPRequest<UpdateCategoryDTO>,
+  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 }
