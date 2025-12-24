@@ -6,33 +6,29 @@ import type {
   HTTPResponse,
 } from '@fokus/shared';
 import type { CategoryDocument } from '../models/category-model.js';
-import type { Types } from 'mongoose';
 
 export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findOneByIdAndUser(
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
+    categoryId: string,
+    userId: string,
   ): Promise<CategoryDocument | null>;
 
   findOneByUserAndName(
-    userId: Types.ObjectId,
+    userId: string,
     name: string,
   ): Promise<CategoryDocument | null>;
 
-  findAllByUser(userId: Types.ObjectId): Promise<CategoryDocument[]>;
+  findAllByUser(userId: string): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
+    categoryId: string,
+    userId: string,
   ): Promise<CategoryDocument | null>;
 
-  delete(
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
-  ): Promise<CategoryDocument | null>;
+  delete(categoryId: string, userId: string): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {

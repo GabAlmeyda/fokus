@@ -8,21 +8,17 @@ import type {
   HTTPResponse,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
-import type { Types } from 'mongoose';
 
 export interface IUserRepository {
   register(user: RegisterUserDTO): Promise<UserDocument>;
 
   findOneByEmail(email: string): Promise<UserDocument | null>;
 
-  findOneById(userId: Types.ObjectId): Promise<UserDocument | null>;
+  findOneById(userId: string): Promise<UserDocument | null>;
 
-  update(
-    userId: Types.ObjectId,
-    newData: UpdateUserDTO,
-  ): Promise<UserDocument | null>;
+  update(userId: string, newData: UpdateUserDTO): Promise<UserDocument | null>;
 
-  delete(userId: Types.ObjectId): Promise<UserDocument | null>;
+  delete(userId: string): Promise<UserDocument | null>;
 }
 
 export interface IUserService {

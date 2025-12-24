@@ -10,7 +10,6 @@ import type { CategoryDocument } from '../models/category-model.js';
 import { CategoryRepository } from '../repositories/category-repository.js';
 import { ServiceError } from '../helpers/service-errors.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
-import { Types } from 'mongoose';
 
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
@@ -31,7 +30,7 @@ export class CategoryService implements ICategoryService {
       );
       return createdCategoryDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
@@ -44,10 +43,7 @@ export class CategoryService implements ICategoryService {
     userId?: string,
   ): Promise<CategoryDocument> {
     try {
-      if (
-        typeof categoryId !== 'string' ||
-        !Types.ObjectId.isValid(categoryId)
-      ) {
+      if (typeof categoryId !== 'string') {
         throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
       }
       if (typeof userId !== 'string') {
@@ -55,8 +51,8 @@ export class CategoryService implements ICategoryService {
       }
 
       const categoryDoc = await this.categoryRepository.findOneByIdAndUser(
-        new Types.ObjectId(categoryId),
-        new Types.ObjectId(userId),
+        categoryId,
+        userId,
       );
       if (!categoryDoc) {
         throw new ServiceError(
@@ -67,7 +63,7 @@ export class CategoryService implements ICategoryService {
 
       return categoryDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
@@ -80,7 +76,7 @@ export class CategoryService implements ICategoryService {
     name?: string,
   ): Promise<CategoryDocument> {
     try {
-      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      if (typeof userId !== 'string' || userId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
       }
       if (!name || typeof name !== 'string') {
@@ -91,7 +87,7 @@ export class CategoryService implements ICategoryService {
       }
 
       const categoryDoc = await this.categoryRepository.findOneByUserAndName(
-        new Types.ObjectId(userId),
+        userId,
         name,
       );
       if (!categoryDoc) {
@@ -103,7 +99,7 @@ export class CategoryService implements ICategoryService {
 
       return categoryDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
@@ -113,17 +109,15 @@ export class CategoryService implements ICategoryService {
 
   async findAllByUser(userId?: string): Promise<CategoryDocument[]> {
     try {
-      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      if (typeof userId !== 'string' || userId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
       }
 
-      const categoryDocs = await this.categoryRepository.findAllByUser(
-        new Types.ObjectId(userId),
-      );
+      const categoryDocs = await this.categoryRepository.findAllByUser(userId);
 
       return categoryDocs;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
@@ -146,21 +140,18 @@ export class CategoryService implements ICategoryService {
         throw new ServiceError(errorType, message, invalidFields);
       }
 
-      if (
-        typeof categoryId !== 'string' ||
-        !Types.ObjectId.isValid(categoryId)
-      ) {
+      if (typeof categoryId !== 'string' || categoryId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
       }
 
-      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      if (typeof userId !== 'string' || userId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
       }
 
       const updatedCategoryDoc = await this.categoryRepository.update(
         validation.data,
-        new Types.ObjectId(categoryId),
-        new Types.ObjectId(userId),
+        categoryId,
+        userId,
       );
       if (!updatedCategoryDoc) {
         throw new ServiceError(
@@ -171,7 +162,7 @@ export class CategoryService implements ICategoryService {
 
       return updatedCategoryDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
@@ -184,20 +175,17 @@ export class CategoryService implements ICategoryService {
     userId?: string,
   ): Promise<CategoryDocument> {
     try {
-      if (
-        typeof categoryId !== 'string' ||
-        !Types.ObjectId.isValid(categoryId)
-      ) {
+      if (typeof categoryId !== 'string' || categoryId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
       }
 
-      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+      if (typeof userId !== 'string' || userId.length !== 24) {
         throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
       }
 
       const deletedCategoryDoc = await this.categoryRepository.delete(
-        new Types.ObjectId(categoryId),
-        new Types.ObjectId(userId),
+        categoryId,
+        userId,
       );
       if (!deletedCategoryDoc) {
         throw new ServiceError(
@@ -208,7 +196,7 @@ export class CategoryService implements ICategoryService {
 
       return deletedCategoryDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 

@@ -23,8 +23,8 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findOneByIdAndUser(
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
+    categoryId: string,
+    userId: string,
   ): Promise<CategoryDocument | null> {
     try {
       const categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
@@ -39,7 +39,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findOneByUserAndName(
-    userId: Types.ObjectId,
+    userId: string,
     name: string,
   ): Promise<CategoryDocument | null> {
     try {
@@ -54,7 +54,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findAllByUser(userId: Types.ObjectId): Promise<CategoryDocument[]> {
+  async findAllByUser(userId: string): Promise<CategoryDocument[]> {
     try {
       const categoryDocs: CategoryDocument[] = await CategoryModel.find({
         userId,
@@ -68,8 +68,8 @@ export class CategoryRepository implements ICategoryRepository {
 
   async update(
     newData: UpdateCategoryDTO,
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
+    categoryId: string,
+    userId: string,
   ): Promise<CategoryDocument | null> {
     try {
       const updatedCategoryDoc: CategoryDocument | null =
@@ -86,8 +86,8 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async delete(
-    categoryId: Types.ObjectId,
-    userId: Types.ObjectId,
+    categoryId: string,
+    userId: string,
   ): Promise<CategoryDocument | null> {
     try {
       const deletedCategoryDoc: CategoryDocument | null =

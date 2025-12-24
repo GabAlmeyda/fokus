@@ -115,9 +115,7 @@ export class UserService implements IUserService {
         throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
       }
 
-      const userDoc = await this.userRepository.findOneById(
-        new Types.ObjectId(userId),
-      );
+      const userDoc = await this.userRepository.findOneById(userId);
       if (!userDoc) {
         throw new ServiceError(
           'NOT_FOUND',
@@ -154,7 +152,7 @@ export class UserService implements IUserService {
       }
 
       const updatedUserDoc = await this.userRepository.update(
-        new Types.ObjectId(userId),
+        userId,
         validation.data,
       );
 
@@ -181,9 +179,7 @@ export class UserService implements IUserService {
         throw new ServiceError('BAD_REQUEST', 'Invalid ID provided.');
       }
 
-      const deletedUserDoc = await this.userRepository.delete(
-        new Types.ObjectId(userId),
-      );
+      const deletedUserDoc = await this.userRepository.delete(userId);
       if (!deletedUserDoc) {
         throw new ServiceError(
           'NOT_FOUND',

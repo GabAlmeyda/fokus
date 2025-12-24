@@ -3,7 +3,7 @@ import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
-import type { Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export class UserRepository implements IUserRepository {
   async register(user: RegisterUserDTO): Promise<UserDocument> {
@@ -28,9 +28,10 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findOneById(userId: Types.ObjectId): Promise<UserDocument | null> {
+  async findOneById(userId: string): Promise<UserDocument | null> {
     try {
-      const userDoc: UserDocument | null = await UserModel.findById(userId);
+      const id = new Types.ObjectId(userId);
+      const userDoc: UserDocument | null = await UserModel.findById(id);
 
       return userDoc;
     } catch (err) {
@@ -39,13 +40,14 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(
-    userId: Types.ObjectId,
+    userId: string,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null> {
     try {
+      const id = new Types.ObjectId(userId);
       const updatedUserDoc: UserDocument | null =
         await UserModel.findOneAndUpdate(
-          { _id: userId },
+          { _id: id },
           { $set: newData },
           {
             new: true,
@@ -59,10 +61,11 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async delete(userId: Types.ObjectId): Promise<UserDocument | null> {
+  async delete(userId: string): Promise<UserDocument | null> {
     try {
+      const id = new Types.ObjectId(userId);
       const deletedUserDoc: UserDocument | null =
-        await UserModel.findOneAndDelete({ _id: userId });
+        await UserModel.findOneAndDelete({ _id: id });
 
       return deletedUserDoc;
     } catch (err) {
