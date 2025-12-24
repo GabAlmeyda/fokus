@@ -30,4 +30,20 @@ export class HabitController implements IHabitController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async findOneById(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+    try {
+      const habitId = req.params?.habitId;
+      const userId = req.userId;
+
+      const habitDoc = await this.habitService.findOneById(habitId, userId);
+      const habit = mapHabitDocToPublicDTO(habitDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: habit };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }

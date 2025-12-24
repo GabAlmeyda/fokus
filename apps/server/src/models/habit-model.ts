@@ -87,6 +87,9 @@ const habitSchema = new Schema(
   },
 );
 
+habitSchema.index({ userId: 1, weekDays: 1 });
+habitSchema.index({ userId: 1, reminder: 1 }, { sparse: true });
+
 type HabitSchemaType = InferSchemaType<typeof habitSchema>;
 export type HabitDocument = HydratedDocument<HabitSchemaType>;
 export const HabitModel = model<HabitDocument>('Habit', habitSchema);

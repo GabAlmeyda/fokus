@@ -29,7 +29,35 @@ export class HabitService implements IHabitService {
 
       return createdHabitDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
+
+  async findOneById(habitId?: string, userId?: string): Promise<HabitDocument> {
+    try {
+      if (typeof habitId !== 'string' || habitId.length !== 24) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid habit ID provided.');
+      }
+
+      if (typeof userId !== 'string' || userId.length !== 24) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const habitDoc = await this.habitRepository.findOneById(habitId, userId);
+      if (!habitDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `Habit with ID '${habitId}' not found.`,
+        );
+      }
+
+      return habitDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
         throw new ServiceError(err.errorType, err.message, err.invalidFields);
       }
 
