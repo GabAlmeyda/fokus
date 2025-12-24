@@ -49,6 +49,7 @@ export class UserRepository implements IUserRepository {
           { $set: newData },
           {
             new: true,
+            runValidators: true,
           },
         );
 

@@ -106,4 +106,23 @@ export class CategoryController implements ICategoryController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async delete(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+    try {
+      const categoryId = req.params?.categoryId;
+      const userId = req.userId;
+
+      const deletedCategoryDoc = await this.categoryService.delete(
+        categoryId,
+        userId,
+      );
+      const deletedCategory = mapCategoryDocToPublicDTO(deletedCategoryDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: deletedCategory };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }

@@ -178,4 +178,41 @@ export class CategoryService implements ICategoryService {
       throw err;
     }
   }
+
+  async delete(
+    categoryId?: string,
+    userId?: string,
+  ): Promise<CategoryDocument> {
+    try {
+      if (
+        typeof categoryId !== 'string' ||
+        !Types.ObjectId.isValid(categoryId)
+      ) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
+      }
+
+      if (typeof userId !== 'string' || !Types.ObjectId.isValid(userId)) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const deletedCategoryDoc = await this.categoryRepository.delete(
+        new Types.ObjectId(categoryId),
+        new Types.ObjectId(userId),
+      );
+      if (!deletedCategoryDoc) {
+        throw new ServiceError(
+          'NOT_FOUND',
+          `Category with ID '${categoryId}' not found.`,
+        );
+      }
+
+      return deletedCategoryDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
 }

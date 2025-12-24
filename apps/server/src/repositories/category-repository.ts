@@ -84,4 +84,18 @@ export class CategoryRepository implements ICategoryRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async delete(
+    categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<CategoryDocument | null> {
+    try {
+      const deletedCategoryDoc: CategoryDocument | null =
+        await CategoryModel.findOneAndDelete({ _id: categoryId, userId });
+
+      return deletedCategoryDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }

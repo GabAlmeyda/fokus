@@ -28,6 +28,11 @@ export interface ICategoryRepository {
     categoryId: Types.ObjectId,
     userId: Types.ObjectId,
   ): Promise<CategoryDocument | null>;
+
+  delete(
+    categoryId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {
@@ -48,8 +53,10 @@ export interface ICategoryService {
   update(
     newData?: UpdateCategoryDTO,
     categoryId?: string,
-    userID?: string,
+    userId?: string,
   ): Promise<CategoryDocument>;
+
+  delete(categoryId?: string, userId?: string): Promise<CategoryDocument>;
 }
 
 export interface ICategoryController {
@@ -72,4 +79,6 @@ export interface ICategoryController {
   update(
     req: HTTPRequest<UpdateCategoryDTO>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
+
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseCategoryDTO>>;
 }
