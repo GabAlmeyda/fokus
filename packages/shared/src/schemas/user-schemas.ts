@@ -31,7 +31,9 @@ export const LoginUserSchema = RegisterUserSchema.pick({
 export const ResponseUserSchema = RegisterUserSchema.omit({
   password: true,
 }).extend({
-  id: z.string("Expected type was 'string'."),
+  id: z
+    .string("Expected type was 'string'.")
+    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
 });
 
 export const ResponseAuthSchema = z.object({

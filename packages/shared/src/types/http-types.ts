@@ -6,6 +6,8 @@ export type HTTPRequest<B> = {
   userId?: string;
 };
 
+export type HTTPResponse<B> = HTTPSuccessResponse<B> | HTTPErrorResponse;
+
 export type HTTPSuccessResponse<B> = {
   statusCode: (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];
   body: B;

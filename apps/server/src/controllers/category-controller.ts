@@ -4,12 +4,12 @@ import {
   type ResponseCategoryDTO,
   HTTPStatusCode,
   type UpdateCategoryDTO,
+  type HTTPResponse,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
-import type { HTTPResponse } from '../types/controller-types.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();

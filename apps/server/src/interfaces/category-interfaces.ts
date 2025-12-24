@@ -3,10 +3,10 @@ import type {
   UpdateCategoryDTO,
   HTTPRequest,
   ResponseCategoryDTO,
-} from 'packages/shared/dist/index.js';
+  HTTPResponse,
+} from '@fokus/shared';
 import type { CategoryDocument } from '../models/category-model.js';
 import type { Types } from 'mongoose';
-import type { HTTPResponse } from '../types/controller-types.js';
 
 export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;

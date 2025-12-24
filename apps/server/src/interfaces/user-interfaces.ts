@@ -5,10 +5,10 @@ import type {
   LoginUserDTO,
   ResponseUserDTO,
   UpdateUserDTO,
+  HTTPResponse,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 import type { Types } from 'mongoose';
-import type { HTTPResponse } from '../types/controller-types.js';
 
 export interface IUserRepository {
   register(user: RegisterUserDTO): Promise<UserDocument>;

@@ -6,12 +6,12 @@ import {
   type LoginUserDTO,
   type ResponseUserDTO,
   type UpdateUserDTO,
+  type HTTPResponse,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
-import type { HTTPResponse } from '../types/controller-types.js';
 
 export class UserController implements IUserController {
   private readonly userService = new UserService();
