@@ -16,6 +16,6 @@ export interface IHabitService {
 
 export interface IHabitController {
   create(
-    req: HTTPRequest<CreateHabitDTO>,
+    req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseHabitDTO>>;
 }

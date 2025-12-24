@@ -61,7 +61,7 @@ export interface ICategoryService {
 
 export interface ICategoryController {
   create(
-    req: HTTPRequest<CreateCategoryDTO>,
+    req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
   findOneByIdAndUser(

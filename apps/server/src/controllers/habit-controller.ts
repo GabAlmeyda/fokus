@@ -14,12 +14,15 @@ export class HabitController implements IHabitController {
   private readonly habitService = new HabitService();
 
   async create(
-    req: HTTPRequest<CreateHabitDTO>,
+    req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
-      const habit = req.body;
+      const habitData = {
+        ...req.body,
+        userId: req.userId as string,
+      } as CreateHabitDTO;
 
-      const createdHabitDoc = await this.habitService.create(habit);
+      const createdHabitDoc = await this.habitService.create(habitData);
       const createdHabit = mapHabitDocToPublicDTO(createdHabitDoc);
 
       return { statusCode: HTTPStatusCode.CREATED, body: createdHabit };

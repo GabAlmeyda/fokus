@@ -15,10 +15,16 @@ export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
 
   async create(
-    req: HTTPRequest<CreateCategoryDTO>,
+    req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const createdCategoryDoc = await this.categoryService.create(req.body);
+      const categoryData = {
+        ...req.body,
+        userId: req.userId,
+      } as CreateCategoryDTO;
+
+      const createdCategoryDoc =
+        await this.categoryService.create(categoryData);
       const createdCategory = mapCategoryDocToPublicDTO(createdCategoryDoc);
 
       return {
