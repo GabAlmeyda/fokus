@@ -10,6 +10,11 @@ export const CreateHabitSchema = z.object({
     .min(2, 'Title cannot be less than 2 characters.')
     .trim(),
 
+  type: z.literal(
+    ['quantitative', 'qualitative'],
+    "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
+  ),
+
   progressImpactValue: z.number().min(1, 'Minimum value is 1.').nullable(),
 
   unitOfMeasure: z
@@ -22,7 +27,7 @@ export const CreateHabitSchema = z.object({
     z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'], {
       error: () => ({
         message:
-          "Invalid week days provided. Accepted values are 'seg', 'ter', 'qua', 'qui', 'sex', 'sab' or 'dom'.",
+          "Invalid week days provided. Valid values are 'seg', 'ter', 'qua', 'qui', 'sex', 'sab' or 'dom'.",
       }),
     }),
   ),
@@ -38,12 +43,12 @@ export const CreateHabitSchema = z.object({
   streak: z
     .number("Expected type was 'number'.")
     .min(0, 'Minimum value is 0.')
-    .optional(),
+    .default(0),
 
   bestStreak: z
     .number("Expected type was 'number'.")
     .min(0, 'Minimum value is 0.')
-    .optional(),
+    .default(0),
 
   color: z
     .string("Expected type was 'string'.")
@@ -56,7 +61,11 @@ export const CreateHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
-export const ResponseHabitSchema = CreateHabitSchema;
+export const ResponseHabitSchema = CreateHabitSchema.extend({
+  id: z
+    .string("Expected type was 'string'.")
+    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+});
 
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
 export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;

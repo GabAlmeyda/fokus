@@ -13,6 +13,7 @@ import userRoutes from './routes/user-routes.js';
 import categoryRoutes from './routes/category-routes.js';
 import { ServiceError } from './helpers/service-errors.js';
 import cookieParser from 'cookie-parser';
+import habitRoutes from './routes/habit-routes.js';
 
 async function main() {
   await connectToMongoDB();
@@ -32,6 +33,7 @@ async function main() {
 
   app.use('/users', userRoutes);
   app.use('/categories', categoryRoutes);
+  app.use('/habits', habitRoutes);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

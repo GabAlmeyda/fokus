@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { UserModel } from '../models/user-model.js';
 import { CategoryModel } from '../models/category-model.js';
+import { HabitModel } from '../models/habit-model.js';
 
 export async function connectToMongoDB() {
   const MONGO_URI = process.env.MONGO_URI as string;
@@ -29,6 +30,13 @@ export async function connectToMongoDB() {
         await CategoryModel.collection.getIndexes(),
       );
       categoryIndexes.forEach((index) => console.log(` * ${index}`));
+
+      console.log('\n- HABITS INDEXES:');
+      await HabitModel.syncIndexes();
+      const habitIndexes = Object.keys(
+        await HabitModel.collection.getIndexes(),
+      );
+      habitIndexes.forEach((index) => console.log(` * ${index}`));
     }
   } catch (err) {
     console.error(

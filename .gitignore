@@ -6,3 +6,5 @@ build
 *.d.ts
 *.tsbuildinfo
 *.vscode
+
+todo.txt
