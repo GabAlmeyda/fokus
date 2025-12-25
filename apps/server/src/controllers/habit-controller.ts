@@ -46,4 +46,19 @@ export class HabitController implements IHabitController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async findAllByUser(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
+    try {
+      const userId = req.userId;
+
+      const habitDocs = await this.habitService.findAllByUser(userId);
+      const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
+
+      return { statusCode: HTTPStatusCode.OK, body: habits };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }

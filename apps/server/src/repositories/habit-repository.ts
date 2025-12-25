@@ -29,4 +29,14 @@ export class HabitRepository implements IHabitRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async findAllByUser(userId: string): Promise<HabitDocument[]> {
+    try {
+      const habitDocs = await HabitModel.find({ userId });
+
+      return habitDocs;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }

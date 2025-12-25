@@ -64,4 +64,22 @@ export class HabitService implements IHabitService {
       throw err;
     }
   }
+
+  async findAllByUser(userId?: string): Promise<HabitDocument[]> {
+    try {
+      if (typeof userId !== 'string' || userId.length !== 24) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const habitDocs = await this.habitRepository.findAllByUser(userId);
+
+      return habitDocs;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
 }

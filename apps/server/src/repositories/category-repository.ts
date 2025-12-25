@@ -8,7 +8,6 @@ import {
   type CategoryDocument,
 } from '../models/category-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
-import type { Types } from 'mongoose';
 
 export class CategoryRepository implements ICategoryRepository {
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
