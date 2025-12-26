@@ -1,4 +1,4 @@
-import type { CreateHabitDTO } from '@fokus/shared';
+import type { CreateHabitDTO, WeekDay } from '@fokus/shared';
 import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
 import { HabitModel, type HabitDocument } from '../models/habit-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-errors.js';
@@ -33,6 +33,19 @@ export class HabitRepository implements IHabitRepository {
   async findAllByUser(userId: string): Promise<HabitDocument[]> {
     try {
       const habitDocs = await HabitModel.find({ userId });
+
+      return habitDocs;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async findAllByWeekDay(
+    day: WeekDay,
+    userId: string,
+  ): Promise<HabitDocument[]> {
+    try {
+      const habitDocs = await HabitModel.find({ weekDays: day, userId });
 
       return habitDocs;
     } catch (err) {

@@ -87,7 +87,6 @@ const habitSchema = new Schema(
   },
 );
 
-habitSchema.index({ userId: 1 });
 habitSchema.index({ userId: 1, weekDays: 1 });
 habitSchema.index({ userId: 1, reminder: 1 }, { sparse: true });
 

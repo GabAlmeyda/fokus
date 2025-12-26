@@ -17,6 +17,28 @@ habitRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+habitRoutes.get('/users', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await habitController.findAllByUser({ userId });
+  return res.status(statusCode).json(body);
+});
+
+habitRoutes.get('/weekDay', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const day = Array.isArray(authReq.query?.day)
+    ? authReq.query?.day[0]?.toString()
+    : authReq.query?.day?.toString();
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await habitController.findAllByWeekDays({
+    query: { day },
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
 habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const habitId = authReq.params?.habitId;
@@ -26,14 +48,6 @@ habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
     params: { habitId },
     userId,
   });
-  return res.status(statusCode).json(body);
-});
-
-habitRoutes.get('/users/:userId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-
-  const { statusCode, body } = await habitController.findAllByUser({ userId });
   return res.status(statusCode).json(body);
 });
 

@@ -1,7 +1,9 @@
 import {
   CreateHabitSchema,
   formatZodError,
+  WeekDaysSchema,
   type CreateHabitDTO,
+  type WeekDay,
 } from '@fokus/shared';
 import type { IHabitService } from '../interfaces/habit-interfaces.js';
 import type { HabitDocument } from '../models/habit-model.js';
@@ -72,6 +74,39 @@ export class HabitService implements IHabitService {
       }
 
       const habitDocs = await this.habitRepository.findAllByUser(userId);
+
+      return habitDocs;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
+        throw new ServiceError(err.errorType, err.message, err.invalidFields);
+      }
+
+      throw err;
+    }
+  }
+
+  async findAllByWeekDay(
+    day?: WeekDay | string,
+    userId?: string,
+  ): Promise<HabitDocument[]> {
+    try {
+      const validation = WeekDaysSchema.safeParse(day);
+      if (!validation.success) {
+        const { errorType, message, invalidFields } = formatZodError(
+          validation.error,
+        );
+
+        throw new ServiceError(errorType, message, invalidFields);
+      }
+
+      if (typeof userId !== 'string' || userId.length !== 24) {
+        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
+      }
+
+      const habitDocs = await this.habitRepository.findAllByWeekDay(
+        validation.data,
+        userId,
+      );
 
       return habitDocs;
     } catch (err) {

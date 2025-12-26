@@ -61,11 +61,14 @@ export const CreateHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
+export const WeekDaysSchema = CreateHabitSchema.shape.weekDays.element;
+
 export const ResponseHabitSchema = CreateHabitSchema.extend({
   id: z
     .string("Expected type was 'string'.")
     .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
 });
 
+export type WeekDay = z.infer<typeof WeekDaysSchema>;
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
 export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;
