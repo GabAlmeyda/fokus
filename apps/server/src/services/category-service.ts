@@ -12,6 +12,18 @@ export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
 
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
+    const categoryDoc = await this.categoryRepository.findOneByNameAndUser(
+      category.name,
+      category.userId,
+    );
+    if (categoryDoc) {
+      throw new AppServerError(
+        'CONFLICT',
+        `Category with name '${categoryDoc.name}' already exists.`,
+        [{ field: 'name', message: 'Value is already registered.' }],
+      );
+    }
+
     const createdCategoryDoc = await this.categoryRepository.create(category);
     return createdCategoryDoc;
   }
@@ -34,13 +46,13 @@ export class CategoryService implements ICategoryService {
     return categoryDoc;
   }
 
-  async findOneByUserAndName(
+  async findOneByNameAndUser(
     userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByUserAndName(
-      userId,
+    const categoryDoc = await this.categoryRepository.findOneByNameAndUser(
       name,
+      userId,
     );
     if (!categoryDoc) {
       throw new AppServerError(

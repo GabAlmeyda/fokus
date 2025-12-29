@@ -24,7 +24,7 @@ categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
   const userId = authReq.user.id;
   const name = authReq.params?.name;
 
-  const { statusCode, body } = await categoryController.findOneByUserAndName({
+  const { statusCode, body } = await categoryController.findOneByNameAndUser({
     params: { name },
     userId,
   });
@@ -32,7 +32,7 @@ categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-categoryRoutes.get('/users', authMiddleware, async (req, res) => {
+categoryRoutes.get('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
 

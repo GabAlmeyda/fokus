@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { MongoIdSchema } from './mongo-schemas.js';
 
-export const CreateHabitSchema = z.object({
+const BaseHabitSchema = z.object({
   userId: MongoIdSchema,
 
   title: z
@@ -9,10 +9,12 @@ export const CreateHabitSchema = z.object({
     .min(2, 'Title cannot be less than 2 characters.')
     .trim(),
 
-  type: z.literal(
-    ['quantitative', 'qualitative'],
-    "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
-  ),
+  type: z.enum(['quantitative', 'qualitative'], {
+    error: () => ({
+      message:
+        "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
+    }),
+  }),
 
   progressImpactValue: z.number().min(1, 'Minimum value is 1.').nullable(),
 
@@ -60,9 +62,46 @@ export const CreateHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
-export const WeekDaySchema = CreateHabitSchema.shape.weekDays.element;
+export const CreateHabitSchema = BaseHabitSchema.superRefine((data, ctx) => {
+  if (data.type === 'qualitative') {
+    if (data.progressImpactValue !== null) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['progressImpactValue'],
+        message: "In qualitative habits, 'progressImpactValue' must be 'null'.",
+      });
+    }
+    if (data.unitOfMeasure !== null) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['unitOfMeasure'],
+        message: "In qualitative habitss, 'unitOfMeasure' must be 'null'.",
+      });
+    }
+  }
 
-export const ResponseHabitSchema = CreateHabitSchema.extend({
+  if (data.type === 'quantitative') {
+    if (!data.progressImpactValue) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['progressImpactValue'],
+        message:
+          "In quantitative habits, 'progressImpactValue' must be provided.",
+      });
+    }
+    if (!data.unitOfMeasure) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['unitOfMeasure'],
+        message: "In quantitative habits, 'unitOfMeasure' must be provided.",
+      });
+    }
+  }
+});
+
+export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
+
+export const ResponseHabitSchema = BaseHabitSchema.extend({
   id: MongoIdSchema,
 });
 

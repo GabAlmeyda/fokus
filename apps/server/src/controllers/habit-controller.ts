@@ -12,6 +12,7 @@ import type { IHabitController } from '../interfaces/habit-interfaces.js';
 import { HabitService } from '../services/habit-service.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import { AppServerError } from '../helpers/app-server-error.js';
 
 export class HabitController implements IHabitController {
   private readonly habitService = new HabitService();
@@ -34,14 +35,40 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findOneById(
+  async findOneByTitleAndUser(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+    try {
+      const title = req.params?.title;
+      if (typeof title !== 'string') {
+        throw new AppServerError('BAD_REQUEST', 'Invalid title provided.');
+      }
+
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const habitDoc = await this.habitService.findOneByTitleAndUser(
+        title,
+        userId,
+      );
+      const habit = mapHabitDocToPublicDTO(habitDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: habit };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findOneByIdAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
       const habitId = MongoIdSchema.parse(req.params?.habitId);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDoc = await this.habitService.findOneById(habitId, userId);
+      const habitDoc = await this.habitService.findOneByIdAndUser(
+        habitId,
+        userId,
+      );
       const habit = mapHabitDocToPublicDTO(habitDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: habit };
@@ -65,14 +92,17 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findAllByWeekDay(
+  async findAllByWeekDayAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
       const day = WeekDaySchema.parse(req.query?.day);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDocs = await this.habitService.findAllByWeekDay(day, userId);
+      const habitDocs = await this.habitService.findAllByWeekDayAndUser(
+        day,
+        userId,
+      );
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
 
       return { statusCode: HTTPStatusCode.OK, body: habits };

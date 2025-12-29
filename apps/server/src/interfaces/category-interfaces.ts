@@ -16,7 +16,7 @@ export interface ICategoryRepository {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null>;
 
-  findOneByUserAndName(
+  findOneByNameAndUser(
     userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument | null>;
@@ -43,7 +43,7 @@ export interface ICategoryService {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument>;
 
-  findOneByUserAndName(
+  findOneByNameAndUser(
     userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument>;
@@ -68,7 +68,7 @@ export interface ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  findOneByUserAndName(
+  findOneByNameAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 

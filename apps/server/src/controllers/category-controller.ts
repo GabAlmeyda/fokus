@@ -61,7 +61,7 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findOneByUserAndName(
+  async findOneByNameAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
@@ -75,7 +75,7 @@ export class CategoryController implements ICategoryController {
         );
       }
 
-      const categoryDoc = await this.categoryService.findOneByUserAndName(
+      const categoryDoc = await this.categoryService.findOneByNameAndUser(
         userId,
         name,
       );

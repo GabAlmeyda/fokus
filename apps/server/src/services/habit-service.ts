@@ -17,11 +17,32 @@ export class HabitService implements IHabitService {
     return createdHabitDoc;
   }
 
-  async findOneById(
+  async findOneByTitleAndUser(
+    title: string,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument> {
+    const habitDoc = await this.habitRepository.findOneByTitleAndUser(
+      title,
+      userId,
+    );
+    if (!habitDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Habit with title '${title}' not found.`,
+      );
+    }
+
+    return habitDoc;
+  }
+
+  async findOneByIdAndUser(
     habitId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument> {
-    const habitDoc = await this.habitRepository.findOneById(habitId, userId);
+    const habitDoc = await this.habitRepository.findOneByIdAndUser(
+      habitId,
+      userId,
+    );
     if (!habitDoc) {
       throw new AppServerError(
         'NOT_FOUND',
@@ -38,11 +59,14 @@ export class HabitService implements IHabitService {
     return habitDocs;
   }
 
-  async findAllByWeekDay(
+  async findAllByWeekDayAndUser(
     day: WeekDayDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]> {
-    const habitDocs = await this.habitRepository.findAllByWeekDay(day, userId);
+    const habitDocs = await this.habitRepository.findAllByWeekDayAndUser(
+      day,
+      userId,
+    );
 
     return habitDocs;
   }
