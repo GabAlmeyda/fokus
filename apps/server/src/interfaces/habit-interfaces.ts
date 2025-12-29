@@ -2,8 +2,9 @@ import type {
   CreateHabitDTO,
   HTTPRequest,
   HTTPResponse,
+  MongoIdDTO,
   ResponseHabitDTO,
-  WeekDay,
+  WeekDayDTO,
 } from '@fokus/shared';
 import type { HabitDocument } from '../models/habit-model.js';
 
@@ -14,19 +15,19 @@ export interface IHabitRepository {
 
   findAllByUser(userId: string): Promise<HabitDocument[]>;
 
-  findAllByWeekDay(day: WeekDay, userId: string): Promise<HabitDocument[]>;
+  findAllByWeekDay(day: WeekDayDTO, userId: string): Promise<HabitDocument[]>;
 }
 
 export interface IHabitService {
-  create(habit?: CreateHabitDTO): Promise<HabitDocument>;
+  create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneById(habitId?: string, userId?: string): Promise<HabitDocument>;
+  findOneById(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<HabitDocument>;
 
-  findAllByUser(userId?: string): Promise<HabitDocument[]>;
+  findAllByUser(userId: MongoIdDTO): Promise<HabitDocument[]>;
 
   findAllByWeekDay(
-    day?: WeekDay | string,
-    userId?: string,
+    day: WeekDayDTO,
+    userId: MongoIdDTO,
   ): Promise<HabitDocument[]>;
 }
 
@@ -41,7 +42,7 @@ export interface IHabitController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
 
-  findAllByWeekDays(
+  findAllByWeekDay(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
 }

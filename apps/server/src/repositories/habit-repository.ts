@@ -1,7 +1,7 @@
 import type { CreateHabitDTO, WeekDay } from '@fokus/shared';
 import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
 import { HabitModel, type HabitDocument } from '../models/habit-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-errors.js';
+import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 
 export class HabitRepository implements IHabitRepository {
   async create(habit: CreateHabitDTO): Promise<HabitDocument> {

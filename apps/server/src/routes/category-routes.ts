@@ -6,6 +6,19 @@ import type { AuthRequest } from '../types/express-types.js';
 const categoryController = new CategoryController();
 const categoryRoutes = Router({ mergeParams: true });
 
+categoryRoutes.post('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const category = authReq.body;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await categoryController.create({
+    body: category,
+    userId,
+  });
+
+  return res.status(statusCode).json(body);
+});
+
 categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
@@ -38,17 +51,6 @@ categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   const { statusCode, body } = await categoryController.findOneByIdAndUser({
     params: { categoryId },
     userId,
-  });
-
-  return res.status(statusCode).json(body);
-});
-
-categoryRoutes.post('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const categoryData = { ...authReq.body, userId: authReq.user.id };
-
-  const { statusCode, body } = await categoryController.create({
-    body: categoryData,
   });
 
   return res.status(statusCode).json(body);

@@ -1,8 +1,8 @@
-import type { RegisterUserDTO, UpdateUserDTO } from '@fokus/shared';
+import type { MongoIdDTO, RegisterUserDTO, UpdateUserDTO } from '@fokus/shared';
 import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-errors.js';
+import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 import { Types } from 'mongoose';
 
 export class UserRepository implements IUserRepository {
@@ -28,7 +28,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findOneById(userId: string): Promise<UserDocument | null> {
+  async findOneById(userId: MongoIdDTO): Promise<UserDocument | null> {
     try {
       const id = new Types.ObjectId(userId);
       const userDoc: UserDocument | null = await UserModel.findById(id);
@@ -40,7 +40,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(
-    userId: string,
+    userId: MongoIdDTO,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null> {
     try {
@@ -61,7 +61,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async delete(userId: string): Promise<UserDocument | null> {
+  async delete(userId: MongoIdDTO): Promise<UserDocument | null> {
     try {
       const id = new Types.ObjectId(userId);
       const deletedUserDoc: UserDocument | null =

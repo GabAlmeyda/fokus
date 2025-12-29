@@ -1,206 +1,98 @@
 import {
-  CreateCategorySchema,
-  formatZodError,
-  UpdateCategorySchema,
   type CreateCategoryDTO,
+  type MongoIdDTO,
   type UpdateCategoryDTO,
-} from 'packages/shared/dist/index.js';
+} from '@fokus/shared';
 import type { ICategoryService } from '../interfaces/category-interfaces.js';
 import type { CategoryDocument } from '../models/category-model.js';
 import { CategoryRepository } from '../repositories/category-repository.js';
-import { ServiceError } from '../helpers/service-errors.js';
-import { MongoRepositoryError } from '../helpers/mongo-errors.js';
+import { AppServerError } from '../helpers/app-server-error.js';
 
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
 
-  async create(category?: CreateCategoryDTO): Promise<CategoryDocument> {
-    try {
-      const validation = CreateCategorySchema.safeParse(category);
-      if (!validation.success) {
-        const { errorType, message, invalidFields } = formatZodError(
-          validation.error,
-        );
-
-        throw new ServiceError(errorType, message, invalidFields);
-      }
-
-      const createdCategoryDoc = await this.categoryRepository.create(
-        validation.data,
-      );
-      return createdCategoryDoc;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
-    }
+  async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
+    const createdCategoryDoc = await this.categoryRepository.create(category);
+    return createdCategoryDoc;
   }
 
   async findOneByIdAndUser(
-    categoryId?: string,
-    userId?: string,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument> {
-    try {
-      if (typeof categoryId !== 'string') {
-        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
-      }
-      if (typeof userId !== 'string') {
-        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
-      }
-
-      const categoryDoc = await this.categoryRepository.findOneByIdAndUser(
-        categoryId,
-        userId,
+    const categoryDoc = await this.categoryRepository.findOneByIdAndUser(
+      categoryId,
+      userId,
+    );
+    if (!categoryDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Category with ID '${categoryId}' not found.`,
       );
-      if (!categoryDoc) {
-        throw new ServiceError(
-          'NOT_FOUND',
-          `Category with ID '${categoryId}' not found.`,
-        );
-      }
-
-      return categoryDoc;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
     }
+
+    return categoryDoc;
   }
 
   async findOneByUserAndName(
-    userId?: string,
-    name?: string,
+    userId: MongoIdDTO,
+    name: string,
   ): Promise<CategoryDocument> {
-    try {
-      if (typeof userId !== 'string' || userId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
-      }
-      if (!name || typeof name !== 'string') {
-        throw new ServiceError(
-          'BAD_REQUEST',
-          'Invalid category name provided.',
-        );
-      }
-
-      const categoryDoc = await this.categoryRepository.findOneByUserAndName(
-        userId,
-        name,
+    const categoryDoc = await this.categoryRepository.findOneByUserAndName(
+      userId,
+      name,
+    );
+    if (!categoryDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Category with name '${name}' not found.`,
       );
-      if (!categoryDoc) {
-        throw new ServiceError(
-          'NOT_FOUND',
-          `Category with name '${name}' not found.`,
-        );
-      }
-
-      return categoryDoc;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
     }
+
+    return categoryDoc;
   }
 
-  async findAllByUser(userId?: string): Promise<CategoryDocument[]> {
-    try {
-      if (typeof userId !== 'string' || userId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
-      }
+  async findAllByUser(userId: MongoIdDTO): Promise<CategoryDocument[]> {
+    const categoryDocs = await this.categoryRepository.findAllByUser(userId);
 
-      const categoryDocs = await this.categoryRepository.findAllByUser(userId);
-
-      return categoryDocs;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
-    }
+    return categoryDocs;
   }
 
   async update(
-    newData?: UpdateCategoryDTO,
-    categoryId?: string,
-    userId?: string,
+    newData: UpdateCategoryDTO,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument> {
-    try {
-      const validation = UpdateCategorySchema.safeParse(newData);
-      if (!validation.success) {
-        const { errorType, message, invalidFields } = formatZodError(
-          validation.error,
-        );
-
-        throw new ServiceError(errorType, message, invalidFields);
-      }
-
-      if (typeof categoryId !== 'string' || categoryId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
-      }
-
-      if (typeof userId !== 'string' || userId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
-      }
-
-      const updatedCategoryDoc = await this.categoryRepository.update(
-        validation.data,
-        categoryId,
-        userId,
+    const updatedCategoryDoc = await this.categoryRepository.update(
+      newData,
+      categoryId,
+      userId,
+    );
+    if (!updatedCategoryDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Category with id '${categoryId}' not found.`,
       );
-      if (!updatedCategoryDoc) {
-        throw new ServiceError(
-          'NOT_FOUND',
-          `Category with id '${categoryId}' not found.`,
-        );
-      }
-
-      return updatedCategoryDoc;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
     }
+
+    return updatedCategoryDoc;
   }
 
   async delete(
-    categoryId?: string,
-    userId?: string,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument> {
-    try {
-      if (typeof categoryId !== 'string' || categoryId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid category ID provided.');
-      }
-
-      if (typeof userId !== 'string' || userId.length !== 24) {
-        throw new ServiceError('BAD_REQUEST', 'Invalid user ID provided.');
-      }
-
-      const deletedCategoryDoc = await this.categoryRepository.delete(
-        categoryId,
-        userId,
+    const deletedCategoryDoc = await this.categoryRepository.delete(
+      categoryId,
+      userId,
+    );
+    if (!deletedCategoryDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Category with ID '${categoryId}' not found.`,
       );
-      if (!deletedCategoryDoc) {
-        throw new ServiceError(
-          'NOT_FOUND',
-          `Category with ID '${categoryId}' not found.`,
-        );
-      }
-
-      return deletedCategoryDoc;
-    } catch (err) {
-      if (err instanceof MongoRepositoryError || err instanceof ServiceError) {
-        throw new ServiceError(err.errorType, err.message, err.invalidFields);
-      }
-
-      throw err;
     }
+
+    return deletedCategoryDoc;
   }
 }

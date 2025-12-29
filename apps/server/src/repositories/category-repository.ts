@@ -7,7 +7,7 @@ import {
   CategoryModel,
   type CategoryDocument,
 } from '../models/category-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-errors.js';
+import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 
 export class CategoryRepository implements ICategoryRepository {
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {

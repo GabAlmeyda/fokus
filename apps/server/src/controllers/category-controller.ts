@@ -5,11 +5,15 @@ import {
   HTTPStatusCode,
   type UpdateCategoryDTO,
   type HTTPResponse,
+  CreateCategorySchema,
+  MongoIdSchema,
+  UpdateCategorySchema,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import { AppServerError } from '../helpers/app-server-error.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
@@ -18,13 +22,12 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const categoryData = {
+      const category = CreateCategorySchema.parse({
         ...req.body,
         userId: req.userId,
-      } as CreateCategoryDTO;
+      });
 
-      const createdCategoryDoc =
-        await this.categoryService.create(categoryData);
+      const createdCategoryDoc = await this.categoryService.create(category);
       const createdCategory = mapCategoryDocToPublicDTO(createdCategoryDoc);
 
       return {
@@ -40,8 +43,8 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const categoryId = req.params?.categoryId;
-      const userId = req.userId;
+      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
+      const userId = MongoIdSchema.parse(req.userId);
 
       const categoryDoc = await this.categoryService.findOneByIdAndUser(
         categoryId,
@@ -62,8 +65,15 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const userId = req.userId;
+      const userId = MongoIdSchema.parse(req.userId);
+
       const name = req.params?.name;
+      if (!name) {
+        throw new AppServerError(
+          'BAD_REQUEST',
+          'Name of the collection not provided.',
+        );
+      }
 
       const categoryDoc = await this.categoryService.findOneByUserAndName(
         userId,
@@ -81,7 +91,7 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
     try {
-      const userId = req.userId;
+      const userId = MongoIdSchema.parse(req.userId);
 
       const categoryDocs = await this.categoryService.findAllByUser(userId);
       const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
@@ -96,9 +106,9 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<UpdateCategoryDTO>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const newData = req.body;
-      const categoryId = req.params?.categoryId;
-      const userId = req.userId;
+      const newData = UpdateCategorySchema.parse(req.body);
+      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
+      const userId = MongoIdSchema.parse(req.userId);
 
       const updatedCategoryDoc = await this.categoryService.update(
         newData,
@@ -117,8 +127,8 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const categoryId = req.params?.categoryId;
-      const userId = req.userId;
+      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
+      const userId = MongoIdSchema.parse(req.userId);
 
       const deletedCategoryDoc = await this.categoryService.delete(
         categoryId,

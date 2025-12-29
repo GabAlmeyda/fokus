@@ -1,18 +1,16 @@
 import mongoose from 'mongoose';
+import { AppServerError } from './app-server-error.js';
 import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
 
-export class MongoRepositoryError extends Error {
-  public readonly errorType: keyof typeof HTTPStatusCode;
-  public readonly invalidFields: InvalidField[];
+export class MongoRepositoryError extends AppServerError {
   constructor(
     errorType: keyof typeof HTTPStatusCode,
     message: string,
     invalidFields: InvalidField[] = [],
   ) {
-    super(message);
-    this.errorType = errorType;
-    this.invalidFields = invalidFields;
+    super(errorType, message, invalidFields);
 
+    this.name = 'MongoRepositoryError';
     Object.setPrototypeOf(this, new.target.prototype);
     Error.captureStackTrace(this);
   }

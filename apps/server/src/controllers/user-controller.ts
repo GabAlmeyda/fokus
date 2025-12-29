@@ -7,6 +7,10 @@ import {
   type ResponseUserDTO,
   type UpdateUserDTO,
   type HTTPResponse,
+  RegisterUserSchema,
+  LoginUserSchema,
+  MongoIdSchema,
+  UpdateUserSchema,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
 import { UserService } from '../services/user-service.js';
@@ -20,8 +24,10 @@ export class UserController implements IUserController {
     req: HTTPRequest<RegisterUserDTO>,
   ): Promise<HTTPResponse<ResponseAuthDTO>> {
     try {
+      const user = RegisterUserSchema.parse(req.body);
+
       const { userDoc: registeredUserDoc, token } =
-        await this.userService.register(req.body);
+        await this.userService.register(user);
       const registeredUser = mapUserDocToPublicDTO(registeredUserDoc);
 
       return {
@@ -37,9 +43,10 @@ export class UserController implements IUserController {
     req: HTTPRequest<LoginUserDTO>,
   ): Promise<HTTPResponse<ResponseAuthDTO>> {
     try {
-      const { userDoc: loggedUserDoc, token } = await this.userService.login(
-        req.body,
-      );
+      const user = LoginUserSchema.parse(req.body);
+
+      const { userDoc: loggedUserDoc, token } =
+        await this.userService.login(user);
       const loggedUser = mapUserDocToPublicDTO(loggedUserDoc);
 
       return {
@@ -54,9 +61,9 @@ export class UserController implements IUserController {
   async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseUserDTO>> {
-    const userId = req?.userId;
-
     try {
+      const userId = MongoIdSchema.parse(req.userId);
+
       const userDoc = await this.userService.findOneById(userId);
       const user = mapUserDocToPublicDTO(userDoc);
 
@@ -72,10 +79,10 @@ export class UserController implements IUserController {
   async update(
     req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPResponse<ResponseUserDTO>> {
-    const userId = req?.userId;
-    const newData = req.body;
-
     try {
+      const newData = UpdateUserSchema.parse(req.body);
+      const userId = MongoIdSchema.parse(req.userId);
+
       const updatedUserDoc = await this.userService.update(userId, newData);
       const updatedUser = mapUserDocToPublicDTO(updatedUserDoc);
 
@@ -89,9 +96,9 @@ export class UserController implements IUserController {
   }
 
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>> {
-    const userId = req?.userId;
-
     try {
+      const userId = MongoIdSchema.parse(req.userId);
+
       const deletedUserDoc = await this.userService.delete(userId);
       const deletedUser = mapUserDocToPublicDTO(deletedUserDoc);
 

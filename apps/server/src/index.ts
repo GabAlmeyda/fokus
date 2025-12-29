@@ -11,7 +11,7 @@ import { API_URL, HTTPStatusCode } from '@fokus/shared';
 import { connectToMongoDB } from './config/connect-mongo.js';
 import userRoutes from './routes/user-routes.js';
 import categoryRoutes from './routes/category-routes.js';
-import { ServiceError } from './helpers/service-errors.js';
+import { AppServerError } from './helpers/app-server-error.js';
 import cookieParser from 'cookie-parser';
 import habitRoutes from './routes/habit-routes.js';
 
@@ -37,7 +37,7 @@ async function main() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    if (err instanceof ServiceError) {
+    if (err instanceof AppServerError) {
       return res.status(HTTPStatusCode[err.errorType]).json({
         message: err.message,
         invalidFields: err.invalidFields,

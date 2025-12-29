@@ -1,9 +1,8 @@
 import * as z from 'zod';
+import { MongoIdSchema } from './mongo-schemas.js';
 
 export const CreateCategorySchema = z.object({
-  userId: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  userId: MongoIdSchema,
 
   name: z
     .string("Expected type was 'string'.")
@@ -17,9 +16,7 @@ export const UpdateCategorySchema = CreateCategorySchema.pick({
 }).partial();
 
 export const ResponseCategorySchema = CreateCategorySchema.extend({
-  id: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  id: MongoIdSchema,
 });
 
 export type CreateCategoryDTO = z.infer<typeof CreateCategorySchema>;

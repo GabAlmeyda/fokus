@@ -1,9 +1,8 @@
 import * as z from 'zod';
+import { MongoIdSchema } from './mongo-schemas.js';
 
 export const CreateHabitSchema = z.object({
-  userId: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  userId: MongoIdSchema,
 
   title: z
     .string("Expected type was 'string'.")
@@ -61,14 +60,12 @@ export const CreateHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
-export const WeekDaysSchema = CreateHabitSchema.shape.weekDays.element;
+export const WeekDaySchema = CreateHabitSchema.shape.weekDays.element;
 
 export const ResponseHabitSchema = CreateHabitSchema.extend({
-  id: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  id: MongoIdSchema,
 });
 
-export type WeekDay = z.infer<typeof WeekDaysSchema>;
+export type WeekDayDTO = z.infer<typeof WeekDaySchema>;
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
 export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;

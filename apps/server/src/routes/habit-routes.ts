@@ -32,7 +32,7 @@ habitRoutes.get('/weekDay', authMiddleware, async (req, res) => {
     : authReq.query?.day?.toString();
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findAllByWeekDays({
+  const { statusCode, body } = await habitController.findAllByWeekDay({
     query: { day },
     userId,
   });

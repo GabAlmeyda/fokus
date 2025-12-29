@@ -4,6 +4,7 @@ import type {
   HTTPRequest,
   ResponseCategoryDTO,
   HTTPResponse,
+  MongoIdDTO,
 } from '@fokus/shared';
 import type { CategoryDocument } from '../models/category-model.js';
 
@@ -11,48 +12,51 @@ export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findOneByIdAndUser(
-    categoryId: string,
-    userId: string,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument | null>;
 
   findOneByUserAndName(
-    userId: string,
+    userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument | null>;
 
-  findAllByUser(userId: string): Promise<CategoryDocument[]>;
+  findAllByUser(userId: MongoIdDTO): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
-    categoryId: string,
-    userId: string,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument | null>;
 
-  delete(categoryId: string, userId: string): Promise<CategoryDocument | null>;
+  delete(
+    categoryId: string,
+    userId: MongoIdDTO,
+  ): Promise<CategoryDocument | null>;
 }
 
 export interface ICategoryService {
-  create(category?: CreateCategoryDTO): Promise<CategoryDocument>;
+  create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findOneByIdAndUser(
-    categoryId?: string,
-    userId?: string,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument>;
 
   findOneByUserAndName(
-    userId?: string,
-    name?: string,
+    userId: MongoIdDTO,
+    name: string,
   ): Promise<CategoryDocument>;
 
   findAllByUser(userId?: string): Promise<CategoryDocument[]>;
 
   update(
-    newData?: UpdateCategoryDTO,
-    categoryId?: string,
-    userId?: string,
+    newData: UpdateCategoryDTO,
+    categoryId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<CategoryDocument>;
 
-  delete(categoryId?: string, userId?: string): Promise<CategoryDocument>;
+  delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<CategoryDocument>;
 }
 
 export interface ICategoryController {

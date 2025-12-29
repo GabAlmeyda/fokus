@@ -4,6 +4,9 @@ import {
   type HTTPResponse,
   type ResponseHabitDTO,
   HTTPStatusCode,
+  CreateHabitSchema,
+  MongoIdSchema,
+  WeekDaySchema,
 } from 'packages/shared/dist/index.js';
 import type { IHabitController } from '../interfaces/habit-interfaces.js';
 import { HabitService } from '../services/habit-service.js';
@@ -17,12 +20,12 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
-      const habitData = {
+      const habit = CreateHabitSchema.parse({
         ...req.body,
-        userId: req.userId as string,
-      } as CreateHabitDTO;
+        userId: req.userId,
+      });
 
-      const createdHabitDoc = await this.habitService.create(habitData);
+      const createdHabitDoc = await this.habitService.create(habit);
       const createdHabit = mapHabitDocToPublicDTO(createdHabitDoc);
 
       return { statusCode: HTTPStatusCode.CREATED, body: createdHabit };
@@ -35,8 +38,8 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
-      const habitId = req.params?.habitId;
-      const userId = req.userId;
+      const habitId = MongoIdSchema.parse(req.params?.habitId);
+      const userId = MongoIdSchema.parse(req.userId);
 
       const habitDoc = await this.habitService.findOneById(habitId, userId);
       const habit = mapHabitDocToPublicDTO(habitDoc);
@@ -51,7 +54,7 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
-      const userId = req.userId;
+      const userId = MongoIdSchema.parse(req.userId);
 
       const habitDocs = await this.habitService.findAllByUser(userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
@@ -62,12 +65,12 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findAllByWeekDays(
+  async findAllByWeekDay(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
-      const day = req.query?.day as string | undefined;
-      const userId = req.userId;
+      const day = WeekDaySchema.parse(req.query?.day);
+      const userId = MongoIdSchema.parse(req.userId);
 
       const habitDocs = await this.habitService.findAllByWeekDay(day, userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));

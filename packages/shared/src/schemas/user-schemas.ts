@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { MongoIdSchema } from './mongo-schemas.js';
 
 export const RegisterUserSchema = z.object({
   name: z
@@ -13,10 +14,11 @@ export const RegisterUserSchema = z.object({
     .min(8, 'Password cannot be less than 8 characters.')
     .trim(),
 
-  themeMode: z.literal(
-    ['light', 'dark'],
-    `Theme mode can only be 'light' or 'dark'.`,
-  ),
+  themeMode: z.enum(['light', 'dark'], {
+    error: () => ({
+      message: `Theme mode can only be 'light' or 'dark'.`,
+    }),
+  }),
 });
 
 export const UpdateUserSchema = RegisterUserSchema.omit({
@@ -42,9 +44,7 @@ export const ResponseAuthSchema = z.object({
 });
 
 export const TokenPayloadSchema = z.object({
-  id: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  id: MongoIdSchema,
   email: z.email('Invalid email provided.'),
 });
 
