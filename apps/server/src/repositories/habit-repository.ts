@@ -1,4 +1,9 @@
-import type { CreateHabitDTO, MongoIdDTO, WeekDayDTO } from '@fokus/shared';
+import type {
+  CreateHabitDTO,
+  MongoIdDTO,
+  UpdateHabitDTO,
+  WeekDayDTO,
+} from '@fokus/shared';
 import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
 import { HabitModel, type HabitDocument } from '../models/habit-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
@@ -61,6 +66,24 @@ export class HabitRepository implements IHabitRepository {
       const habitDocs = await HabitModel.find({ weekDays: day, userId });
 
       return habitDocs;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async update(
+    habitId: MongoIdDTO,
+    newData: UpdateHabitDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument | null> {
+    try {
+      const updatedHabitDoc = await HabitModel.findOneAndUpdate(
+        { _id: habitId, userId },
+        { $set: newData },
+        { new: true, runValidators: true },
+      );
+
+      return updatedHabitDoc;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }

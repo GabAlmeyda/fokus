@@ -7,7 +7,9 @@ import {
   CreateHabitSchema,
   MongoIdSchema,
   WeekDaySchema,
-} from 'packages/shared/dist/index.js';
+  UpdateHabitSchema,
+  type UpdateHabitDTO,
+} from '@fokus/shared';
 import type { IHabitController } from '../interfaces/habit-interfaces.js';
 import { HabitService } from '../services/habit-service.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
@@ -106,6 +108,27 @@ export class HabitController implements IHabitController {
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
 
       return { statusCode: HTTPStatusCode.OK, body: habits };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async update(
+    req: HTTPRequest<UpdateHabitDTO>,
+  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+    try {
+      const habitId = MongoIdSchema.parse(req.params?.habitId);
+      const newData = UpdateHabitSchema.parse(req.body);
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const updatedHabitDoc = await this.habitService.update(
+        habitId,
+        newData,
+        userId,
+      );
+      const updatedHabit = mapHabitDocToPublicDTO(updatedHabitDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: updatedHabit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

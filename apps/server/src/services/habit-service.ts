@@ -1,6 +1,7 @@
 import {
   type CreateHabitDTO,
   type MongoIdDTO,
+  type UpdateHabitDTO,
   type WeekDayDTO,
 } from '@fokus/shared';
 import type { IHabitService } from '../interfaces/habit-interfaces.js';
@@ -12,6 +13,18 @@ export class HabitService implements IHabitService {
   private readonly habitRepository = new HabitRepository();
 
   async create(habit: CreateHabitDTO): Promise<HabitDocument> {
+    const habitDoc = await this.habitRepository.findOneByTitleAndUser(
+      habit.title,
+      habit.userId,
+    );
+    if (habitDoc) {
+      throw new AppServerError(
+        'CONFLICT',
+        `Habit with title '${habitDoc.title}' already exists.`,
+        [{ field: 'title', message: 'Value is already registered.' }],
+      );
+    }
+
     const createdHabitDoc = await this.habitRepository.create(habit);
 
     return createdHabitDoc;
@@ -69,5 +82,36 @@ export class HabitService implements IHabitService {
     );
 
     return habitDocs;
+  }
+
+  async update(
+    habitId: MongoIdDTO,
+    newData: UpdateHabitDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument> {
+    const habitDoc = await this.habitRepository.findOneByTitleAndUser(
+      newData.title,
+      userId,
+    );
+    if (habitDoc) {
+      throw new AppServerError(
+        'CONFLICT',
+        `Habit with title '${newData.title}' already exists.`,
+      );
+    }
+
+    const updatedHabitDoc = await this.habitRepository.update(
+      habitId,
+      newData,
+      userId,
+    );
+    if (!updatedHabitDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Habit with ID '${habitId}' not found.`,
+      );
+    }
+
+    return updatedHabitDoc;
   }
 }

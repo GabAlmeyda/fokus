@@ -41,15 +41,11 @@ const BaseHabitSchema = z.object({
     )
     .nullable(),
 
-  streak: z
-    .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.')
-    .default(0),
+  streak: z.number("Expected type was 'number'.").min(0, 'Minimum value is 0.'),
 
   bestStreak: z
     .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.')
-    .default(0),
+    .min(0, 'Minimum value is 0.'),
 
   color: z
     .string("Expected type was 'string'.")
@@ -62,20 +58,27 @@ const BaseHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
-export const CreateHabitSchema = BaseHabitSchema.superRefine((data, ctx) => {
+type BaseHabitRefinementType = Omit<
+  z.infer<typeof BaseHabitSchema>,
+  'userId'
+> & {
+  userId?: z.infer<typeof BaseHabitSchema.shape.userId>;
+};
+
+function habitRefinement(data: BaseHabitRefinementType, ctx: z.RefinementCtx) {
   if (data.type === 'qualitative') {
-    if (data.progressImpactValue !== null) {
+    if (data.progressImpactValue != null) {
       ctx.addIssue({
         code: 'custom',
         path: ['progressImpactValue'],
         message: "In qualitative habits, 'progressImpactValue' must be 'null'.",
       });
     }
-    if (data.unitOfMeasure !== null) {
+    if (data.unitOfMeasure != null) {
       ctx.addIssue({
         code: 'custom',
         path: ['unitOfMeasure'],
-        message: "In qualitative habitss, 'unitOfMeasure' must be 'null'.",
+        message: "In qualitative habits, 'unitOfMeasure' must be 'null'.",
       });
     }
   }
@@ -97,9 +100,24 @@ export const CreateHabitSchema = BaseHabitSchema.superRefine((data, ctx) => {
       });
     }
   }
-});
+
+  if (data.streak > data.bestStreak) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['streak'],
+      message:
+        "Value of 'streak' cannot be greater than value of 'bestStreak'.",
+    });
+  }
+}
+
+export const CreateHabitSchema = BaseHabitSchema.superRefine(habitRefinement);
 
 export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
+
+export const UpdateHabitSchema = BaseHabitSchema.omit({
+  userId: true,
+}).superRefine(habitRefinement);
 
 export const ResponseHabitSchema = BaseHabitSchema.extend({
   id: MongoIdSchema,
@@ -107,4 +125,5 @@ export const ResponseHabitSchema = BaseHabitSchema.extend({
 
 export type WeekDayDTO = z.infer<typeof WeekDaySchema>;
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
+export type UpdateHabitDTO = z.infer<typeof UpdateHabitSchema>;
 export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;

@@ -4,6 +4,7 @@ import type {
   HTTPResponse,
   MongoIdDTO,
   ResponseHabitDTO,
+  UpdateHabitDTO,
   WeekDayDTO,
 } from '@fokus/shared';
 import type { HabitDocument } from '../models/habit-model.js';
@@ -27,6 +28,12 @@ export interface IHabitRepository {
     day: WeekDayDTO,
     userId: string,
   ): Promise<HabitDocument[]>;
+
+  update(
+    habitId: MongoIdDTO,
+    newData: UpdateHabitDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument | null>;
 }
 
 export interface IHabitService {
@@ -48,6 +55,12 @@ export interface IHabitService {
     day: WeekDayDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]>;
+
+  update(
+    habitId: MongoIdDTO,
+    newData: UpdateHabitDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument>;
 }
 
 export interface IHabitController {
@@ -70,4 +83,8 @@ export interface IHabitController {
   findAllByWeekDayAndUser(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
+
+  update(
+    req: HTTPRequest<UpdateHabitDTO>,
+  ): Promise<HTTPResponse<ResponseHabitDTO>>;
 }

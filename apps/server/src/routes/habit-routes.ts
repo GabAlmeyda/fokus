@@ -63,4 +63,18 @@ habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+habitRoutes.patch('/:habitId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const habitId = authReq.params?.habitId;
+  const newData = authReq.body;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await habitController.update({
+    params: { habitId },
+    body: newData,
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
 export default habitRoutes;
