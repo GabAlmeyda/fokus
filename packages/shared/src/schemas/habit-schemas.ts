@@ -52,14 +52,9 @@ const BaseHabitSchema = z.object({
   icon: z.string("Expected type was 'string'."),
 });
 
-type BaseHabitRefinementType = Omit<
-  z.infer<typeof BaseHabitSchema>,
-  'userId'
-> & {
-  userId?: z.infer<typeof BaseHabitSchema.shape.userId>;
-};
+function habitRefinement(data: UpdateHabitDTO, ctx: z.RefinementCtx) {
+  if (!data) return;
 
-function habitRefinement(data: BaseHabitRefinementType, ctx: z.RefinementCtx) {
   if (data.type === 'qualitative') {
     if (data.progressImpactValue != null) {
       ctx.addIssue({
@@ -102,7 +97,9 @@ export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
 
 export const UpdateHabitSchema = BaseHabitSchema.omit({
   userId: true,
-}).superRefine(habitRefinement);
+})
+  .partial()
+  .superRefine(habitRefinement);
 
 export const ResponseHabitSchema = BaseHabitSchema.extend({
   id: MongoIdSchema,

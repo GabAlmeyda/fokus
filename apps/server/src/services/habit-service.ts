@@ -1,4 +1,6 @@
 import {
+  formatZodError,
+  UpdateHabitSchema,
   type CreateHabitDTO,
   type MongoIdDTO,
   type UpdateHabitDTO,
@@ -80,15 +82,40 @@ export class HabitService implements IHabitService {
     newData: UpdateHabitDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument> {
-    const habitDoc = await this.habitRepository.findOneByTitle(
-      newData.title,
+    // Verifies if the name is already registered
+    if (newData.title) {
+      const habitDoc = await this.habitRepository.findOneByTitle(
+        newData.title,
+        userId,
+      );
+      if (habitDoc) {
+        throw new AppServerError(
+          'CONFLICT',
+          `Habit with title '${newData.title}' already exists.`,
+        );
+      }
+    }
+
+    // Verifies if the habit exists
+    const currentHabitDoc = await this.habitRepository.findOneById(
+      habitId,
       userId,
     );
-    if (habitDoc) {
+    if (!currentHabitDoc) {
       throw new AppServerError(
-        'CONFLICT',
-        `Habit with title '${newData.title}' already exists.`,
+        'NOT_FOUND',
+        `Habit with ID '${habitId}' not found.`,
       );
+    }
+
+    // Validate the provided data
+    const mergedHabitDoc = { ...currentHabitDoc, ...newData };
+    const validation = UpdateHabitSchema.safeParse(mergedHabitDoc);
+    if (!validation.success) {
+      const { errorType, message, invalidFields } = formatZodError(
+        validation.error,
+      );
+      throw new AppServerError(errorType, message, invalidFields);
     }
 
     const updatedHabitDoc = await this.habitRepository.update(
@@ -96,14 +123,8 @@ export class HabitService implements IHabitService {
       newData,
       userId,
     );
-    if (!updatedHabitDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Habit with ID '${habitId}' not found.`,
-      );
-    }
 
-    return updatedHabitDoc;
+    return updatedHabitDoc!;
   }
 
   async delete(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<void> {
