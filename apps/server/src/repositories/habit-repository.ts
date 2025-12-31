@@ -19,7 +19,7 @@ export class HabitRepository implements IHabitRepository {
     }
   }
 
-  async findOneByTitleAndUser(
+  async findOneByTitle(
     title: string,
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null> {
@@ -32,7 +32,7 @@ export class HabitRepository implements IHabitRepository {
     }
   }
 
-  async findOneByIdAndUser(
+  async findOneById(
     habitId: string,
     userId: string,
   ): Promise<HabitDocument | null> {
@@ -48,7 +48,7 @@ export class HabitRepository implements IHabitRepository {
     }
   }
 
-  async findAllByUser(userId: string): Promise<HabitDocument[]> {
+  async findAll(userId: string): Promise<HabitDocument[]> {
     try {
       const habitDocs = await HabitModel.find({ userId });
 
@@ -58,7 +58,7 @@ export class HabitRepository implements IHabitRepository {
     }
   }
 
-  async findAllByWeekDayAndUser(
+  async findAllByWeekDay(
     day: WeekDayDTO,
     userId: string,
   ): Promise<HabitDocument[]> {
@@ -84,6 +84,22 @@ export class HabitRepository implements IHabitRepository {
       );
 
       return updatedHabitDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async delete(
+    habitId: MongoIdDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument | null> {
+    try {
+      const deletedHabitDoc = await HabitModel.findOneAndDelete({
+        _id: habitId,
+        userId,
+      });
+
+      return deletedHabitDoc;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }

@@ -3,12 +3,11 @@ import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
-import { Types } from 'mongoose';
 
 export class UserRepository implements IUserRepository {
   async register(user: RegisterUserDTO): Promise<UserDocument> {
     try {
-      const createdUserDoc: UserDocument = await UserModel.create(user);
+      const createdUserDoc = await UserModel.create(user);
 
       return createdUserDoc;
     } catch (err) {
@@ -18,7 +17,7 @@ export class UserRepository implements IUserRepository {
 
   async findOneByEmail(email: string): Promise<UserDocument | null> {
     try {
-      const loggedUserDoc: UserDocument | null = await UserModel.findOne({
+      const loggedUserDoc = await UserModel.findOne({
         email,
       }).select('+password');
 
@@ -30,8 +29,7 @@ export class UserRepository implements IUserRepository {
 
   async findOneById(userId: MongoIdDTO): Promise<UserDocument | null> {
     try {
-      const id = new Types.ObjectId(userId);
-      const userDoc: UserDocument | null = await UserModel.findById(id);
+      const userDoc = await UserModel.findById(userId);
 
       return userDoc;
     } catch (err) {
@@ -44,16 +42,14 @@ export class UserRepository implements IUserRepository {
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null> {
     try {
-      const id = new Types.ObjectId(userId);
-      const updatedUserDoc: UserDocument | null =
-        await UserModel.findOneAndUpdate(
-          { _id: id },
-          { $set: newData },
-          {
-            new: true,
-            runValidators: true,
-          },
-        );
+      const updatedUserDoc = await UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: newData },
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
 
       return updatedUserDoc;
     } catch (err) {
@@ -63,9 +59,7 @@ export class UserRepository implements IUserRepository {
 
   async delete(userId: MongoIdDTO): Promise<UserDocument | null> {
     try {
-      const id = new Types.ObjectId(userId);
-      const deletedUserDoc: UserDocument | null =
-        await UserModel.findOneAndDelete({ _id: id });
+      const deletedUserDoc = await UserModel.findOneAndDelete({ _id: userId });
 
       return deletedUserDoc;
     } catch (err) {

@@ -12,7 +12,7 @@ export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
 
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByNameAndUser(
+    const categoryDoc = await this.categoryRepository.findOneByName(
       category.name,
       category.userId,
     );
@@ -28,11 +28,11 @@ export class CategoryService implements ICategoryService {
     return createdCategoryDoc;
   }
 
-  async findOneByIdAndUser(
+  async findOneById(
     categoryId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByIdAndUser(
+    const categoryDoc = await this.categoryRepository.findOneById(
       categoryId,
       userId,
     );
@@ -46,11 +46,11 @@ export class CategoryService implements ICategoryService {
     return categoryDoc;
   }
 
-  async findOneByNameAndUser(
+  async findOneByName(
     userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByNameAndUser(
+    const categoryDoc = await this.categoryRepository.findOneByName(
       name,
       userId,
     );
@@ -64,8 +64,8 @@ export class CategoryService implements ICategoryService {
     return categoryDoc;
   }
 
-  async findAllByUser(userId: MongoIdDTO): Promise<CategoryDocument[]> {
-    const categoryDocs = await this.categoryRepository.findAllByUser(userId);
+  async findAll(userId: MongoIdDTO): Promise<CategoryDocument[]> {
+    const categoryDocs = await this.categoryRepository.findAll(userId);
 
     return categoryDocs;
   }
@@ -90,10 +90,7 @@ export class CategoryService implements ICategoryService {
     return updatedCategoryDoc;
   }
 
-  async delete(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
-  ): Promise<CategoryDocument> {
+  async delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<void> {
     const deletedCategoryDoc = await this.categoryRepository.delete(
       categoryId,
       userId,
@@ -104,7 +101,5 @@ export class CategoryService implements ICategoryService {
         `Category with ID '${categoryId}' not found.`,
       );
     }
-
-    return deletedCategoryDoc;
   }
 }

@@ -37,7 +37,7 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findOneByTitleAndUser(
+  async findOneByTitle(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
@@ -48,10 +48,7 @@ export class HabitController implements IHabitController {
 
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDoc = await this.habitService.findOneByTitleAndUser(
-        title,
-        userId,
-      );
+      const habitDoc = await this.habitService.findOneByTitle(title, userId);
       const habit = mapHabitDocToPublicDTO(habitDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: habit };
@@ -60,17 +57,14 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findOneByIdAndUser(
+  async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
       const habitId = MongoIdSchema.parse(req.params?.habitId);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDoc = await this.habitService.findOneByIdAndUser(
-        habitId,
-        userId,
-      );
+      const habitDoc = await this.habitService.findOneById(habitId, userId);
       const habit = mapHabitDocToPublicDTO(habitDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: habit };
@@ -79,13 +73,13 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findAllByUser(
+  async findAll(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDocs = await this.habitService.findAllByUser(userId);
+      const habitDocs = await this.habitService.findAll(userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
 
       return { statusCode: HTTPStatusCode.OK, body: habits };
@@ -94,17 +88,14 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findAllByWeekDayAndUser(
+  async findAllByWeekDay(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
       const day = WeekDaySchema.parse(req.query?.day);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDocs = await this.habitService.findAllByWeekDayAndUser(
-        day,
-        userId,
-      );
+      const habitDocs = await this.habitService.findAllByWeekDay(day, userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
 
       return { statusCode: HTTPStatusCode.OK, body: habits };
@@ -129,6 +120,19 @@ export class HabitController implements IHabitController {
       const updatedHabit = mapHabitDocToPublicDTO(updatedHabitDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: updatedHabit };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
+    try {
+      const habitId = MongoIdSchema.parse(req.params?.habitId);
+      const userId = MongoIdSchema.parse(req.userId);
+
+      await this.habitService.delete(habitId, userId);
+
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

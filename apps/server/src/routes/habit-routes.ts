@@ -21,7 +21,7 @@ habitRoutes.get('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findAllByUser({ userId });
+  const { statusCode, body } = await habitController.findAll({ userId });
   return res.status(statusCode).json(body);
 });
 
@@ -32,7 +32,7 @@ habitRoutes.get('/weekDay', authMiddleware, async (req, res) => {
     : authReq.query?.day?.toString();
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findAllByWeekDayAndUser({
+  const { statusCode, body } = await habitController.findAllByWeekDay({
     query: { day },
     userId,
   });
@@ -44,7 +44,7 @@ habitRoutes.get('/titles/:title', authMiddleware, async (req, res) => {
   const title = authReq.params?.title;
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findOneByTitleAndUser({
+  const { statusCode, body } = await habitController.findOneByTitle({
     params: { title },
     userId,
   });
@@ -56,7 +56,7 @@ habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
   const habitId = authReq.params?.habitId;
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findOneByIdAndUser({
+  const { statusCode, body } = await habitController.findOneById({
     params: { habitId },
     userId,
   });
@@ -72,6 +72,18 @@ habitRoutes.patch('/:habitId', authMiddleware, async (req, res) => {
   const { statusCode, body } = await habitController.update({
     params: { habitId },
     body: newData,
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
+habitRoutes.delete('/:habitId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const habitId = authReq.params?.habitId;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await habitController.delete({
+    params: { habitId },
     userId,
   });
   return res.status(statusCode).json(body);

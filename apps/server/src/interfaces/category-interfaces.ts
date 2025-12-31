@@ -11,17 +11,17 @@ import type { CategoryDocument } from '../models/category-model.js';
 export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
-  findOneByIdAndUser(
+  findOneById(
     categoryId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null>;
 
-  findOneByNameAndUser(
+  findOneByName(
     userId: MongoIdDTO,
     name: string,
   ): Promise<CategoryDocument | null>;
 
-  findAllByUser(userId: MongoIdDTO): Promise<CategoryDocument[]>;
+  findAll(userId: MongoIdDTO): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
@@ -38,17 +38,14 @@ export interface ICategoryRepository {
 export interface ICategoryService {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
-  findOneByIdAndUser(
+  findOneById(
     categoryId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<CategoryDocument>;
 
-  findOneByNameAndUser(
-    userId: MongoIdDTO,
-    name: string,
-  ): Promise<CategoryDocument>;
+  findOneByName(userId: MongoIdDTO, name: string): Promise<CategoryDocument>;
 
-  findAllByUser(userId?: string): Promise<CategoryDocument[]>;
+  findAll(userId?: string): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
@@ -56,7 +53,7 @@ export interface ICategoryService {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument>;
 
-  delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<CategoryDocument>;
+  delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<void>;
 }
 
 export interface ICategoryController {
@@ -64,21 +61,19 @@ export interface ICategoryController {
     req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  findOneByIdAndUser(
+  findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  findOneByNameAndUser(
+  findOneByName(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  findAllByUser(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
+  findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
 
   update(
     req: HTTPRequest<UpdateCategoryDTO>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseCategoryDTO>>;
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

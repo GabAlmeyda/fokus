@@ -22,7 +22,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findOneByIdAndUser(
+  async findOneById(
     categoryId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
@@ -38,7 +38,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findOneByNameAndUser(
+  async findOneByName(
     name: string,
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
@@ -54,7 +54,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findAllByUser(userId: MongoIdDTO): Promise<CategoryDocument[]> {
+  async findAll(userId: MongoIdDTO): Promise<CategoryDocument[]> {
     try {
       const categoryDocs: CategoryDocument[] = await CategoryModel.find({
         userId,

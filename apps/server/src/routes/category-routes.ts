@@ -24,19 +24,8 @@ categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
   const userId = authReq.user.id;
   const name = authReq.params?.name;
 
-  const { statusCode, body } = await categoryController.findOneByNameAndUser({
+  const { statusCode, body } = await categoryController.findOneByName({
     params: { name },
-    userId,
-  });
-
-  return res.status(statusCode).json(body);
-});
-
-categoryRoutes.get('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-
-  const { statusCode, body } = await categoryController.findAllByUser({
     userId,
   });
 
@@ -48,8 +37,19 @@ categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   const userId = authReq.user.id;
   const categoryId = authReq.params?.categoryId;
 
-  const { statusCode, body } = await categoryController.findOneByIdAndUser({
+  const { statusCode, body } = await categoryController.findOneById({
     params: { categoryId },
+    userId,
+  });
+
+  return res.status(statusCode).json(body);
+});
+
+categoryRoutes.get('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await categoryController.findAll({
     userId,
   });
 

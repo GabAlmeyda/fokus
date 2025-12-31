@@ -92,7 +92,7 @@ export class UserService implements IUserService {
     return updatedUserDoc;
   }
 
-  async delete(userId: MongoIdDTO): Promise<UserDocument> {
+  async delete(userId: MongoIdDTO): Promise<void> {
     const deletedUserDoc = await this.userRepository.delete(userId);
     if (!deletedUserDoc) {
       throw new AppServerError(
@@ -100,7 +100,5 @@ export class UserService implements IUserService {
         `User with ID '${userId}' not found.`,
       );
     }
-
-    return deletedUserDoc;
   }
 }

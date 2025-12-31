@@ -12,26 +12,25 @@ import type { HabitDocument } from '../models/habit-model.js';
 export interface IHabitRepository {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneByTitleAndUser(
+  findOneByTitle(
     title: string,
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null>;
 
-  findOneByIdAndUser(
-    habitId: string,
-    userId: string,
-  ): Promise<HabitDocument | null>;
+  findOneById(habitId: string, userId: string): Promise<HabitDocument | null>;
 
-  findAllByUser(userId: string): Promise<HabitDocument[]>;
+  findAll(userId: string): Promise<HabitDocument[]>;
 
-  findAllByWeekDayAndUser(
-    day: WeekDayDTO,
-    userId: string,
-  ): Promise<HabitDocument[]>;
+  findAllByWeekDay(day: WeekDayDTO, userId: string): Promise<HabitDocument[]>;
 
   update(
     habitId: MongoIdDTO,
     newData: UpdateHabitDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument | null>;
+
+  delete(
+    habitId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null>;
 }
@@ -39,19 +38,13 @@ export interface IHabitRepository {
 export interface IHabitService {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneByTitleAndUser(
-    title: string,
-    userId: MongoIdDTO,
-  ): Promise<HabitDocument>;
+  findOneByTitle(title: string, userId: MongoIdDTO): Promise<HabitDocument>;
 
-  findOneByIdAndUser(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
-  ): Promise<HabitDocument>;
+  findOneById(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<HabitDocument>;
 
-  findAllByUser(userId: MongoIdDTO): Promise<HabitDocument[]>;
+  findAll(userId: MongoIdDTO): Promise<HabitDocument[]>;
 
-  findAllByWeekDayAndUser(
+  findAllByWeekDay(
     day: WeekDayDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]>;
@@ -61,6 +54,8 @@ export interface IHabitService {
     newData: UpdateHabitDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument>;
+
+  delete(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<void>;
 }
 
 export interface IHabitController {
@@ -68,23 +63,21 @@ export interface IHabitController {
     req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseHabitDTO>>;
 
-  findOneByTitleAndUser(
+  findOneByTitle(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>>;
 
-  findOneByIdAndUser(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>>;
+  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseHabitDTO>>;
 
-  findAllByUser(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
+  findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseHabitDTO[]>>;
 
-  findAllByWeekDayAndUser(
+  findAllByWeekDay(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
 
   update(
     req: HTTPRequest<UpdateHabitDTO>,
   ): Promise<HTTPResponse<ResponseHabitDTO>>;
+
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

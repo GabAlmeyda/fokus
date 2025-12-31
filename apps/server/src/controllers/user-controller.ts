@@ -95,17 +95,12 @@ export class UserController implements IUserController {
     }
   }
 
-  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>> {
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
       const userId = MongoIdSchema.parse(req.userId);
+      await this.userService.delete(userId);
 
-      const deletedUserDoc = await this.userService.delete(userId);
-      const deletedUser = mapUserDocToPublicDTO(deletedUserDoc);
-
-      return {
-        statusCode: HTTPStatusCode.OK,
-        body: deletedUser,
-      };
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

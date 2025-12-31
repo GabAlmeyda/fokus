@@ -36,7 +36,7 @@ export interface IUserService {
 
   update(userId: MongoIdDTO, newData: UpdateUserDTO): Promise<UserDocument>;
 
-  delete(userId: MongoIdDTO): Promise<UserDocument>;
+  delete(userId: MongoIdDTO): Promise<void>;
 }
 
 export interface IUserController {
@@ -52,5 +52,5 @@ export interface IUserController {
     req: HTTPRequest<UpdateUserDTO>,
   ): Promise<HTTPResponse<ResponseUserDTO>>;
 
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseUserDTO>>;
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

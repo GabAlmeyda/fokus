@@ -41,12 +41,6 @@ const BaseHabitSchema = z.object({
     )
     .nullable(),
 
-  streak: z.number("Expected type was 'number'.").min(0, 'Minimum value is 0.'),
-
-  bestStreak: z
-    .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.'),
-
   color: z
     .string("Expected type was 'string'.")
     .regex(
@@ -100,15 +94,6 @@ function habitRefinement(data: BaseHabitRefinementType, ctx: z.RefinementCtx) {
       });
     }
   }
-
-  if (data.streak > data.bestStreak) {
-    ctx.addIssue({
-      code: 'custom',
-      path: ['streak'],
-      message:
-        "Value of 'streak' cannot be greater than value of 'bestStreak'.",
-    });
-  }
 }
 
 export const CreateHabitSchema = BaseHabitSchema.superRefine(habitRefinement);
@@ -121,6 +106,16 @@ export const UpdateHabitSchema = BaseHabitSchema.omit({
 
 export const ResponseHabitSchema = BaseHabitSchema.extend({
   id: MongoIdSchema,
+
+  streak: z
+    .number("Expected type was 'number'.")
+    .min(0, 'Minimum value is 0.')
+    .default(0),
+
+  bestStreak: z
+    .number("Expected type was 'number'.")
+    .min(0, 'Minimum value is 0.')
+    .default(0),
 });
 
 export type WeekDayDTO = z.infer<typeof WeekDaySchema>;

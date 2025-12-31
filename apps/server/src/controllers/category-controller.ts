@@ -39,14 +39,14 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findOneByIdAndUser(
+  async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
       const categoryId = MongoIdSchema.parse(req.params?.categoryId);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const categoryDoc = await this.categoryService.findOneByIdAndUser(
+      const categoryDoc = await this.categoryService.findOneById(
         categoryId,
         userId,
       );
@@ -61,7 +61,7 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findOneByNameAndUser(
+  async findOneByName(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
@@ -75,7 +75,7 @@ export class CategoryController implements ICategoryController {
         );
       }
 
-      const categoryDoc = await this.categoryService.findOneByNameAndUser(
+      const categoryDoc = await this.categoryService.findOneByName(
         userId,
         name,
       );
@@ -87,13 +87,13 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findAllByUser(
+  async findAll(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
     try {
       const userId = MongoIdSchema.parse(req.userId);
 
-      const categoryDocs = await this.categoryService.findAllByUser(userId);
+      const categoryDocs = await this.categoryService.findAll(userId);
       const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
 
       return { statusCode: HTTPStatusCode.OK, body: categories };
@@ -123,20 +123,14 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async delete(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
       const categoryId = MongoIdSchema.parse(req.params?.categoryId);
       const userId = MongoIdSchema.parse(req.userId);
 
-      const deletedCategoryDoc = await this.categoryService.delete(
-        categoryId,
-        userId,
-      );
-      const deletedCategory = mapCategoryDocToPublicDTO(deletedCategoryDoc);
+      await this.categoryService.delete(categoryId, userId);
 
-      return { statusCode: HTTPStatusCode.OK, body: deletedCategory };
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
