@@ -47,9 +47,13 @@ const BaseHabitSchema = z.object({
       /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
       "Invalid hexadecimal format provided. Expected format was '#ABC' or '#ABCDEF'.",
     )
-    .toLowerCase(),
+    .trim()
+    .toLowerCase()
+    .default('#15E03B'),
 
-  icon: z.string("Expected type was 'string'."),
+  icon: z
+    .string("Expected type was 'string'.")
+    .min(1, 'Icon name cannot be less than 1 character.'),
 });
 
 function habitRefinement(data: UpdateHabitDTO, ctx: z.RefinementCtx) {

@@ -11,44 +11,37 @@ const habitSchema = new Schema(
     userId: {
       type: Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     title: {
       type: String,
       trim: true,
       minLength: 2,
-      required: true,
     },
     type: {
       type: String,
       enum: ['qualitative', 'quantitative'],
-      default: 'quantitative',
-      required: true,
+      default: 'qualitative',
     },
     progressImpactValue: {
       type: Number,
       min: 1,
       default: null,
-      required: false,
     },
     unitOfMeasure: {
       type: String,
       trim: true,
       default: null,
-      required: false,
       minLength: 1,
       lowercase: true,
     },
     weekDays: {
       type: [String],
       enum: ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'],
-      required: true,
     },
     reminder: {
       type: String,
       match: /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
       default: null,
-      required: false,
     },
     streak: {
       type: Number,
@@ -63,12 +56,10 @@ const habitSchema = new Schema(
     color: {
       type: String,
       match: /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
-      required: true,
-      default: '#fff',
+      default: '#15E03B',
     },
     icon: {
       type: String,
-      required: true,
     },
   },
   {
