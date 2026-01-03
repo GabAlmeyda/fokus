@@ -70,9 +70,18 @@ const habitSchema = new Schema(
   },
 );
 
-habitSchema.index({ userId: 1, weekDays: 1 });
-habitSchema.index({ userId: 1, reminder: 1 }, { sparse: true });
-habitSchema.index({ userId: 1, title: 1 });
+habitSchema.index(
+  { userId: 1, weekDays: 1 },
+  { name: 'idx_userId_weekDays', background: true },
+);
+habitSchema.index(
+  { userId: 1, reminder: 1 },
+  { name: 'idx_userId_reminder', background: true },
+);
+habitSchema.index(
+  { userId: 1, title: 1 },
+  { name: 'uidx_userId_title', background: true, unique: true },
+);
 
 type HabitSchema = InferSchemaType<typeof habitSchema>;
 export type HabitDocument = HydratedDocument<HabitSchema>;

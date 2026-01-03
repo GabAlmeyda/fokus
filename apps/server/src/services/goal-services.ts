@@ -2,6 +2,7 @@ import type { CreateGoalDTO, MongoIdDTO } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal-interfaces.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import { GoalRepository } from '../repositories/goal-repository.js';
+import { AppServerError } from '../helpers/app-server-error.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
@@ -24,5 +25,20 @@ export class GoalService implements IGoalService {
     const goalDocs = await this.goalRepository.findAll(userId);
 
     return goalDocs;
+  }
+
+  async findOneById(
+    goalId: MongoIdDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument> {
+    const goalDoc = await this.goalRepository.findOneById(goalId, userId);
+    if (!goalDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with ID '${goalId}' not found.`,
+      );
+    }
+
+    return goalDoc;
   }
 }

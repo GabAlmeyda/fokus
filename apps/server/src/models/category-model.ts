@@ -29,7 +29,7 @@ const categorySchema = new Schema(
 
 categorySchema.index(
   { userId: 1, name: 1 },
-  { background: true, unique: true },
+  { name: 'uidx_userId_name', background: true, unique: true },
 );
 
 type CategorySchema = InferSchemaType<typeof categorySchema>;

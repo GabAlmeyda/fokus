@@ -42,7 +42,10 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.index({ email: 1 }, { unique: true, background: true });
+userSchema.index(
+  { email: 1 },
+  { name: 'uidx_email', unique: true, background: true },
+);
 
 type UserSchema = InferSchemaType<typeof userSchema>;
 export type UserDocument = HydratedDocument<UserSchema>;

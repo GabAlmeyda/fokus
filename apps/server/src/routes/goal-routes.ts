@@ -17,6 +17,18 @@ goalRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+goalRoutes.get('/:goalId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const goalId = authReq.params?.goalId;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await goalController.findOneById({
+    params: { goalId },
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
 goalRoutes.get('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const userId = authReq.user.id;

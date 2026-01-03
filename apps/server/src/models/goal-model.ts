@@ -86,6 +86,19 @@ const goalSchema = new Schema(
   },
 );
 
+goalSchema.index(
+  { userId: 1, title: 1 },
+  { name: 'idx_userId_title', unique: true, background: true },
+);
+goalSchema.index(
+  { userId: 1, categoryId: 1 },
+  { name: 'idx_userId_categoryId', background: true },
+);
+goalSchema.index(
+  { userId: 1, deadline: 1 },
+  { name: 'idx_userId_deadline', background: true },
+);
+
 type GoalSchema = InferSchemaType<typeof goalSchema>;
 export type GoalDocument = HydratedDocument<GoalSchema>;
 export const GoalModel = model<GoalDocument>('Goal', goalSchema);

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { UserModel } from '../models/user-model.js';
 import { CategoryModel } from '../models/category-model.js';
 import { HabitModel } from '../models/habit-model.js';
+import { GoalModel } from '../models/goal-model.js';
 
 export async function connectToMongoDB() {
   const MONGO_URI = process.env.MONGO_URI as string;
@@ -14,6 +15,7 @@ export async function connectToMongoDB() {
     await UserModel.syncIndexes();
     await CategoryModel.syncIndexes();
     await HabitModel.syncIndexes();
+    await GoalModel.syncIndexes();
     console.log('Indexes synchronized');
   } catch (err) {
     console.error(

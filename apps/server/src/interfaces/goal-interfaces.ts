@@ -13,12 +13,19 @@ export interface IGoalRepository {
   ): Promise<GoalDocument>;
 
   findAll(userId: MongoIdDTO): Promise<GoalDocument[]>;
+
+  findOneById(
+    goalId: MongoIdDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument | null>;
 }
 
 export interface IGoalService {
   create(goal: CreateGoalDTO): Promise<GoalDocument>;
 
   findAll(userId: MongoIdDTO): Promise<GoalDocument[]>;
+
+  findOneById(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
 }
 
 export interface IGoalController {
@@ -27,4 +34,6 @@ export interface IGoalController {
   ): Promise<HTTPResponse<ResponseGoalDTO>>;
 
   findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO[]>>;
+
+  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
 }

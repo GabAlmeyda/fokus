@@ -42,7 +42,23 @@ export class GoalController implements IGoalController {
       const goalDocs = await this.goalService.findAll(userId);
       const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
 
-      return { statusCode: HTTPStatusCode.OK, body: goals };
+      return { statusCode: HTTPStatusCode.CREATED, body: goals };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findOneById(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+    try {
+      const goalId = MongoIdSchema.parse(req.params?.goalId);
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const goalDoc = await this.goalService.findOneById(goalId, userId);
+      const goal = mapGoalDocToPublicDTO(goalDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
