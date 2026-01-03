@@ -4,7 +4,7 @@ import { MongoIdSchema } from './mongo-schemas.js';
 const BaseGoalSchema = z.object({
   userId: MongoIdSchema,
 
-  categoryId: MongoIdSchema.nullable(),
+  categoryId: MongoIdSchema.nullish().default(null),
 
   title: z
     .string("Expected type was 'string'.")
@@ -21,19 +21,21 @@ const BaseGoalSchema = z.object({
   targetValue: z
     .number("Expected type was 'number'.")
     .min(1, 'Minimun value is 1.')
-    .nullable(),
+    .nullish()
+    .default(null),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
     .min(1, 'Unit of measure cannot be less than 1 character.')
     .trim()
-    .nullable(),
+    .nullish()
+    .default(null),
 
   habits: z.array(MongoIdSchema).default([]),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
-    .nullable()
+    .nullish()
     .default(null)
     .transform((val) => {
       if (!val) return null;
@@ -61,10 +63,9 @@ const BaseGoalSchema = z.object({
     .min(1, 'Icon name cannot be less than 1 character.'),
 });
 
-function goalRefinement(
-  data: Partial<z.infer<typeof BaseGoalSchema>>,
-  ctx: z.RefinementCtx,
-) {
+type GoalRefinementData = z.infer<ReturnType<typeof BaseGoalSchema.partial>>;
+
+function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
   // Validation of the relation between 'type', 'targetValue
@@ -114,9 +115,17 @@ function goalRefinement(
       ctx.addIssue({
         code: 'custom',
         path: ['deadline'],
-        message: 'Deadline cannot be ',
+        message: 'Deadline cannot be earlier than the current time.',
       });
     }
+  }
+
+  if (data.habits && data.habits.length > 0 && data.type === 'qualitative') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['habits'],
+      message: "In qualitative goals, 'habits' must be empty.",
+    });
   }
 }
 

@@ -1,6 +1,5 @@
 import {
   Schema,
-  Types,
   model,
   type HydratedDocument,
   type InferSchemaType,
@@ -9,13 +8,15 @@ import {
 const habitSchema = new Schema(
   {
     userId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     title: {
       type: String,
       trim: true,
       minLength: 2,
+      required: true,
     },
     type: {
       type: String,
@@ -23,23 +24,24 @@ const habitSchema = new Schema(
       default: 'qualitative',
     },
     progressImpactValue: {
-      type: Number,
+      type: Number as unknown as typeof Number | null,
       min: 1,
       default: null,
     },
     unitOfMeasure: {
-      type: String,
+      type: String as unknown as typeof String | null,
       trim: true,
-      default: null,
       minLength: 1,
       lowercase: true,
+      default: null,
     },
     weekDays: {
       type: [String],
       enum: ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'],
+      required: true,
     },
     reminder: {
-      type: String,
+      type: String as unknown as typeof String | null,
       match: /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
       default: null,
     },
@@ -60,21 +62,11 @@ const habitSchema = new Schema(
     },
     icon: {
       type: String,
+      required: true,
     },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      transform(_, ret: any) {
-        ret.id = ret._id.toString();
-        delete ret._id;
-        delete ret.__v;
-
-        return ret;
-      },
-    },
   },
 );
 
@@ -82,6 +74,6 @@ habitSchema.index({ userId: 1, weekDays: 1 });
 habitSchema.index({ userId: 1, reminder: 1 }, { sparse: true });
 habitSchema.index({ userId: 1, title: 1 });
 
-type HabitSchemaType = InferSchemaType<typeof habitSchema>;
-export type HabitDocument = HydratedDocument<HabitSchemaType>;
+type HabitSchema = InferSchemaType<typeof habitSchema>;
+export type HabitDocument = HydratedDocument<HabitSchema>;
 export const HabitModel = model<HabitDocument>('Habit', habitSchema);

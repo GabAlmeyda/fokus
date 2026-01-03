@@ -1,0 +1,20 @@
+import { Router } from 'express';
+import { GoalController } from '../controllers/goal-controller.js';
+import authMiddleware from '../middlewares/auth-middleware.js';
+import type { AuthRequest } from '../types/express-types.js';
+
+const goalController = new GoalController();
+const goalRoutes = Router({ mergeParams: true });
+
+goalRoutes.post('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await goalController.create({
+    body: { ...authReq.body },
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
+export default goalRoutes;
