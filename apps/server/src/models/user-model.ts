@@ -35,27 +35,15 @@ const userSchema = new Schema(
       type: String,
       enum: ['light', 'dark'],
       default: 'light',
-      required: true,
     },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      transform: (_, ret: any) => {
-        ret.id = ret._id.toString();
-        delete ret._id;
-        delete ret.__v;
-
-        return ret;
-      },
-    },
   },
 );
 
 userSchema.index({ email: 1 }, { unique: true, background: true });
 
-type UserSchemaType = InferSchemaType<typeof userSchema>;
-export type UserDocument = HydratedDocument<UserSchemaType>;
+type UserSchema = InferSchemaType<typeof userSchema>;
+export type UserDocument = HydratedDocument<UserSchema>;
 export const UserModel = model<UserDocument>('User', userSchema);

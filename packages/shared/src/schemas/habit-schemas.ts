@@ -56,7 +56,9 @@ const BaseHabitSchema = z.object({
     .min(1, 'Icon name cannot be less than 1 character.'),
 });
 
-function habitRefinement(data: UpdateHabitDTO, ctx: z.RefinementCtx) {
+type HabitRefinementData = z.infer<ReturnType<typeof BaseHabitSchema.partial>>;
+
+function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
   if (data.type === 'qualitative') {
@@ -96,7 +98,6 @@ function habitRefinement(data: UpdateHabitDTO, ctx: z.RefinementCtx) {
 }
 
 export const CreateHabitSchema = BaseHabitSchema.superRefine(habitRefinement);
-
 export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
 
 export const UpdateHabitSchema = BaseHabitSchema.omit({

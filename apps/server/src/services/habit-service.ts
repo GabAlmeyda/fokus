@@ -1,5 +1,4 @@
 import {
-  formatZodError,
   UpdateHabitSchema,
   type CreateHabitDTO,
   type MongoIdDTO,
@@ -109,14 +108,8 @@ export class HabitService implements IHabitService {
     }
 
     // Validate the provided data
-    const mergedHabitDoc = { ...currentHabitDoc, ...newData };
-    const validation = UpdateHabitSchema.safeParse(mergedHabitDoc);
-    if (!validation.success) {
-      const { errorType, message, invalidFields } = formatZodError(
-        validation.error,
-      );
-      throw new AppServerError(errorType, message, invalidFields);
-    }
+    const mergedHabitDoc = { ...currentHabitDoc.toObject(), ...newData };
+    UpdateHabitSchema.parse(mergedHabitDoc);
 
     const updatedHabitDoc = await this.habitRepository.update(
       habitId,

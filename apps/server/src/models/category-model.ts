@@ -24,18 +24,6 @@ const categorySchema = new Schema(
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      transform(_, ret: any) {
-        ret.id = ret._id.toString();
-
-        delete ret._id;
-        delete ret.__v;
-
-        return ret;
-      },
-    },
   },
 );
 
@@ -44,8 +32,8 @@ categorySchema.index(
   { background: true, unique: true },
 );
 
-type CategorySchemaType = InferSchemaType<typeof categorySchema>;
-export type CategoryDocument = HydratedDocument<CategorySchemaType>;
+type CategorySchema = InferSchemaType<typeof categorySchema>;
+export type CategoryDocument = HydratedDocument<CategorySchema>;
 export const CategoryModel = model<CategoryDocument>(
   'Category',
   categorySchema,

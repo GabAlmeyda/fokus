@@ -13,8 +13,7 @@ import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 export class CategoryRepository implements ICategoryRepository {
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
     try {
-      const createdCategoryDoc: CategoryDocument =
-        await CategoryModel.create(category);
+      const createdCategoryDoc = await CategoryModel.create(category);
 
       return createdCategoryDoc;
     } catch (err) {
@@ -27,7 +26,7 @@ export class CategoryRepository implements ICategoryRepository {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
+      const categoryDoc = await CategoryModel.findOne({
         _id: categoryId,
         userId,
       });
@@ -43,7 +42,7 @@ export class CategoryRepository implements ICategoryRepository {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
+      const categoryDoc = await CategoryModel.findOne({
         userId,
         name,
       });
@@ -56,7 +55,7 @@ export class CategoryRepository implements ICategoryRepository {
 
   async findAll(userId: MongoIdDTO): Promise<CategoryDocument[]> {
     try {
-      const categoryDocs: CategoryDocument[] = await CategoryModel.find({
+      const categoryDocs = await CategoryModel.find({
         userId,
       });
 
@@ -72,12 +71,11 @@ export class CategoryRepository implements ICategoryRepository {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const updatedCategoryDoc: CategoryDocument | null =
-        await CategoryModel.findOneAndUpdate(
-          { _id: categoryId, userId },
-          { $set: newData },
-          { new: true, runValidators: true },
-        );
+      const updatedCategoryDoc = await CategoryModel.findOneAndUpdate(
+        { _id: categoryId, userId },
+        { $set: newData },
+        { new: true, runValidators: true },
+      );
 
       return updatedCategoryDoc;
     } catch (err) {
@@ -90,8 +88,10 @@ export class CategoryRepository implements ICategoryRepository {
     userId: MongoIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const deletedCategoryDoc: CategoryDocument | null =
-        await CategoryModel.findOneAndDelete({ _id: categoryId, userId });
+      const deletedCategoryDoc = await CategoryModel.findOneAndDelete({
+        _id: categoryId,
+        userId,
+      });
 
       return deletedCategoryDoc;
     } catch (err) {

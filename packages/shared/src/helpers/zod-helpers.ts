@@ -9,11 +9,11 @@ export function formatZodError(error: ZodError): {
   const isInvalidType = error.issues.some((iss) => iss.code === 'invalid_type');
 
   const errorType: keyof typeof HTTPStatusCode = isInvalidType
-    ? 'UNPROCESSABLE'
-    : 'BAD_REQUEST';
+    ? 'BAD_REQUEST'
+    : 'UNPROCESSABLE';
   const message = isInvalidType
-    ? 'Invalid data provided.'
-    : 'Invalid payload provided.';
+    ? 'Invalid payload provided.'
+    : 'Invalid data provided.';
   const invalidFields: InvalidField[] = error.issues.map((iss) => ({
     field: iss.path.join(''),
     message: iss.message,
