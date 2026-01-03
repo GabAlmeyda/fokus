@@ -17,4 +17,12 @@ goalRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+goalRoutes.get('/', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await goalController.findAll({ userId });
+  return res.status(statusCode).json(body);
+});
+
 export default goalRoutes;

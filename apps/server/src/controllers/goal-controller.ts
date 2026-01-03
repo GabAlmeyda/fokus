@@ -5,7 +5,8 @@ import {
   type ResponseGoalDTO,
   CreateGoalSchema,
   HTTPStatusCode,
-} from 'packages/shared/dist/index.js';
+  MongoIdSchema,
+} from '@fokus/shared';
 import type { IGoalController } from '../interfaces/goal-interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 import { GoalService } from '../services/goal-services.js';
@@ -27,6 +28,21 @@ export class GoalController implements IGoalController {
       const createdGoal = mapGoalDocToPublicDTO(createdGoalDoc);
 
       return { statusCode: HTTPStatusCode.CREATED, body: createdGoal };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findAll(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseGoalDTO[]>> {
+    try {
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const goalDocs = await this.goalService.findAll(userId);
+      const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
+
+      return { statusCode: HTTPStatusCode.OK, body: goals };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

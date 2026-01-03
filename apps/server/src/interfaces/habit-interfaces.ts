@@ -17,11 +17,17 @@ export interface IHabitRepository {
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null>;
 
-  findOneById(habitId: string, userId: string): Promise<HabitDocument | null>;
+  findOneById(
+    habitId: MongoIdDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument | null>;
 
-  findAll(userId: string): Promise<HabitDocument[]>;
+  findAll(userId: MongoIdDTO): Promise<HabitDocument[]>;
 
-  findAllByWeekDay(day: WeekDayDTO, userId: string): Promise<HabitDocument[]>;
+  findAllByWeekDay(
+    day: WeekDayDTO,
+    userId: MongoIdDTO,
+  ): Promise<HabitDocument[]>;
 
   update(
     habitId: MongoIdDTO,

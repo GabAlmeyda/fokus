@@ -1,4 +1,4 @@
-import type { CreateGoalDTO } from 'packages/shared/dist/index.js';
+import type { CreateGoalDTO, MongoIdDTO } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal-interfaces.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import { GoalRepository } from '../repositories/goal-repository.js';
@@ -18,5 +18,11 @@ export class GoalService implements IGoalService {
     const createdGoalDoc = await this.goalRepository.create(goalToCreate);
 
     return createdGoalDoc;
+  }
+
+  async findAll(userId: MongoIdDTO): Promise<GoalDocument[]> {
+    const goalDocs = await this.goalRepository.findAll(userId);
+
+    return goalDocs;
   }
 }

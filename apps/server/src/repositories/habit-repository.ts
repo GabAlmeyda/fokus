@@ -33,8 +33,8 @@ export class HabitRepository implements IHabitRepository {
   }
 
   async findOneById(
-    habitId: string,
-    userId: string,
+    habitId: MongoIdDTO,
+    userId: MongoIdDTO,
   ): Promise<HabitDocument | null> {
     try {
       const habitDoc = await HabitModel.findOne({
@@ -48,7 +48,7 @@ export class HabitRepository implements IHabitRepository {
     }
   }
 
-  async findAll(userId: string): Promise<HabitDocument[]> {
+  async findAll(userId: MongoIdDTO): Promise<HabitDocument[]> {
     try {
       const habitDocs = await HabitModel.find({ userId });
 
@@ -60,7 +60,7 @@ export class HabitRepository implements IHabitRepository {
 
   async findAllByWeekDay(
     day: WeekDayDTO,
-    userId: string,
+    userId: MongoIdDTO,
   ): Promise<HabitDocument[]> {
     try {
       const habitDocs = await HabitModel.find({ weekDays: day, userId });
