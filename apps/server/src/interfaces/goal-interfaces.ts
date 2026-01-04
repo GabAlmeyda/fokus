@@ -18,6 +18,11 @@ export interface IGoalRepository {
     goalId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<GoalDocument | null>;
+
+  findOneByTitle(
+    title: string,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument | null>;
 }
 
 export interface IGoalService {
@@ -26,6 +31,8 @@ export interface IGoalService {
   findAll(userId: MongoIdDTO): Promise<GoalDocument[]>;
 
   findOneById(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
+
+  findOneByTitle(title: string, userId: MongoIdDTO): Promise<GoalDocument>;
 }
 
 export interface IGoalController {
@@ -36,4 +43,8 @@ export interface IGoalController {
   findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO[]>>;
 
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
+
+  findOneByTitle(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseGoalDTO>>;
 }

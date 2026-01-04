@@ -41,4 +41,19 @@ export class GoalService implements IGoalService {
 
     return goalDoc;
   }
+
+  async findOneByTitle(
+    title: string,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument> {
+    const goalDoc = await this.goalRepository.findOneByTitle(title, userId);
+    if (!goalDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with title '${title}' not found.`,
+      );
+    }
+
+    return goalDoc;
+  }
 }

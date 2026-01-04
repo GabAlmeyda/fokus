@@ -11,6 +11,7 @@ import type { IGoalController } from '../interfaces/goal-interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 import { GoalService } from '../services/goal-services.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
+import { AppServerError } from '../helpers/app-server-error.js';
 
 export class GoalController implements IGoalController {
   private readonly goalService = new GoalService();
@@ -56,6 +57,26 @@ export class GoalController implements IGoalController {
       const userId = MongoIdSchema.parse(req.userId);
 
       const goalDoc = await this.goalService.findOneById(goalId, userId);
+      const goal = mapGoalDocToPublicDTO(goalDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: goal };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findOneByTitle(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+    try {
+      const title = req.params?.title;
+      if (typeof title !== 'string') {
+        throw new AppServerError('BAD_REQUEST', 'Invalid title provided.');
+      }
+
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const goalDoc = await this.goalService.findOneByTitle(title, userId);
       const goal = mapGoalDocToPublicDTO(goalDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: goal };

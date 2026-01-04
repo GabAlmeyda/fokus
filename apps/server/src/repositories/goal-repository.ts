@@ -46,4 +46,17 @@ export class GoalRepository implements IGoalRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async findOneByTitle(
+    title: string,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument | null> {
+    try {
+      const goalDoc = await GoalModel.findOne({ title, userId });
+
+      return goalDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }
