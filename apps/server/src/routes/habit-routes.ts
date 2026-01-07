@@ -28,8 +28,8 @@ habitRoutes.get('/', authMiddleware, async (req, res) => {
 habitRoutes.get('/weekDay', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
   const day = Array.isArray(authReq.query?.day)
-    ? authReq.query?.day[0]?.toString()
-    : authReq.query?.day?.toString();
+    ? authReq.query.day[0]?.toString()
+    : authReq.query.day?.toString();
   const userId = authReq.user.id;
 
   const { statusCode, body } = await habitController.findAllByWeekDay({

@@ -1,5 +1,6 @@
 import type {
   CreateGoalDTO,
+  GoalFilterDTO,
   HTTPRequest,
   HTTPResponse,
   MongoIdDTO,
@@ -19,10 +20,10 @@ export interface IGoalRepository {
     userId: MongoIdDTO,
   ): Promise<GoalDocument | null>;
 
-  findOneByTitle(
-    title: string,
+  findByFilter(
+    filter: GoalFilterDTO,
     userId: MongoIdDTO,
-  ): Promise<GoalDocument | null>;
+  ): Promise<GoalDocument[]>;
 }
 
 export interface IGoalService {
@@ -32,7 +33,10 @@ export interface IGoalService {
 
   findOneById(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
 
-  findOneByTitle(title: string, userId: MongoIdDTO): Promise<GoalDocument>;
+  findByFilter(
+    filter: GoalFilterDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument[]>;
 }
 
 export interface IGoalController {
@@ -44,7 +48,7 @@ export interface IGoalController {
 
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
 
-  findOneByTitle(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>>;
+  findByFilter(
+    req: HTTPRequest<GoalFilterDTO>,
+  ): Promise<HTTPResponse<ResponseGoalDTO[]>>;
 }

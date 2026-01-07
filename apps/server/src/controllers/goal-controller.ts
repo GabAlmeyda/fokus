@@ -6,6 +6,7 @@ import {
   CreateGoalSchema,
   HTTPStatusCode,
   MongoIdSchema,
+  type GoalFilterDTO,
 } from '@fokus/shared';
 import type { IGoalController } from '../interfaces/goal-interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
@@ -65,21 +66,24 @@ export class GoalController implements IGoalController {
     }
   }
 
-  async findOneByTitle(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+  async findByFilter(
+    req: HTTPRequest<GoalFilterDTO>,
+  ): Promise<HTTPResponse<ResponseGoalDTO[]>> {
     try {
-      const title = req.params?.title;
-      if (typeof title !== 'string') {
-        throw new AppServerError('BAD_REQUEST', 'Invalid title provided.');
+      const title = req.query?.title;
+      if (typeof title !== 'string' && typeof title !== 'undefined') {
+        throw new AppServerError(
+          'BAD_REQUEST',
+          "Expected type for title was 'string'.",
+        );
       }
 
       const userId = MongoIdSchema.parse(req.userId);
 
-      const goalDoc = await this.goalService.findOneByTitle(title, userId);
-      const goal = mapGoalDocToPublicDTO(goalDoc);
+      const ret = await this.goalService.findByFilter({ title }, userId);
+      const goals = ret.map((g) => mapGoalDocToPublicDTO(g));
 
-      return { statusCode: HTTPStatusCode.OK, body: goal };
+      return { statusCode: HTTPStatusCode.OK, body: goals };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

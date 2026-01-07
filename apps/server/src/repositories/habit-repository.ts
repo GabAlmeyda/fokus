@@ -24,7 +24,10 @@ export class HabitRepository implements IHabitRepository {
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null> {
     try {
-      const habitDoc = await HabitModel.findOne({ title, userId });
+      const habitDoc = await HabitModel.findOne({
+        title: title.toLowerCase(),
+        userId,
+      });
 
       return habitDoc;
     } catch (err) {

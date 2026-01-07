@@ -1,4 +1,4 @@
-import type { CreateGoalDTO, MongoIdDTO } from '@fokus/shared';
+import type { CreateGoalDTO, GoalFilterDTO, MongoIdDTO } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal-interfaces.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import { GoalRepository } from '../repositories/goal-repository.js';
@@ -42,18 +42,12 @@ export class GoalService implements IGoalService {
     return goalDoc;
   }
 
-  async findOneByTitle(
-    title: string,
+  async findByFilter(
+    filter: GoalFilterDTO,
     userId: MongoIdDTO,
-  ): Promise<GoalDocument> {
-    const goalDoc = await this.goalRepository.findOneByTitle(title, userId);
-    if (!goalDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Goal with title '${title}' not found.`,
-      );
-    }
+  ): Promise<GoalDocument[]> {
+    const ret = await this.goalRepository.findByFilter(filter, userId);
 
-    return goalDoc;
+    return ret;
   }
 }

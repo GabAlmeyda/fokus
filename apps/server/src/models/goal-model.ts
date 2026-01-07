@@ -88,7 +88,15 @@ const goalSchema = new Schema(
 
 goalSchema.index(
   { userId: 1, title: 1 },
-  { name: 'idx_userId_title', unique: true, background: true },
+  {
+    name: 'idx_userId_title',
+    unique: true,
+    background: true,
+    collation: {
+      locale: 'pt',
+      strength: 2,
+    },
+  },
 );
 goalSchema.index(
   { userId: 1, categoryId: 1 },

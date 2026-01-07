@@ -80,7 +80,15 @@ habitSchema.index(
 );
 habitSchema.index(
   { userId: 1, title: 1 },
-  { name: 'uidx_userId_title', background: true, unique: true },
+  {
+    name: 'uidx_userId_title',
+    background: true,
+    unique: true,
+    collation: {
+      locale: 'pt',
+      strength: 2,
+    },
+  },
 );
 
 type HabitSchema = InferSchemaType<typeof habitSchema>;

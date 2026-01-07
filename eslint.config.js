@@ -27,13 +27,17 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
-      'prettier/prettier': 'error',
+      'prettier/prettier': 'warn',
 
       '@typescript-eslint/no-unused-vars': [
         'warn',
-        { argsIgnorePattern: '^_' },
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+         },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       'no-console': 'off',
       'no-undef': 'error',
     },

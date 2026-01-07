@@ -131,6 +131,25 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
 
 export const CreateGoalSchema = BaseGoalSchema.superRefine(goalRefinement);
 
+export const GoalFilterSchema = z
+  .object({
+    title: BaseGoalSchema.shape.title.optional(),
+  })
+  .superRefine(
+    (data: z.infer<typeof GoalFilterSchema>, ctx: z.RefinementCtx) => {
+      const filledKeys = Object.values(data).filter(
+        (value) => typeof value !== 'undefined',
+      );
+      if (filledKeys.length > 1) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [],
+          message: 'Filter query can only filter by one property at a time.',
+        });
+      }
+    },
+  );
+
 export const ResponseGoalSchema = BaseGoalSchema.extend({
   id: MongoIdSchema,
 
@@ -142,4 +161,5 @@ export const ResponseGoalSchema = BaseGoalSchema.extend({
 });
 
 export type CreateGoalDTO = z.infer<typeof CreateGoalSchema>;
+export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 export type ResponseGoalDTO = z.infer<typeof ResponseGoalSchema>;

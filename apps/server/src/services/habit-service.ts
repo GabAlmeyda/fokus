@@ -39,7 +39,7 @@ export class HabitService implements IHabitService {
     if (!habitDoc) {
       throw new AppServerError(
         'NOT_FOUND',
-        `Habit with title '${title}' not found.`,
+        `Habit with title '${title}' not found (search is case-insensitive).`,
       );
     }
 

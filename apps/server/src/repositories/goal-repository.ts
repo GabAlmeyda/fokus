@@ -1,4 +1,4 @@
-import type { CreateGoalDTO, MongoIdDTO } from '@fokus/shared';
+import type { CreateGoalDTO, GoalFilterDTO, MongoIdDTO } from '@fokus/shared';
 import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
 import { GoalModel, type GoalDocument } from '../models/goal-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
@@ -47,14 +47,23 @@ export class GoalRepository implements IGoalRepository {
     }
   }
 
-  async findOneByTitle(
-    title: string,
+  async findByFilter(
+    filter: GoalFilterDTO,
     userId: MongoIdDTO,
-  ): Promise<GoalDocument | null> {
+  ): Promise<GoalDocument[]> {
     try {
-      const goalDoc = await GoalModel.findOne({ title, userId });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const query: Record<string, any> = { userId };
+      const property = Object.keys(filter).find(
+        (k) => typeof filter[k as keyof GoalFilterDTO] !== 'undefined',
+      ) as keyof GoalFilterDTO | undefined;
 
-      return goalDoc;
+      if (property) {
+        query[property] = filter[property as keyof GoalFilterDTO];
+      }
+
+      const ret = await GoalModel.find(query);
+      return ret;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }
