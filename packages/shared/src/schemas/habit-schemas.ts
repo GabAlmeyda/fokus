@@ -98,6 +98,31 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
 }
 
 export const CreateHabitSchema = BaseHabitSchema.superRefine(habitRefinement);
+
+export const HabitFilterSchema = BaseHabitSchema.pick({
+  title: true,
+})
+  .extend({
+    weekDay: BaseHabitSchema.shape.weekDays.element,
+  })
+  .partial()
+  .superRefine(
+    (data: z.infer<typeof HabitFilterSchema>, ctx: z.RefinementCtx) => {
+      const filledKeys = Object.keys(data).filter(
+        (key) =>
+          typeof data[key as keyof z.infer<typeof HabitFilterSchema>] !==
+          'undefined',
+      );
+      if (filledKeys.length > 1) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [],
+          message: 'Filter query can only filter by one property at a time.',
+        });
+      }
+    },
+  );
+
 export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
 
 export const UpdateHabitSchema = BaseHabitSchema.omit({
@@ -122,5 +147,6 @@ export const ResponseHabitSchema = BaseHabitSchema.extend({
 
 export type WeekDayDTO = z.infer<typeof WeekDaySchema>;
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
+export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 export type UpdateHabitDTO = z.infer<typeof UpdateHabitSchema>;
 export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;

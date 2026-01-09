@@ -1,9 +1,9 @@
 import {
   UpdateHabitSchema,
   type CreateHabitDTO,
+  type HabitFilterDTO,
   type MongoIdDTO,
   type UpdateHabitDTO,
-  type WeekDayDTO,
 } from '@fokus/shared';
 import type { IHabitService } from '../interfaces/habit-interfaces.js';
 import type { HabitDocument } from '../models/habit-model.js';
@@ -14,10 +14,12 @@ export class HabitService implements IHabitService {
   private readonly habitRepository = new HabitRepository();
 
   async create(habit: CreateHabitDTO): Promise<HabitDocument> {
-    const habitDoc = await this.habitRepository.findOneByTitle(
-      habit.title,
-      habit.userId,
-    );
+    const habitDoc = (
+      await this.habitRepository.findByFilter(
+        { title: habit.title },
+        habit.userId,
+      )
+    )[0];
     if (habitDoc) {
       throw new AppServerError(
         'CONFLICT',
@@ -29,21 +31,6 @@ export class HabitService implements IHabitService {
     const createdHabitDoc = await this.habitRepository.create(habit);
 
     return createdHabitDoc;
-  }
-
-  async findOneByTitle(
-    title: string,
-    userId: MongoIdDTO,
-  ): Promise<HabitDocument> {
-    const habitDoc = await this.habitRepository.findOneByTitle(title, userId);
-    if (!habitDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Habit with title '${title}' not found (search is case-insensitive).`,
-      );
-    }
-
-    return habitDoc;
   }
 
   async findOneById(
@@ -61,17 +48,11 @@ export class HabitService implements IHabitService {
     return habitDoc;
   }
 
-  async findAll(userId: MongoIdDTO): Promise<HabitDocument[]> {
-    const habitDocs = await this.habitRepository.findAll(userId);
-
-    return habitDocs;
-  }
-
-  async findAllByWeekDay(
-    day: WeekDayDTO,
+  async findByFilter(
+    filter: HabitFilterDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]> {
-    const habitDocs = await this.habitRepository.findAllByWeekDay(day, userId);
+    const habitDocs = await this.habitRepository.findByFilter(filter, userId);
 
     return habitDocs;
   }
@@ -83,8 +64,8 @@ export class HabitService implements IHabitService {
   ): Promise<HabitDocument> {
     // Verifies if the name is already registered
     if (newData.title) {
-      const habitDoc = await this.habitRepository.findOneByTitle(
-        newData.title,
+      const habitDoc = await this.habitRepository.findByFilter(
+        { title: newData.title },
         userId,
       );
       if (habitDoc) {

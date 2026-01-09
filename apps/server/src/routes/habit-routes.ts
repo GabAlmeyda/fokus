@@ -19,33 +19,16 @@ habitRoutes.post('/', authMiddleware, async (req, res) => {
 
 habitRoutes.get('/', authMiddleware, async (req, res) => {
   const authReq = req as AuthRequest;
+  const title = Array.isArray(req.query.title)
+    ? req.query.title[0]?.toString()
+    : req.query.title?.toString();
+  const weekDay = Array.isArray(req.query?.weekDay)
+    ? req.query.weekDay[0]?.toString()
+    : req.query.weekDay?.toString();
   const userId = authReq.user.id;
 
-  const { statusCode, body } = await habitController.findAll({ userId });
-  return res.status(statusCode).json(body);
-});
-
-habitRoutes.get('/weekDay', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const day = Array.isArray(authReq.query?.day)
-    ? authReq.query.day[0]?.toString()
-    : authReq.query.day?.toString();
-  const userId = authReq.user.id;
-
-  const { statusCode, body } = await habitController.findAllByWeekDay({
-    query: { day },
-    userId,
-  });
-  return res.status(statusCode).json(body);
-});
-
-habitRoutes.get('/titles/:title', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const title = authReq.params?.title;
-  const userId = authReq.user.id;
-
-  const { statusCode, body } = await habitController.findOneByTitle({
-    params: { title },
+  const { statusCode, body } = await habitController.findByFilter({
+    query: { title, weekDay },
     userId,
   });
   return res.status(statusCode).json(body);

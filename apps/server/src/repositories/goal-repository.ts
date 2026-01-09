@@ -59,7 +59,7 @@ export class GoalRepository implements IGoalRepository {
       ) as keyof GoalFilterDTO | undefined;
 
       if (property) {
-        query[property] = filter[property as keyof GoalFilterDTO];
+        query[property] = filter[property];
       }
 
       const ret = await GoalModel.find(query);

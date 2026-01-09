@@ -137,8 +137,10 @@ export const GoalFilterSchema = z
   })
   .superRefine(
     (data: z.infer<typeof GoalFilterSchema>, ctx: z.RefinementCtx) => {
-      const filledKeys = Object.values(data).filter(
-        (value) => typeof value !== 'undefined',
+      const filledKeys = Object.keys(data).filter(
+        (key) =>
+          typeof data[key as keyof z.infer<typeof GoalFilterSchema>] !==
+          'undefined',
       );
       if (filledKeys.length > 1) {
         ctx.addIssue({

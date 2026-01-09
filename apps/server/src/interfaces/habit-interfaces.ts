@@ -1,31 +1,24 @@
 import type {
   CreateHabitDTO,
+  HabitFilterDTO,
   HTTPRequest,
   HTTPResponse,
   MongoIdDTO,
   ResponseHabitDTO,
   UpdateHabitDTO,
-  WeekDayDTO,
 } from '@fokus/shared';
 import type { HabitDocument } from '../models/habit-model.js';
 
 export interface IHabitRepository {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneByTitle(
-    title: string,
-    userId: MongoIdDTO,
-  ): Promise<HabitDocument | null>;
-
   findOneById(
     habitId: MongoIdDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument | null>;
 
-  findAll(userId: MongoIdDTO): Promise<HabitDocument[]>;
-
-  findAllByWeekDay(
-    day: WeekDayDTO,
+  findByFilter(
+    filter: HabitFilterDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]>;
 
@@ -44,14 +37,10 @@ export interface IHabitRepository {
 export interface IHabitService {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneByTitle(title: string, userId: MongoIdDTO): Promise<HabitDocument>;
-
   findOneById(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<HabitDocument>;
 
-  findAll(userId: MongoIdDTO): Promise<HabitDocument[]>;
-
-  findAllByWeekDay(
-    day: WeekDayDTO,
+  findByFilter(
+    filter: HabitFilterDTO,
     userId: MongoIdDTO,
   ): Promise<HabitDocument[]>;
 
@@ -69,15 +58,9 @@ export interface IHabitController {
     req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
   ): Promise<HTTPResponse<ResponseHabitDTO>>;
 
-  findOneByTitle(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>>;
-
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseHabitDTO>>;
 
-  findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseHabitDTO[]>>;
-
-  findAllByWeekDay(
+  findByFilter(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
 

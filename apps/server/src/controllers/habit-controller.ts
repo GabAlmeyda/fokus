@@ -6,15 +6,14 @@ import {
   HTTPStatusCode,
   CreateHabitSchema,
   MongoIdSchema,
-  WeekDaySchema,
   UpdateHabitSchema,
   type UpdateHabitDTO,
+  HabitFilterSchema,
 } from '@fokus/shared';
 import type { IHabitController } from '../interfaces/habit-interfaces.js';
 import { HabitService } from '../services/habit-service.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
-import { AppServerError } from '../helpers/app-server-error.js';
 
 export class HabitController implements IHabitController {
   private readonly habitService = new HabitService();
@@ -37,26 +36,6 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findOneByTitle(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>> {
-    try {
-      const title = req.params?.title;
-      if (typeof title !== 'string') {
-        throw new AppServerError('BAD_REQUEST', 'Invalid title provided.');
-      }
-
-      const userId = MongoIdSchema.parse(req.userId);
-
-      const habitDoc = await this.habitService.findOneByTitle(title, userId);
-      const habit = mapHabitDocToPublicDTO(habitDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: habit };
-    } catch (err) {
-      return formatHTTPErrorResponse(err);
-    }
-  }
-
   async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
@@ -73,29 +52,17 @@ export class HabitController implements IHabitController {
     }
   }
 
-  async findAll(
+  async findByFilter(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
     try {
+      const filter = HabitFilterSchema.parse({
+        title: req.query?.title,
+        weekDay: req.query?.weekDay,
+      });
       const userId = MongoIdSchema.parse(req.userId);
 
-      const habitDocs = await this.habitService.findAll(userId);
-      const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
-
-      return { statusCode: HTTPStatusCode.OK, body: habits };
-    } catch (err) {
-      return formatHTTPErrorResponse(err);
-    }
-  }
-
-  async findAllByWeekDay(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
-    try {
-      const day = WeekDaySchema.parse(req.query?.day);
-      const userId = MongoIdSchema.parse(req.userId);
-
-      const habitDocs = await this.habitService.findAllByWeekDay(day, userId);
+      const habitDocs = await this.habitService.findByFilter(filter, userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
 
       return { statusCode: HTTPStatusCode.OK, body: habits };
