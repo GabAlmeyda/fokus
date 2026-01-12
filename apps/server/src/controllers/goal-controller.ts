@@ -6,13 +6,12 @@ import {
   CreateGoalSchema,
   HTTPStatusCode,
   MongoIdSchema,
-  type GoalFilterDTO,
+  GoalFilterSchema,
 } from '@fokus/shared';
 import type { IGoalController } from '../interfaces/goal-interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
 import { GoalService } from '../services/goal-services.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
-import { AppServerError } from '../helpers/app-server-error.js';
 
 export class GoalController implements IGoalController {
   private readonly goalService = new GoalService();
@@ -67,20 +66,18 @@ export class GoalController implements IGoalController {
   }
 
   async findByFilter(
-    req: HTTPRequest<GoalFilterDTO>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseGoalDTO[]>> {
     try {
-      const title = req.query?.title;
-      if (typeof title !== 'string' && typeof title !== 'undefined') {
-        throw new AppServerError(
-          'BAD_REQUEST',
-          "Expected type for title was 'string'.",
-        );
-      }
+      const filter = GoalFilterSchema.parse({
+        title: req.query?.title,
+        categoryId: req.query?.categoryId,
+        deadlineType: req.query?.deadlineType,
+      });
 
       const userId = MongoIdSchema.parse(req.userId);
 
-      const ret = await this.goalService.findByFilter({ title }, userId);
+      const ret = await this.goalService.findByFilter(filter, userId);
       const goals = ret.map((g) => mapGoalDocToPublicDTO(g));
 
       return { statusCode: HTTPStatusCode.OK, body: goals };

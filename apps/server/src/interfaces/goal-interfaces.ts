@@ -49,6 +49,6 @@ export interface IGoalController {
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
 
   findByFilter(
-    req: HTTPRequest<GoalFilterDTO>,
+    req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseGoalDTO[]>>;
 }

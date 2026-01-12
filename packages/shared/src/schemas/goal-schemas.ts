@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import { z } from 'zod';
 import { MongoIdSchema } from './mongo-schemas.js';
 
 const BaseGoalSchema = z.object({
@@ -45,8 +45,6 @@ const BaseGoalSchema = z.object({
 
       return date;
     }),
-
-  isActive: z.boolean("Expected type was 'boolean'.").default(true),
 
   color: z
     .string("Expected type was 'string'.")
@@ -133,8 +131,19 @@ export const CreateGoalSchema = BaseGoalSchema.superRefine(goalRefinement);
 
 export const GoalFilterSchema = z
   .object({
-    title: BaseGoalSchema.shape.title.optional(),
+    title: BaseGoalSchema.shape.title,
+    categoryId: z.union([
+      z.literal('none', { error: "Expected value was 'none'." }),
+      MongoIdSchema,
+    ]),
+    deadlineType: z.enum(['not-defined', 'has-deadline', 'this-week'], {
+      error: () => ({
+        message:
+          "Invalid deadline type received. Valid value are 'not-defined', 'has-deadline' or 'this-week'.",
+      }),
+    }),
   })
+  .partial()
   .superRefine(
     (data: z.infer<typeof GoalFilterSchema>, ctx: z.RefinementCtx) => {
       const filledKeys = Object.keys(data).filter(
@@ -143,10 +152,12 @@ export const GoalFilterSchema = z
           'undefined',
       );
       if (filledKeys.length > 1) {
+        const properties = filledKeys.map((k) => `'${k}'`).join(', ');
+
         ctx.addIssue({
           code: 'custom',
           path: [],
-          message: 'Filter query can only filter by one property at a time.',
+          message: `Filter query can only filter by one property at a time, but multiple properties were provided: ${properties}.`,
         });
       }
     },
@@ -154,6 +165,8 @@ export const GoalFilterSchema = z
 
 export const ResponseGoalSchema = BaseGoalSchema.extend({
   id: MongoIdSchema,
+
+  isActive: z.boolean("Expected type was 'boolean'.").default(true),
 
   currentValue: z
     .number("Expected type was 'number'.")

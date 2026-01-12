@@ -42,6 +42,7 @@ export class HabitRepository implements IHabitRepository {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const query: Record<string, any> = { userId };
+
       const property = Object.keys(filter).find(
         (k) => typeof filter[k as keyof HabitFilterDTO] !== 'undefined',
       ) as keyof HabitFilterDTO | undefined;
@@ -59,14 +60,12 @@ export class HabitRepository implements IHabitRepository {
           query.weekDays = filter[property];
           break;
         default: {
-          const _exhaustedCheck: never = property;
+          const exhaustedCheck: never = property;
           throw new Error(
-            `[habit-repository.ts (server)] Unhandled case ${_exhaustedCheck}.`,
+            `[habit-repository.ts (server)] Unhandled case '${exhaustedCheck}'.`,
           );
         }
       }
-
-      console.log(query);
 
       const habitDocs = await HabitModel.find(query);
       return habitDocs;

@@ -57,7 +57,6 @@ const BaseHabitSchema = z.object({
 });
 
 type HabitRefinementData = z.infer<ReturnType<typeof BaseHabitSchema.partial>>;
-
 function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
@@ -114,17 +113,16 @@ export const HabitFilterSchema = BaseHabitSchema.pick({
           'undefined',
       );
       if (filledKeys.length > 1) {
+        const properties = filledKeys.map((k) => `'${k}'`).join(', ');
+
         ctx.addIssue({
           code: 'custom',
           path: [],
-          message: 'Filter query can only filter by one property at a time.',
+          message: `Filter query can only filter by one property at a time, but mulitple properties were provided: ${properties}`,
         });
       }
     },
   );
-
-export const WeekDaySchema = BaseHabitSchema.shape.weekDays.element;
-
 export const UpdateHabitSchema = BaseHabitSchema.omit({
   userId: true,
 })
@@ -145,7 +143,6 @@ export const ResponseHabitSchema = BaseHabitSchema.extend({
     .default(0),
 });
 
-export type WeekDayDTO = z.infer<typeof WeekDaySchema>;
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
 export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 export type UpdateHabitDTO = z.infer<typeof UpdateHabitSchema>;

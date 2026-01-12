@@ -67,6 +67,7 @@ const habitSchema = new Schema(
   },
   {
     timestamps: true,
+    collation: { locale: 'pt', strength: 2 },
   },
 );
 

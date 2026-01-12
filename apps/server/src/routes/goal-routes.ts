@@ -35,9 +35,15 @@ goalRoutes.get('/', authMiddleware, async (req, res) => {
   const title = Array.isArray(authReq.query.title)
     ? authReq.query.title[0]?.toString()
     : authReq.query.title?.toString();
+  const categoryId = Array.isArray(authReq.query.categoryId)
+    ? authReq.query.categoryId[0]?.toString()
+    : authReq.query.categoryId?.toString();
+  const deadlineType = Array.isArray(authReq.query.deadlineType)
+    ? authReq.query.deadlineType[0]?.toString()
+    : authReq.query.deadlineType?.toString();
 
   const { statusCode, body } = await goalController.findByFilter({
-    query: { title },
+    query: { title, categoryId, deadlineType },
     userId,
   });
   return res.status(statusCode).json(body);

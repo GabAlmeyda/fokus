@@ -8,6 +8,17 @@ export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
 
   async create(goal: CreateGoalDTO): Promise<GoalDocument> {
+    const goalDoc = (
+      await this.goalRepository.findByFilter({ title: goal.title }, goal.userId)
+    )[0];
+    if (goalDoc) {
+      throw new AppServerError(
+        'CONFLICT',
+        `Goal with title '${goal.title}' already exists.`,
+        [{ field: 'title', message: 'Value is already registered.' }],
+      );
+    }
+
     const goalToCreate: CreateGoalDTO & { currentValue: number | null } = {
       ...goal,
       currentValue: null,

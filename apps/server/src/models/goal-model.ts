@@ -83,13 +83,14 @@ const goalSchema = new Schema(
   },
   {
     timestamps: true,
+    collation: { locale: 'pt', strength: 2 },
   },
 );
 
 goalSchema.index(
   { userId: 1, title: 1 },
   {
-    name: 'idx_userId_title',
+    name: 'uidx_userId_title',
     unique: true,
     background: true,
     collation: {

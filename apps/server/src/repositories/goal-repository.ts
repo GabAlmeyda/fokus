@@ -3,6 +3,7 @@ import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
 import { GoalModel, type GoalDocument } from '../models/goal-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 import { Types } from 'mongoose';
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 export class GoalRepository implements IGoalRepository {
   async create(
@@ -52,14 +53,49 @@ export class GoalRepository implements IGoalRepository {
     userId: MongoIdDTO,
   ): Promise<GoalDocument[]> {
     try {
+      const DEADLINE_TYPES_FILTER: Record<
+        NonNullable<GoalFilterDTO['deadlineType']>,
+        () => any // eslint-disable-line @typescript-eslint/no-explicit-any
+      > = {
+        'not-defined': () => null,
+        'has-deadline': () => ({ $ne: null }),
+        'this-week': () => {
+          const now = new Date();
+          return {
+            $gte: startOfWeek(now, { weekStartsOn: 0 }),
+            $lte: endOfWeek(now, { weekStartsOn: 0 }),
+          };
+        },
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const query: Record<string, any> = { userId };
       const property = Object.keys(filter).find(
         (k) => typeof filter[k as keyof GoalFilterDTO] !== 'undefined',
       ) as keyof GoalFilterDTO | undefined;
 
-      if (property) {
-        query[property] = filter[property];
+      if (!property) {
+        const ret = await GoalModel.find(query);
+        return ret;
+      }
+
+      switch (property) {
+        case 'title':
+          query[property] = filter[property];
+          break;
+        case 'categoryId':
+          query.categoryId =
+            filter[property] === 'none' ? null : filter[property];
+          break;
+        case 'deadlineType':
+          query.deadline = DEADLINE_TYPES_FILTER[filter.deadlineType!]();
+          break;
+        default: {
+          const exhaustedCheck: never = property;
+          throw new Error(
+            `[goal-repository.ts (server)] Unhandled case '${exhaustedCheck}'.`,
+          );
+        }
       }
 
       const ret = await GoalModel.find(query);
