@@ -1,8 +1,15 @@
-import type { CreateGoalDTO, GoalFilterDTO, MongoIdDTO } from '@fokus/shared';
+import {
+  UpdateGoalSchema,
+  type CreateGoalDTO,
+  type GoalFilterDTO,
+  type MongoIdDTO,
+  type UpdateGoalDTO,
+} from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal-interfaces.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import { GoalRepository } from '../repositories/goal-repository.js';
 import { AppServerError } from '../helpers/app-server-error.js';
+import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
@@ -32,12 +39,6 @@ export class GoalService implements IGoalService {
     return createdGoalDoc;
   }
 
-  async findAll(userId: MongoIdDTO): Promise<GoalDocument[]> {
-    const goalDocs = await this.goalRepository.findAll(userId);
-
-    return goalDocs;
-  }
-
   async findOneById(
     goalId: MongoIdDTO,
     userId: MongoIdDTO,
@@ -60,5 +61,54 @@ export class GoalService implements IGoalService {
     const ret = await this.goalRepository.findByFilter(filter, userId);
 
     return ret;
+  }
+
+  async update(
+    goalId: MongoIdDTO,
+    newData: UpdateGoalDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument> {
+    // Verifies if the goal exists
+    const currentGoalDoc = await this.goalRepository.findOneById(
+      goalId,
+      userId,
+    );
+    if (!currentGoalDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with ID '${goalId}' not found.`,
+      );
+    }
+
+    // Validate the provided data
+    const mergedGoal = { ...currentGoalDoc.toObject(), ...newData };
+    mergedGoal.categoryId = mergedGoal.categoryId?.toString() ?? null;
+    UpdateGoalSchema.parse(mergedGoal);
+
+    try {
+      const updatedGoalDoc = await this.goalRepository.update(
+        goalId,
+        newData,
+        userId,
+      );
+      if (!updatedGoalDoc) {
+        throw new AppServerError(
+          'NOT_FOUND',
+          `Goal with ID '${goalId}' not found.`,
+        );
+      }
+
+      return updatedGoalDoc;
+    } catch (err) {
+      if (err instanceof MongoRepositoryError && err.errorType === 'CONFLICT') {
+        throw new AppServerError(
+          'CONFLICT',
+          `Goal with title '${newData.title}' already exists.`,
+          [{ field: 'title', message: 'Value is already registered.' }],
+        );
+      }
+
+      throw err;
+    }
   }
 }

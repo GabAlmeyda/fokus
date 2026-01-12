@@ -20,7 +20,6 @@ async function main() {
   await connectToMongoDB();
 
   const PORT = process.env.PORT as string;
-
   const app = express();
 
   app.use(express.json());

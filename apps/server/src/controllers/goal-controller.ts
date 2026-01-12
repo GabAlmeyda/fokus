@@ -7,6 +7,8 @@ import {
   HTTPStatusCode,
   MongoIdSchema,
   GoalFilterSchema,
+  type UpdateGoalDTO,
+  UpdateGoalSchema,
 } from '@fokus/shared';
 import type { IGoalController } from '../interfaces/goal-interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
@@ -29,21 +31,6 @@ export class GoalController implements IGoalController {
       const createdGoal = mapGoalDocToPublicDTO(createdGoalDoc);
 
       return { statusCode: HTTPStatusCode.CREATED, body: createdGoal };
-    } catch (err) {
-      return formatHTTPErrorResponse(err);
-    }
-  }
-
-  async findAll(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO[]>> {
-    try {
-      const userId = MongoIdSchema.parse(req.userId);
-
-      const goalDocs = await this.goalService.findAll(userId);
-      const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
-
-      return { statusCode: HTTPStatusCode.CREATED, body: goals };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -81,6 +68,27 @@ export class GoalController implements IGoalController {
       const goals = ret.map((g) => mapGoalDocToPublicDTO(g));
 
       return { statusCode: HTTPStatusCode.OK, body: goals };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async update(
+    req: HTTPRequest<UpdateGoalDTO>,
+  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+    try {
+      const goalId = MongoIdSchema.parse(req.params?.goalId);
+      const newData = UpdateGoalSchema.parse(req.body);
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const updatedGoalDoc = await this.goalService.update(
+        goalId,
+        newData,
+        userId,
+      );
+      const updatedGoal = mapGoalDocToPublicDTO(updatedGoalDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: updatedGoal };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

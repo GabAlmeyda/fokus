@@ -49,4 +49,18 @@ goalRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+goalRoutes.patch('/:goalId', authMiddleware, async (req, res) => {
+  const authReq = req as AuthRequest;
+  const goalId = authReq.params?.goalId;
+  const newData = authReq.body;
+  const userId = authReq.user.id;
+
+  const { statusCode, body } = await goalController.update({
+    params: { goalId },
+    body: newData,
+    userId,
+  });
+  return res.status(statusCode).json(body);
+});
+
 export default goalRoutes;

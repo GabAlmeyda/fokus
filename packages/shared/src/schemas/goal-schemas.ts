@@ -4,7 +4,7 @@ import { MongoIdSchema } from './mongo-schemas.js';
 const BaseGoalSchema = z.object({
   userId: MongoIdSchema,
 
-  categoryId: MongoIdSchema.nullish().default(null),
+  categoryId: MongoIdSchema.nullable(),
 
   title: z
     .string("Expected type was 'string'.")
@@ -21,24 +21,21 @@ const BaseGoalSchema = z.object({
   targetValue: z
     .number("Expected type was 'number'.")
     .min(1, 'Minimun value is 1.')
-    .nullish()
-    .default(null),
+    .nullable(),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
     .min(1, 'Unit of measure cannot be less than 1 character.')
     .trim()
-    .nullish()
-    .default(null),
+    .nullable(),
 
-  habits: z.array(MongoIdSchema).default([]),
+  habits: z.array(MongoIdSchema),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
     .nullish()
-    .default(null)
     .transform((val) => {
-      if (!val) return null;
+      if (!val) return val;
 
       const date = new Date(val);
       date.setUTCHours(0, 0, 0, 0);
@@ -163,6 +160,10 @@ export const GoalFilterSchema = z
     },
   );
 
+export const UpdateGoalSchema = BaseGoalSchema.omit({ userId: true })
+  .partial()
+  .superRefine(goalRefinement);
+
 export const ResponseGoalSchema = BaseGoalSchema.extend({
   id: MongoIdSchema,
 
@@ -177,4 +178,5 @@ export const ResponseGoalSchema = BaseGoalSchema.extend({
 
 export type CreateGoalDTO = z.infer<typeof CreateGoalSchema>;
 export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
+export type UpdateGoalDTO = z.infer<typeof UpdateGoalSchema>;
 export type ResponseGoalDTO = z.infer<typeof ResponseGoalSchema>;

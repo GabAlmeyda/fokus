@@ -49,13 +49,12 @@ export function mapGoalDocToPublicDTO(goal: GoalDocument): ResponseGoalDTO {
   return {
     id: goal._id.toString(),
     userId: goal.userId.toString(),
-    categoryId:
-      typeof goal.categoryId === 'string' ? goal.categoryId.toString() : null,
+    categoryId: (goal.categoryId as string | null) || null,
     title: goal.title,
     type: goal.type,
     currentValue:
       typeof goal.currentValue === 'number' ? goal.currentValue : null,
-    targetValue: (goal.targetValue as number | null) || null,
+    targetValue: typeof goal.targetValue === 'number' ? goal.targetValue : null,
     unitOfMeasure: (goal.unitOfMeasure as string | null) || null,
     habits: goal.habits.map((id) => id.toString()),
     deadline: (goal.deadline as Date | null) || null,

@@ -1,4 +1,9 @@
-import type { CreateGoalDTO, GoalFilterDTO, MongoIdDTO } from '@fokus/shared';
+import type {
+  CreateGoalDTO,
+  GoalFilterDTO,
+  MongoIdDTO,
+  UpdateGoalDTO,
+} from '@fokus/shared';
 import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
 import { GoalModel, type GoalDocument } from '../models/goal-model.js';
 import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
@@ -12,24 +17,11 @@ export class GoalRepository implements IGoalRepository {
     try {
       const goalToCreate = {
         ...goal,
-        categoryId: goal.categoryId
-          ? new Types.ObjectId(goal.categoryId)
-          : null,
         habits: goal.habits.map((h) => new Types.ObjectId(h)),
       };
       const createdGoalDoc = await GoalModel.create(goalToCreate);
 
       return createdGoalDoc;
-    } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
-    }
-  }
-
-  async findAll(userId: MongoIdDTO): Promise<GoalDocument[]> {
-    try {
-      const goalDocs = await GoalModel.find({ userId });
-
-      return goalDocs;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }
@@ -100,6 +92,24 @@ export class GoalRepository implements IGoalRepository {
 
       const ret = await GoalModel.find(query);
       return ret;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
+
+  async update(
+    goalId: MongoIdDTO,
+    newData: UpdateGoalDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument | null> {
+    try {
+      const updatedGoalDoc = await GoalModel.findOneAndUpdate(
+        { _id: goalId, userId },
+        { $set: newData },
+        { new: true, runValidators: true },
+      );
+
+      return updatedGoalDoc;
     } catch (err) {
       throw MongoRepositoryError.fromMongoose(err);
     }
