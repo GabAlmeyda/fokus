@@ -114,4 +114,20 @@ export class GoalRepository implements IGoalRepository {
       throw MongoRepositoryError.fromMongoose(err);
     }
   }
+
+  async delete(
+    goalId: MongoIdDTO,
+    userId: MongoIdDTO,
+  ): Promise<GoalDocument | null> {
+    try {
+      const deletedGoalDoc = await GoalModel.findOneAndDelete({
+        _id: goalId,
+        userId,
+      });
+
+      return deletedGoalDoc;
+    } catch (err) {
+      throw MongoRepositoryError.fromMongoose(err);
+    }
+  }
 }

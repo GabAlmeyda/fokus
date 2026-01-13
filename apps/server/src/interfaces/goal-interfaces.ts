@@ -29,6 +29,8 @@ export interface IGoalRepository {
     newData: UpdateGoalDTO,
     userId: MongoIdDTO,
   ): Promise<GoalDocument | null>;
+
+  delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument | null>;
 }
 
 export interface IGoalService {
@@ -46,6 +48,8 @@ export interface IGoalService {
     newData: UpdateGoalDTO,
     userId: MongoIdDTO,
   ): Promise<GoalDocument>;
+
+  delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
 }
 
 export interface IGoalController {
@@ -62,4 +66,6 @@ export interface IGoalController {
   update(
     req: HTTPRequest<UpdateGoalDTO>,
   ): Promise<HTTPResponse<ResponseGoalDTO>>;
+
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
 }

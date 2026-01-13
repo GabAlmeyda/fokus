@@ -93,4 +93,18 @@ export class GoalController implements IGoalController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>> {
+    try {
+      const goalId = MongoIdSchema.parse(req.params?.goalId);
+      const userId = MongoIdSchema.parse(req.userId);
+
+      const deletedGoalDoc = await this.goalService.delete(goalId, userId);
+      const deletedGoal = mapGoalDocToPublicDTO(deletedGoalDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: deletedGoal };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }

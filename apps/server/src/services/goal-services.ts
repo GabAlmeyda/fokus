@@ -111,4 +111,16 @@ export class GoalService implements IGoalService {
       throw err;
     }
   }
+
+  async delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument> {
+    const deletedGoalDoc = await this.goalRepository.delete(goalId, userId);
+    if (!deletedGoalDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with ID '${goalId}' not found.`,
+      );
+    }
+
+    return deletedGoalDoc;
+  }
 }
