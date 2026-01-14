@@ -3,8 +3,11 @@ import type { AuthRequest } from '../types/express-types.js';
 import { AppServerError } from '../helpers/app-server-error.js';
 import jwt from 'jsonwebtoken';
 import { type TokenPayloadDTO } from 'packages/shared/dist/index.js';
+import { UserRepository } from '../repositories/user-repository.js';
 
-export default function authMiddleware(
+const userRepository = new UserRepository();
+
+export default async function authMiddleware(
   req: Request,
   _res: Response,
   next: NextFunction,
@@ -18,9 +21,20 @@ export default function authMiddleware(
     }
 
     const JWT_SECRET = process.env.JWT_SECRET as string;
-
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayloadDTO;
-    authReq.user = decoded;
+
+    const user = await userRepository.findOneById(decoded.id);
+    if (!user) {
+      throw new AppServerError(
+        'UNAUTHORIZED',
+        `User with ID '${decoded.id}' not found.`,
+      );
+    }
+
+    authReq.user = {
+      id: user._id.toString(),
+      email: user.email,
+    };
 
     return next();
   } catch (err) {

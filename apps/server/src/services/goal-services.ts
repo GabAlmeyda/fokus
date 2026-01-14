@@ -2,7 +2,7 @@ import {
   UpdateGoalSchema,
   type CreateGoalDTO,
   type GoalFilterDTO,
-  type MongoIdDTO,
+  type EntityIdDTO,
   type UpdateGoalDTO,
 } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal-interfaces.js';
@@ -40,8 +40,8 @@ export class GoalService implements IGoalService {
   }
 
   async findOneById(
-    goalId: MongoIdDTO,
-    userId: MongoIdDTO,
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument> {
     const goalDoc = await this.goalRepository.findOneById(goalId, userId);
     if (!goalDoc) {
@@ -56,7 +56,7 @@ export class GoalService implements IGoalService {
 
   async findByFilter(
     filter: GoalFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument[]> {
     const ret = await this.goalRepository.findByFilter(filter, userId);
 
@@ -64,9 +64,9 @@ export class GoalService implements IGoalService {
   }
 
   async update(
-    goalId: MongoIdDTO,
+    goalId: EntityIdDTO,
     newData: UpdateGoalDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument> {
     // Verifies if the goal exists
     const currentGoalDoc = await this.goalRepository.findOneById(
@@ -112,7 +112,10 @@ export class GoalService implements IGoalService {
     }
   }
 
-  async delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument> {
+  async delete(
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<GoalDocument> {
     const deletedGoalDoc = await this.goalRepository.delete(goalId, userId);
     if (!deletedGoalDoc) {
       throw new AppServerError(

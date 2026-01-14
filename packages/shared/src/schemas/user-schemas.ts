@@ -1,18 +1,18 @@
 import * as z from 'zod';
-import { MongoIdSchema } from './mongo-schemas.js';
+import { EntityIdSchema } from './id-schemas.js';
 
-export const RegisterUserSchema = z.object({
+const BaseUserSchema = z.object({
   name: z
     .string("Expected type was 'string'.")
-    .min(2, 'Name cannot be less than 2 characters.')
-    .trim(),
+    .trim()
+    .min(2, 'Name cannot be less than 2 characters.'),
 
   email: z.email('Invalid email provided.').toLowerCase().trim(),
 
   password: z
     .string("Expected type was 'string'.")
-    .min(8, 'Password cannot be less than 8 characters.')
-    .trim(),
+    .trim()
+    .min(8, 'Password cannot be less than 8 characters.'),
 
   themeMode: z.enum(['light', 'dark'], {
     error: () => ({
@@ -21,21 +21,21 @@ export const RegisterUserSchema = z.object({
   }),
 });
 
-export const UpdateUserSchema = RegisterUserSchema.omit({
+export const RegisterUserSchema = BaseUserSchema;
+
+export const UpdateUserSchema = BaseUserSchema.omit({
   password: true,
 }).partial();
 
-export const LoginUserSchema = RegisterUserSchema.pick({
+export const LoginUserSchema = BaseUserSchema.pick({
   email: true,
   password: true,
 });
 
-export const ResponseUserSchema = RegisterUserSchema.omit({
+export const ResponseUserSchema = BaseUserSchema.omit({
   password: true,
 }).extend({
-  id: z
-    .string("Expected type was 'string'.")
-    .regex(/^[0-9a-zA-Z]{24}$/, 'Invalid ID format provided.'),
+  id: EntityIdSchema,
 });
 
 export const ResponseAuthSchema = z.object({
@@ -44,8 +44,8 @@ export const ResponseAuthSchema = z.object({
 });
 
 export const TokenPayloadSchema = z.object({
-  id: MongoIdSchema,
-  email: z.email('Invalid email provided.'),
+  id: EntityIdSchema,
+  email: z.email('Invalid email provided.').toLowerCase().trim(),
 });
 
 export type RegisterUserDTO = z.infer<typeof RegisterUserSchema>;

@@ -4,7 +4,7 @@ import type {
   HTTPRequest,
   ResponseCategoryDTO,
   HTTPResponse,
-  MongoIdDTO,
+  EntityIdDTO,
 } from '@fokus/shared';
 import type { CategoryDocument } from '../models/category-model.js';
 
@@ -12,26 +12,26 @@ export interface ICategoryRepository {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findOneById(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
 
   findOneByName(
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
     name: string,
   ): Promise<CategoryDocument | null>;
 
-  findAll(userId: MongoIdDTO): Promise<CategoryDocument[]>;
+  findAll(userId: EntityIdDTO): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
 
   delete(
     categoryId: string,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
 }
 
@@ -39,21 +39,21 @@ export interface ICategoryService {
   create(category: CreateCategoryDTO): Promise<CategoryDocument>;
 
   findOneById(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument>;
 
-  findOneByName(userId: MongoIdDTO, name: string): Promise<CategoryDocument>;
+  findOneByName(userId: EntityIdDTO, name: string): Promise<CategoryDocument>;
 
   findAll(userId?: string): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument>;
 
-  delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<void>;
+  delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
 
 export interface ICategoryController {

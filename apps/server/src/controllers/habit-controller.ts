@@ -5,7 +5,7 @@ import {
   type ResponseHabitDTO,
   HTTPStatusCode,
   CreateHabitSchema,
-  MongoIdSchema,
+  EntityIdSchema,
   UpdateHabitSchema,
   type UpdateHabitDTO,
   HabitFilterSchema,
@@ -40,8 +40,8 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
-      const habitId = MongoIdSchema.parse(req.params?.habitId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const habitId = EntityIdSchema.parse(req.params?.habitId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const habitDoc = await this.habitService.findOneById(habitId, userId);
       const habit = mapHabitDocToPublicDTO(habitDoc);
@@ -60,7 +60,7 @@ export class HabitController implements IHabitController {
         title: req.query?.title,
         weekDay: req.query?.weekDay,
       });
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const habitDocs = await this.habitService.findByFilter(filter, userId);
       const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
@@ -75,9 +75,9 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<UpdateHabitDTO>,
   ): Promise<HTTPResponse<ResponseHabitDTO>> {
     try {
-      const habitId = MongoIdSchema.parse(req.params?.habitId);
+      const habitId = EntityIdSchema.parse(req.params?.habitId);
       const newData = UpdateHabitSchema.parse(req.body);
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const updatedHabitDoc = await this.habitService.update(
         habitId,
@@ -94,8 +94,8 @@ export class HabitController implements IHabitController {
 
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
-      const habitId = MongoIdSchema.parse(req.params?.habitId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const habitId = EntityIdSchema.parse(req.params?.habitId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       await this.habitService.delete(habitId, userId);
 

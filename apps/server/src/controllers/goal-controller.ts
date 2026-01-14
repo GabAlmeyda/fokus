@@ -5,7 +5,7 @@ import {
   type ResponseGoalDTO,
   CreateGoalSchema,
   HTTPStatusCode,
-  MongoIdSchema,
+  EntityIdSchema,
   GoalFilterSchema,
   type UpdateGoalDTO,
   UpdateGoalSchema,
@@ -40,8 +40,8 @@ export class GoalController implements IGoalController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseGoalDTO>> {
     try {
-      const goalId = MongoIdSchema.parse(req.params?.goalId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const goalDoc = await this.goalService.findOneById(goalId, userId);
       const goal = mapGoalDocToPublicDTO(goalDoc);
@@ -62,7 +62,7 @@ export class GoalController implements IGoalController {
         deadlineType: req.query?.deadlineType,
       });
 
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const ret = await this.goalService.findByFilter(filter, userId);
       const goals = ret.map((g) => mapGoalDocToPublicDTO(g));
@@ -77,9 +77,9 @@ export class GoalController implements IGoalController {
     req: HTTPRequest<UpdateGoalDTO>,
   ): Promise<HTTPResponse<ResponseGoalDTO>> {
     try {
-      const goalId = MongoIdSchema.parse(req.params?.goalId);
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
       const newData = UpdateGoalSchema.parse(req.body);
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const updatedGoalDoc = await this.goalService.update(
         goalId,
@@ -96,8 +96,8 @@ export class GoalController implements IGoalController {
 
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>> {
     try {
-      const goalId = MongoIdSchema.parse(req.params?.goalId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const deletedGoalDoc = await this.goalService.delete(goalId, userId);
       const deletedGoal = mapGoalDocToPublicDTO(deletedGoalDoc);

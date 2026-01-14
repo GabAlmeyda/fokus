@@ -3,7 +3,7 @@ import type {
   GoalFilterDTO,
   HTTPRequest,
   HTTPResponse,
-  MongoIdDTO,
+  EntityIdDTO,
   ResponseGoalDTO,
   UpdateGoalDTO,
 } from '@fokus/shared';
@@ -15,41 +15,44 @@ export interface IGoalRepository {
   ): Promise<GoalDocument>;
 
   findOneById(
-    goalId: MongoIdDTO,
-    userId: MongoIdDTO,
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument | null>;
 
   findByFilter(
     filter: GoalFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument[]>;
 
   update(
-    goalId: MongoIdDTO,
+    goalId: EntityIdDTO,
     newData: UpdateGoalDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument | null>;
 
-  delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument | null>;
+  delete(
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<GoalDocument | null>;
 }
 
 export interface IGoalService {
   create(goal: CreateGoalDTO): Promise<GoalDocument>;
 
-  findOneById(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
+  findOneById(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<GoalDocument>;
 
   findByFilter(
     filter: GoalFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument[]>;
 
   update(
-    goalId: MongoIdDTO,
+    goalId: EntityIdDTO,
     newData: UpdateGoalDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument>;
 
-  delete(goalId: MongoIdDTO, userId: MongoIdDTO): Promise<GoalDocument>;
+  delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<GoalDocument>;
 }
 
 export interface IGoalController {

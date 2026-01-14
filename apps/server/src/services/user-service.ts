@@ -1,6 +1,6 @@
 import {
   type LoginUserDTO,
-  type MongoIdDTO,
+  type EntityIdDTO,
   type RegisterUserDTO,
   type TokenPayloadDTO,
   type UpdateUserDTO,
@@ -65,7 +65,7 @@ export class UserService implements IUserService {
     return { userDoc: loggedUserDoc, token };
   }
 
-  async findOneById(userId: MongoIdDTO): Promise<UserDocument> {
+  async findOneById(userId: EntityIdDTO): Promise<UserDocument> {
     const userDoc = await this.userRepository.findOneById(userId);
     if (!userDoc) {
       throw new AppServerError(
@@ -78,7 +78,7 @@ export class UserService implements IUserService {
   }
 
   async update(
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
     newData: UpdateUserDTO,
   ): Promise<UserDocument> {
     const updatedUserDoc = await this.userRepository.update(userId, newData);
@@ -92,7 +92,7 @@ export class UserService implements IUserService {
     return updatedUserDoc;
   }
 
-  async delete(userId: MongoIdDTO): Promise<void> {
+  async delete(userId: EntityIdDTO): Promise<void> {
     const deletedUserDoc = await this.userRepository.delete(userId);
     if (!deletedUserDoc) {
       throw new AppServerError(

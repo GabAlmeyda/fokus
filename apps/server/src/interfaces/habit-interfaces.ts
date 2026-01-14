@@ -3,7 +3,7 @@ import type {
   HabitFilterDTO,
   HTTPRequest,
   HTTPResponse,
-  MongoIdDTO,
+  EntityIdDTO,
   ResponseHabitDTO,
   UpdateHabitDTO,
 } from '@fokus/shared';
@@ -13,44 +13,47 @@ export interface IHabitRepository {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
   findOneById(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null>;
 
   findByFilter(
     filter: HabitFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument[]>;
 
   update(
-    habitId: MongoIdDTO,
+    habitId: EntityIdDTO,
     newData: UpdateHabitDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null>;
 
   delete(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null>;
 }
 
 export interface IHabitService {
   create(habit: CreateHabitDTO): Promise<HabitDocument>;
 
-  findOneById(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<HabitDocument>;
+  findOneById(
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<HabitDocument>;
 
   findByFilter(
     filter: HabitFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument[]>;
 
   update(
-    habitId: MongoIdDTO,
+    habitId: EntityIdDTO,
     newData: UpdateHabitDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument>;
 
-  delete(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<void>;
+  delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
 
 export interface IHabitController {

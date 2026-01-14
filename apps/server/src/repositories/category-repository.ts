@@ -1,7 +1,7 @@
 import type {
   CreateCategoryDTO,
   UpdateCategoryDTO,
-  MongoIdDTO,
+  EntityIdDTO,
 } from '@fokus/shared';
 import type { ICategoryRepository } from '../interfaces/category-interfaces.js';
 import {
@@ -22,8 +22,8 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findOneById(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
       const categoryDoc = await CategoryModel.findOne({
@@ -39,7 +39,7 @@ export class CategoryRepository implements ICategoryRepository {
 
   async findOneByName(
     name: string,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
       const categoryDoc = await CategoryModel.findOne({
@@ -53,7 +53,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findAll(userId: MongoIdDTO): Promise<CategoryDocument[]> {
+  async findAll(userId: EntityIdDTO): Promise<CategoryDocument[]> {
     try {
       const categoryDocs = await CategoryModel.find({
         userId,
@@ -67,8 +67,8 @@ export class CategoryRepository implements ICategoryRepository {
 
   async update(
     newData: UpdateCategoryDTO,
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
       const updatedCategoryDoc = await CategoryModel.findOneAndUpdate(
@@ -84,8 +84,8 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async delete(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
       const deletedCategoryDoc = await CategoryModel.findOneAndDelete({

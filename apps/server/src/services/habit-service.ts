@@ -2,7 +2,7 @@ import {
   UpdateHabitSchema,
   type CreateHabitDTO,
   type HabitFilterDTO,
-  type MongoIdDTO,
+  type EntityIdDTO,
   type UpdateHabitDTO,
 } from '@fokus/shared';
 import type { IHabitService } from '../interfaces/habit-interfaces.js';
@@ -32,8 +32,8 @@ export class HabitService implements IHabitService {
   }
 
   async findOneById(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument> {
     const habitDoc = await this.habitRepository.findOneById(habitId, userId);
     if (!habitDoc) {
@@ -48,7 +48,7 @@ export class HabitService implements IHabitService {
 
   async findByFilter(
     filter: HabitFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument[]> {
     const habitDocs = await this.habitRepository.findByFilter(filter, userId);
 
@@ -56,9 +56,9 @@ export class HabitService implements IHabitService {
   }
 
   async update(
-    habitId: MongoIdDTO,
+    habitId: EntityIdDTO,
     newData: UpdateHabitDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument> {
     // Verifies if the habit exists
     const currentHabitDoc = await this.habitRepository.findOneById(
@@ -103,7 +103,7 @@ export class HabitService implements IHabitService {
     }
   }
 
-  async delete(habitId: MongoIdDTO, userId: MongoIdDTO): Promise<void> {
+  async delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
     const deletedHabitDoc = await this.habitRepository.delete(habitId, userId);
     if (!deletedHabitDoc) {
       throw new AppServerError(

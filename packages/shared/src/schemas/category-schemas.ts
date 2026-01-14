@@ -1,8 +1,8 @@
 import * as z from 'zod';
-import { MongoIdSchema } from './mongo-schemas.js';
+import { EntityIdSchema } from './id-schemas.js';
 
 export const CreateCategorySchema = z.object({
-  userId: MongoIdSchema,
+  userId: EntityIdSchema,
 
   name: z
     .string("Expected type was 'string'.")
@@ -16,7 +16,7 @@ export const UpdateCategorySchema = CreateCategorySchema.pick({
 }).partial();
 
 export const ResponseCategorySchema = CreateCategorySchema.extend({
-  id: MongoIdSchema,
+  id: EntityIdSchema,
 });
 
 export type CreateCategoryDTO = z.infer<typeof CreateCategorySchema>;

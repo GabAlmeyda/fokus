@@ -1,8 +1,8 @@
 import * as z from 'zod';
-import { MongoIdSchema } from './mongo-schemas.js';
+import { EntityIdSchema } from './id-schemas.js';
 
 const BaseHabitSchema = z.object({
-  userId: MongoIdSchema,
+  userId: EntityIdSchema,
 
   title: z
     .string("Expected type was 'string'.")
@@ -146,7 +146,7 @@ export const UpdateHabitSchema = BaseHabitSchema.omit({
   .superRefine(habitRefinement);
 
 export const ResponseHabitSchema = BaseHabitSchema.extend({
-  id: MongoIdSchema,
+  id: EntityIdSchema,
 
   streak: z
     .number("Expected type was 'number'.")

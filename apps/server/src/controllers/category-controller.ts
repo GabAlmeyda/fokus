@@ -6,7 +6,7 @@ import {
   type UpdateCategoryDTO,
   type HTTPResponse,
   CreateCategorySchema,
-  MongoIdSchema,
+  EntityIdSchema,
   UpdateCategorySchema,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
@@ -43,8 +43,8 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const categoryId = EntityIdSchema.parse(req.params?.categoryId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const categoryDoc = await this.categoryService.findOneById(
         categoryId,
@@ -65,7 +65,7 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const name = req.params?.name;
       if (!name) {
@@ -91,7 +91,7 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
     try {
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const categoryDocs = await this.categoryService.findAll(userId);
       const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
@@ -107,8 +107,8 @@ export class CategoryController implements ICategoryController {
   ): Promise<HTTPResponse<ResponseCategoryDTO>> {
     try {
       const newData = UpdateCategorySchema.parse(req.body);
-      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const categoryId = EntityIdSchema.parse(req.params?.categoryId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const updatedCategoryDoc = await this.categoryService.update(
         newData,
@@ -125,8 +125,8 @@ export class CategoryController implements ICategoryController {
 
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
-      const categoryId = MongoIdSchema.parse(req.params?.categoryId);
-      const userId = MongoIdSchema.parse(req.userId);
+      const categoryId = EntityIdSchema.parse(req.params?.categoryId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       await this.categoryService.delete(categoryId, userId);
 

@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { MongoIdSchema } from './mongo-schemas.js';
+import { EntityIdSchema } from './id-schemas.js';
 
 const BaseGoalSchema = z.object({
-  userId: MongoIdSchema,
+  userId: EntityIdSchema,
 
-  categoryId: MongoIdSchema.nullable(),
+  categoryId: EntityIdSchema.nullable(),
 
   title: z
     .string("Expected type was 'string'.")
@@ -29,7 +29,7 @@ const BaseGoalSchema = z.object({
     .trim()
     .nullable(),
 
-  habits: z.array(MongoIdSchema).default([]),
+  habits: z.array(EntityIdSchema).default([]),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
@@ -59,7 +59,6 @@ const BaseGoalSchema = z.object({
 });
 
 type GoalRefinementData = z.infer<ReturnType<typeof BaseGoalSchema.partial>>;
-
 function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
@@ -145,7 +144,7 @@ export const GoalFilterSchema = z
     title: BaseGoalSchema.shape.title,
     categoryId: z.union([
       z.literal('none', { error: "Expected value was 'none'." }),
-      MongoIdSchema,
+      EntityIdSchema,
     ]),
     deadlineType: z.enum(['not-defined', 'has-deadline', 'this-week'], {
       error: () => ({
@@ -179,7 +178,7 @@ export const UpdateGoalSchema = BaseGoalSchema.omit({ userId: true })
   .superRefine(goalRefinement);
 
 export const ResponseGoalSchema = BaseGoalSchema.extend({
-  id: MongoIdSchema,
+  id: EntityIdSchema,
 
   isActive: z.boolean("Expected type was 'boolean'.").default(true),
 

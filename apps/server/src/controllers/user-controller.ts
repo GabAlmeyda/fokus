@@ -9,7 +9,7 @@ import {
   type HTTPResponse,
   RegisterUserSchema,
   LoginUserSchema,
-  MongoIdSchema,
+  EntityIdSchema,
   UpdateUserSchema,
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user-interfaces.js';
@@ -62,7 +62,7 @@ export class UserController implements IUserController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseUserDTO>> {
     try {
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const userDoc = await this.userService.findOneById(userId);
       const user = mapUserDocToPublicDTO(userDoc);
@@ -81,7 +81,7 @@ export class UserController implements IUserController {
   ): Promise<HTTPResponse<ResponseUserDTO>> {
     try {
       const newData = UpdateUserSchema.parse(req.body);
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
 
       const updatedUserDoc = await this.userService.update(userId, newData);
       const updatedUser = mapUserDocToPublicDTO(updatedUserDoc);
@@ -97,7 +97,7 @@ export class UserController implements IUserController {
 
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
-      const userId = MongoIdSchema.parse(req.userId);
+      const userId = EntityIdSchema.parse(req.userId);
       await this.userService.delete(userId);
 
       return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };

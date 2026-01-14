@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/user-controller.js';
-import { ResponseAuthSchema } from 'packages/shared/dist/index.js';
+import { HTTPStatusCode, ResponseAuthSchema } from '@fokus/shared';
 import authMiddleware from '../middlewares/auth-middleware.js';
 import type { AuthRequest } from '../types/express-types.js';
 
@@ -70,6 +70,10 @@ userRoutes.delete('/', authMiddleware, async (req, res) => {
   const { statusCode, body } = await userController.delete({
     userId: user.id,
   });
+  if (statusCode === HTTPStatusCode.OK) {
+    res.clearCookie('access_token');
+  }
+
   return res.status(statusCode).json(body);
 });
 

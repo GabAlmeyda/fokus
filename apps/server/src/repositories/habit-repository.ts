@@ -1,7 +1,7 @@
 import type {
   CreateHabitDTO,
   HabitFilterDTO,
-  MongoIdDTO,
+  EntityIdDTO,
   UpdateHabitDTO,
 } from '@fokus/shared';
 import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
@@ -20,8 +20,8 @@ export class HabitRepository implements IHabitRepository {
   }
 
   async findOneById(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null> {
     try {
       const habitDoc = await HabitModel.findOne({
@@ -37,7 +37,7 @@ export class HabitRepository implements IHabitRepository {
 
   async findByFilter(
     filter: HabitFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument[]> {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,9 +75,9 @@ export class HabitRepository implements IHabitRepository {
   }
 
   async update(
-    habitId: MongoIdDTO,
+    habitId: EntityIdDTO,
     newData: UpdateHabitDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null> {
     try {
       const updatedHabitDoc = await HabitModel.findOneAndUpdate(
@@ -93,8 +93,8 @@ export class HabitRepository implements IHabitRepository {
   }
 
   async delete(
-    habitId: MongoIdDTO,
-    userId: MongoIdDTO,
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<HabitDocument | null> {
     try {
       const deletedHabitDoc = await HabitModel.findOneAndDelete({

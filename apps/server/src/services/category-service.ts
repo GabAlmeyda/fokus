@@ -1,6 +1,6 @@
 import {
   type CreateCategoryDTO,
-  type MongoIdDTO,
+  type EntityIdDTO,
   type UpdateCategoryDTO,
 } from '@fokus/shared';
 import type { ICategoryService } from '../interfaces/category-interfaces.js';
@@ -30,8 +30,8 @@ export class CategoryService implements ICategoryService {
   }
 
   async findOneById(
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument> {
     const categoryDoc = await this.categoryRepository.findOneById(
       categoryId,
@@ -48,7 +48,7 @@ export class CategoryService implements ICategoryService {
   }
 
   async findOneByName(
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
     name: string,
   ): Promise<CategoryDocument> {
     const categoryDoc = await this.categoryRepository.findOneByName(
@@ -65,7 +65,7 @@ export class CategoryService implements ICategoryService {
     return categoryDoc;
   }
 
-  async findAll(userId: MongoIdDTO): Promise<CategoryDocument[]> {
+  async findAll(userId: EntityIdDTO): Promise<CategoryDocument[]> {
     const categoryDocs = await this.categoryRepository.findAll(userId);
 
     return categoryDocs;
@@ -73,8 +73,8 @@ export class CategoryService implements ICategoryService {
 
   async update(
     newData: UpdateCategoryDTO,
-    categoryId: MongoIdDTO,
-    userId: MongoIdDTO,
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<CategoryDocument> {
     const updatedCategoryDoc = await this.categoryRepository.update(
       newData,
@@ -91,7 +91,7 @@ export class CategoryService implements ICategoryService {
     return updatedCategoryDoc;
   }
 
-  async delete(categoryId: MongoIdDTO, userId: MongoIdDTO): Promise<void> {
+  async delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
     const deletedCategoryDoc = await this.categoryRepository.delete(
       categoryId,
       userId,

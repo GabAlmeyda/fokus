@@ -1,7 +1,7 @@
 import type {
   CreateGoalDTO,
   GoalFilterDTO,
-  MongoIdDTO,
+  EntityIdDTO,
   UpdateGoalDTO,
 } from '@fokus/shared';
 import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
@@ -28,8 +28,8 @@ export class GoalRepository implements IGoalRepository {
   }
 
   async findOneById(
-    goalId: MongoIdDTO,
-    userId: MongoIdDTO,
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {
       const goalDoc = await GoalModel.findOne({ _id: goalId, userId });
@@ -42,7 +42,7 @@ export class GoalRepository implements IGoalRepository {
 
   async findByFilter(
     filter: GoalFilterDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument[]> {
     try {
       const DEADLINE_TYPES_FILTER: Record<
@@ -98,9 +98,9 @@ export class GoalRepository implements IGoalRepository {
   }
 
   async update(
-    goalId: MongoIdDTO,
+    goalId: EntityIdDTO,
     newData: UpdateGoalDTO,
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {
       const updatedGoalDoc = await GoalModel.findOneAndUpdate(
@@ -116,8 +116,8 @@ export class GoalRepository implements IGoalRepository {
   }
 
   async delete(
-    goalId: MongoIdDTO,
-    userId: MongoIdDTO,
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {
       const deletedGoalDoc = await GoalModel.findOneAndDelete({

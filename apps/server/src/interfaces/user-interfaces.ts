@@ -6,7 +6,7 @@ import type {
   ResponseUserDTO,
   UpdateUserDTO,
   HTTPResponse,
-  MongoIdDTO,
+  EntityIdDTO,
 } from '@fokus/shared';
 import type { UserDocument } from '../models/user-model.js';
 
@@ -15,14 +15,14 @@ export interface IUserRepository {
 
   findOneByEmail(email: string): Promise<UserDocument | null>;
 
-  findOneById(userId: MongoIdDTO): Promise<UserDocument | null>;
+  findOneById(userId: EntityIdDTO): Promise<UserDocument | null>;
 
   update(
-    userId: MongoIdDTO,
+    userId: EntityIdDTO,
     newData: UpdateUserDTO,
   ): Promise<UserDocument | null>;
 
-  delete(userId: MongoIdDTO): Promise<UserDocument | null>;
+  delete(userId: EntityIdDTO): Promise<UserDocument | null>;
 }
 
 export interface IUserService {
@@ -32,11 +32,11 @@ export interface IUserService {
 
   login(user: LoginUserDTO): Promise<{ userDoc: UserDocument; token: string }>;
 
-  findOneById(userId: MongoIdDTO): Promise<UserDocument>;
+  findOneById(userId: EntityIdDTO): Promise<UserDocument>;
 
-  update(userId: MongoIdDTO, newData: UpdateUserDTO): Promise<UserDocument>;
+  update(userId: EntityIdDTO, newData: UpdateUserDTO): Promise<UserDocument>;
 
-  delete(userId: MongoIdDTO): Promise<void>;
+  delete(userId: EntityIdDTO): Promise<void>;
 }
 
 export interface IUserController {

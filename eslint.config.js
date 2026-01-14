@@ -35,7 +35,7 @@ export default [
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
           caughtErrorsIgnorePattern: '^_',
-         },
+        },
       ],
       '@typescript-eslint/no-explicit-any': 'error',
       'no-console': 'off',
