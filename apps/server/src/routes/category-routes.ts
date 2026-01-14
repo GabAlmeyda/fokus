@@ -7,80 +7,62 @@ const categoryController = new CategoryController();
 const categoryRoutes = Router({ mergeParams: true });
 
 categoryRoutes.post('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const category = authReq.body;
-  const userId = authReq.user.id;
+  const { body: reqBody, user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.create({
-    body: category,
-    userId,
+    body: reqBody,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-  const name = authReq.params?.name;
+  const { params, user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.findOneByName({
-    params: { name },
-    userId,
+    params,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-  const categoryId = authReq.params?.categoryId;
+  const { params, user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.findOneById({
-    params: { categoryId },
-    userId,
+    params,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 categoryRoutes.get('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
+  const { user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.findAll({
-    userId,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 categoryRoutes.patch('/:categoryId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const newData = authReq.body;
-  const categoryId = authReq.params?.categoryId;
-  const userId = authReq.user.id;
+  const { params, body: reqBody, user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.update({
-    body: newData,
-    params: { categoryId },
-    userId,
+    body: reqBody,
+    params,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 categoryRoutes.delete('/:categoryId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const categoryId = authReq.params?.categoryId;
-  const userId = authReq.user.id;
+  const { params, user } = req as AuthRequest;
 
   const { statusCode, body } = await categoryController.delete({
-    params: { categoryId },
-    userId,
+    params,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 

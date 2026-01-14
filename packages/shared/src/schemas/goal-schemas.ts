@@ -29,7 +29,7 @@ const BaseGoalSchema = z.object({
     .trim()
     .nullable(),
 
-  habits: z.array(MongoIdSchema),
+  habits: z.array(MongoIdSchema).default([]),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
@@ -99,6 +99,16 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
         });
       }
       break;
+
+    case undefined:
+      break;
+
+    default: {
+      const exhaustiveCheck: never = data.type;
+      throw new Error(
+        `[goal-schema.ts (server)] Unhandled case '${exhaustiveCheck}'`,
+      );
+    }
   }
 
   // Validation of the date
@@ -124,7 +134,10 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   }
 }
 
-export const CreateGoalSchema = BaseGoalSchema.superRefine(goalRefinement);
+export const CreateGoalSchema = BaseGoalSchema.extend({
+  targetValue: BaseGoalSchema.shape.targetValue.default(null),
+  unitOfMeasure: BaseGoalSchema.shape.unitOfMeasure.default(null),
+}).superRefine(goalRefinement);
 
 export const GoalFilterSchema = z
   .object({

@@ -7,70 +7,52 @@ const goalController = new GoalController();
 const goalRoutes = Router({ mergeParams: true });
 
 goalRoutes.post('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
+  const { user, body: reqBody } = req as AuthRequest;
 
   const { statusCode, body } = await goalController.create({
-    body: { ...authReq.body },
-    userId,
+    body: reqBody,
+    userId: user.id,
   });
   return res.status(statusCode).json(body);
 });
 
 goalRoutes.get('/:goalId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const goalId = authReq.params?.goalId;
-  const userId = authReq.user.id;
+  const { user, params } = req as AuthRequest;
 
   const { statusCode, body } = await goalController.findOneById({
-    params: { goalId },
-    userId,
+    params,
+    userId: user.id,
   });
   return res.status(statusCode).json(body);
 });
 
 goalRoutes.get('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-  const title = Array.isArray(authReq.query.title)
-    ? authReq.query.title[0]?.toString()
-    : authReq.query.title?.toString();
-  const categoryId = Array.isArray(authReq.query.categoryId)
-    ? authReq.query.categoryId[0]?.toString()
-    : authReq.query.categoryId?.toString();
-  const deadlineType = Array.isArray(authReq.query.deadlineType)
-    ? authReq.query.deadlineType[0]?.toString()
-    : authReq.query.deadlineType?.toString();
+  const { user, query } = req as AuthRequest;
 
   const { statusCode, body } = await goalController.findByFilter({
-    query: { title, categoryId, deadlineType },
-    userId,
+    query,
+    userId: user.id,
   });
   return res.status(statusCode).json(body);
 });
 
 goalRoutes.patch('/:goalId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const goalId = authReq.params?.goalId;
-  const newData = authReq.body;
-  const userId = authReq.user.id;
+  const { params, body: reqBody, user } = req as AuthRequest;
 
   const { statusCode, body } = await goalController.update({
-    params: { goalId },
-    body: newData,
-    userId,
+    params,
+    body: reqBody,
+    userId: user.id,
   });
   return res.status(statusCode).json(body);
 });
 
 goalRoutes.delete('/:goalId', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const goalId = authReq.params?.goalId;
-  const userId = authReq.user.id;
+  const { params, user } = req as AuthRequest;
 
   const { statusCode, body } = await goalController.delete({
-    params: { goalId },
-    userId,
+    params,
+    userId: user.id,
   });
   return res.status(statusCode).json(body);
 });

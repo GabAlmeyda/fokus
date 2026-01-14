@@ -8,11 +8,12 @@ const userRoutes = Router({ mergeParams: true });
 const userController = new UserController();
 
 userRoutes.post('/auth/register', async (req, res) => {
-  const registerData = req?.body;
+  const { body: reqBody } = req;
 
   const { statusCode, body } = await userController.register({
-    body: registerData,
+    body: reqBody,
   });
+
   const validation = ResponseAuthSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
@@ -22,16 +23,16 @@ userRoutes.post('/auth/register', async (req, res) => {
       maxAge: 1000 * 60 * 15,
     });
   }
-
   return res.status(statusCode).json(body);
 });
 
 userRoutes.post('/auth/login', async (req, res) => {
-  const loginData = req?.body;
+  const { body: reqBody } = req;
 
   const { statusCode, body } = await userController.login({
-    body: loginData,
+    body: reqBody,
   });
+
   const validation = ResponseAuthSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
@@ -41,42 +42,34 @@ userRoutes.post('/auth/login', async (req, res) => {
       maxAge: 1000 * 60 * 15,
     });
   }
-
   return res.status(statusCode).json(body);
 });
 
 userRoutes.get('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
+  const { user } = req as AuthRequest;
 
   const { statusCode, body } = await userController.findOneById({
-    userId,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 userRoutes.patch('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
-  const newData = req?.body;
+  const { body: reqBody, user } = req as AuthRequest;
 
   const { statusCode, body } = await userController.update({
-    body: newData,
-    userId,
+    body: reqBody,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 
 userRoutes.delete('/', authMiddleware, async (req, res) => {
-  const authReq = req as AuthRequest;
-  const userId = authReq.user.id;
+  const { user } = req as AuthRequest;
 
   const { statusCode, body } = await userController.delete({
-    userId,
+    userId: user.id,
   });
-
   return res.status(statusCode).json(body);
 });
 

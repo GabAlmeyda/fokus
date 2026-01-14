@@ -1,7 +1,9 @@
+import type { ParsedQs } from 'qs';
+
 export type HTTPRequest<B> = {
   headers?: Record<string, string | undefined>;
   params?: Record<string, string | undefined>;
-  query?: Record<string, string | string[] | undefined>;
+  query?: ParsedQs;
   body?: B;
   userId?: string;
 };

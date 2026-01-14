@@ -60,43 +60,59 @@ type HabitRefinementData = z.infer<ReturnType<typeof BaseHabitSchema.partial>>;
 function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
-  if (data.type === 'qualitative') {
-    if (data.progressImpactValue != null) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['progressImpactValue'],
-        message: "In qualitative habits, 'progressImpactValue' must be 'null'.",
-      });
-    }
-    if (data.unitOfMeasure != null) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['unitOfMeasure'],
-        message: "In qualitative habits, 'unitOfMeasure' must be 'null'.",
-      });
-    }
-  }
+  switch (data.type) {
+    case 'qualitative':
+      if (data.progressImpactValue != null) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['progressImpactValue'],
+          message:
+            "In qualitative habits, 'progressImpactValue' must be 'null'.",
+        });
+      }
+      if (data.unitOfMeasure != null) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['unitOfMeasure'],
+          message: "In qualitative habits, 'unitOfMeasure' must be 'null'.",
+        });
+      }
+      break;
 
-  if (data.type === 'quantitative') {
-    if (!data.progressImpactValue) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['progressImpactValue'],
-        message:
-          "In quantitative habits, 'progressImpactValue' must be provided.",
-      });
-    }
-    if (!data.unitOfMeasure) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['unitOfMeasure'],
-        message: "In quantitative habits, 'unitOfMeasure' must be provided.",
-      });
+    case 'quantitative':
+      if (!data.progressImpactValue) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['progressImpactValue'],
+          message:
+            "In quantitative habits, 'progressImpactValue' must be provided.",
+        });
+      }
+      if (!data.unitOfMeasure) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['unitOfMeasure'],
+          message: "In quantitative habits, 'unitOfMeasure' must be provided.",
+        });
+      }
+      break;
+
+    case undefined:
+      break;
+
+    default: {
+      const exhaustiveCheck: never = data.type;
+      throw new Error(
+        `[habit-schema.ts (server)] Unhandled case '${exhaustiveCheck}'`,
+      );
     }
   }
 }
 
-export const CreateHabitSchema = BaseHabitSchema.superRefine(habitRefinement);
+export const CreateHabitSchema = BaseHabitSchema.extend({
+  progressImpactValue: BaseHabitSchema.shape.progressImpactValue.default(null),
+  unitOfMeasure: BaseHabitSchema.shape.unitOfMeasure.default(null),
+}).superRefine(habitRefinement);
 
 export const HabitFilterSchema = BaseHabitSchema.pick({
   title: true,
