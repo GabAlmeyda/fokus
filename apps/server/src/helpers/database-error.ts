@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { AppServerError } from './app-server-error.js';
 import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
 
-export class MongoRepositoryError extends AppServerError {
+export class DatabaseError extends AppServerError {
   constructor(
     errorType: keyof typeof HTTPStatusCode,
     message: string,
@@ -10,9 +10,25 @@ export class MongoRepositoryError extends AppServerError {
   ) {
     super(errorType, message, invalidFields);
 
-    this.name = 'MongoRepositoryError';
+    this.name = 'DatabaseError';
     Object.setPrototypeOf(this, new.target.prototype);
     Error.captureStackTrace(this);
+  }
+
+  get isConflict() {
+    return this.errorType === 'CONFLICT';
+  }
+
+  get isUnprocessable() {
+    return this.errorType === 'UNPROCESSABLE';
+  }
+
+  get isBadRequest() {
+    return this.errorType === 'BAD_REQUEST';
+  }
+
+  get isInternalServerError() {
+    return this.errorType === 'INTERNAL_SERVER_ERROR';
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +44,7 @@ export class MongoRepositoryError extends AppServerError {
 
       const fields = invalidFields.map((err) => `'${err.field}'`).join(', ');
 
-      return new MongoRepositoryError(
+      return new DatabaseError(
         'UNPROCESSABLE',
         `Validation error on fields: ${fields}`,
         invalidFields,
@@ -39,7 +55,7 @@ export class MongoRepositoryError extends AppServerError {
       const field = Object.keys(err.keyValue)[0] as string;
       const value = Object.values(err.keyValue)[0] as string;
 
-      return new MongoRepositoryError(
+      return new DatabaseError(
         'CONFLICT',
         `Dupliated value for field '${field}'`,
         [
@@ -57,16 +73,13 @@ export class MongoRepositoryError extends AppServerError {
         message: `Invalid format in the field. Expected type: '${err.kind}', got '${typeof err.value}' instead. If the types are equal, the format of the provided field was invalid.`,
       };
 
-      return new MongoRepositoryError(
+      return new DatabaseError(
         'BAD_REQUEST',
         `Cast error on field '${err.path}'`,
         [invalidField],
       );
     }
 
-    return new MongoRepositoryError(
-      'INTERNAL_SERVER_ERROR',
-      'Internal Mongo Error',
-    );
+    return new DatabaseError('INTERNAL_SERVER_ERROR', 'Internal Mongo Error');
   }
 }

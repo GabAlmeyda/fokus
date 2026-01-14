@@ -135,6 +135,7 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
 }
 
 export const CreateGoalSchema = BaseGoalSchema.extend({
+  categoryId: BaseGoalSchema.shape.categoryId.default(null),
   targetValue: BaseGoalSchema.shape.targetValue.default(null),
   unitOfMeasure: BaseGoalSchema.shape.unitOfMeasure.default(null),
 }).superRefine(goalRefinement);

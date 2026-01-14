@@ -2,7 +2,7 @@ import type { MongoIdDTO, RegisterUserDTO, UpdateUserDTO } from '@fokus/shared';
 import type { IUserRepository } from '../interfaces/user-interfaces.js';
 import type { UserDocument } from '../models/user-model.js';
 import { UserModel } from '../models/user-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 
 export class UserRepository implements IUserRepository {
   async register(user: RegisterUserDTO): Promise<UserDocument> {
@@ -11,7 +11,7 @@ export class UserRepository implements IUserRepository {
 
       return createdUserDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
 
       return loggedUserDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -33,7 +33,7 @@ export class UserRepository implements IUserRepository {
 
       return userDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -53,7 +53,7 @@ export class UserRepository implements IUserRepository {
 
       return updatedUserDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -63,7 +63,7 @@ export class UserRepository implements IUserRepository {
 
       return deletedUserDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   CategoryModel,
   type CategoryDocument,
 } from '../models/category-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 
 export class CategoryRepository implements ICategoryRepository {
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
@@ -17,7 +17,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return createdCategoryDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -33,7 +33,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return categoryDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -49,7 +49,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return categoryDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -61,7 +61,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return categoryDocs;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -79,7 +79,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return updatedCategoryDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -95,7 +95,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       return deletedCategoryDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 }

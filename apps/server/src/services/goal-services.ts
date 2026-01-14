@@ -9,23 +9,12 @@ import type { IGoalService } from '../interfaces/goal-interfaces.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import { GoalRepository } from '../repositories/goal-repository.js';
 import { AppServerError } from '../helpers/app-server-error.js';
-import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
 
   async create(goal: CreateGoalDTO): Promise<GoalDocument> {
-    const goalDoc = (
-      await this.goalRepository.findByFilter({ title: goal.title }, goal.userId)
-    )[0];
-    if (goalDoc) {
-      throw new AppServerError(
-        'CONFLICT',
-        `Goal with title '${goal.title}' already exists.`,
-        [{ field: 'title', message: 'Value is already registered.' }],
-      );
-    }
-
     const goalToCreate: CreateGoalDTO & { currentValue: number | null } = {
       ...goal,
       currentValue: null,
@@ -34,9 +23,20 @@ export class GoalService implements IGoalService {
       goalToCreate.currentValue = 0;
     }
 
-    const createdGoalDoc = await this.goalRepository.create(goalToCreate);
+    try {
+      const createdGoalDoc = await this.goalRepository.create(goalToCreate);
+      return createdGoalDoc;
+    } catch (err) {
+      if (err instanceof DatabaseError && err.isConflict) {
+        throw new AppServerError(
+          'CONFLICT',
+          `Goal with title '${goal.title}' already exists.`,
+          [{ field: 'title', message: 'Value is already registered.' }],
+        );
+      }
 
-    return createdGoalDoc;
+      throw err;
+    }
   }
 
   async findOneById(
@@ -100,7 +100,7 @@ export class GoalService implements IGoalService {
 
       return updatedGoalDoc;
     } catch (err) {
-      if (err instanceof MongoRepositoryError && err.errorType === 'CONFLICT') {
+      if (err instanceof DatabaseError && err.isConflict) {
         throw new AppServerError(
           'CONFLICT',
           `Goal with title '${newData.title}' already exists.`,

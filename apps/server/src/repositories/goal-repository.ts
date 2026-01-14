@@ -6,7 +6,7 @@ import type {
 } from '@fokus/shared';
 import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
 import { GoalModel, type GoalDocument } from '../models/goal-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 import { Types } from 'mongoose';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
@@ -23,7 +23,7 @@ export class GoalRepository implements IGoalRepository {
 
       return createdGoalDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -36,7 +36,7 @@ export class GoalRepository implements IGoalRepository {
 
       return goalDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -93,7 +93,7 @@ export class GoalRepository implements IGoalRepository {
       const ret = await GoalModel.find(query);
       return ret;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -111,7 +111,7 @@ export class GoalRepository implements IGoalRepository {
 
       return updatedGoalDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -127,7 +127,7 @@ export class GoalRepository implements IGoalRepository {
 
       return deletedGoalDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 }

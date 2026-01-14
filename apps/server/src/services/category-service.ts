@@ -7,25 +7,26 @@ import type { ICategoryService } from '../interfaces/category-interfaces.js';
 import type { CategoryDocument } from '../models/category-model.js';
 import { CategoryRepository } from '../repositories/category-repository.js';
 import { AppServerError } from '../helpers/app-server-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository = new CategoryRepository();
 
   async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByName(
-      category.name,
-      category.userId,
-    );
-    if (categoryDoc) {
-      throw new AppServerError(
-        'CONFLICT',
-        `Category with name '${categoryDoc.name}' already exists.`,
-        [{ field: 'name', message: 'Value is already registered.' }],
-      );
-    }
+    try {
+      const createdCategoryDoc = await this.categoryRepository.create(category);
+      return createdCategoryDoc;
+    } catch (err) {
+      if (err instanceof DatabaseError && err.isConflict) {
+        throw new AppServerError(
+          'CONFLICT',
+          `Category with name '${category.name}' already exists.`,
+          [{ field: 'name', message: 'Value is already registered.' }],
+        );
+      }
 
-    const createdCategoryDoc = await this.categoryRepository.create(category);
-    return createdCategoryDoc;
+      throw err;
+    }
   }
 
   async findOneById(

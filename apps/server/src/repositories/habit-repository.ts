@@ -6,7 +6,7 @@ import type {
 } from '@fokus/shared';
 import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
 import { HabitModel, type HabitDocument } from '../models/habit-model.js';
-import { MongoRepositoryError } from '../helpers/mongo-repository-error.js';
+import { DatabaseError } from '../helpers/database-error.js';
 
 export class HabitRepository implements IHabitRepository {
   async create(habit: CreateHabitDTO): Promise<HabitDocument> {
@@ -15,7 +15,7 @@ export class HabitRepository implements IHabitRepository {
 
       return createdHabitDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -31,7 +31,7 @@ export class HabitRepository implements IHabitRepository {
 
       return habitDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -70,7 +70,7 @@ export class HabitRepository implements IHabitRepository {
       const habitDocs = await HabitModel.find(query);
       return habitDocs;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -88,7 +88,7 @@ export class HabitRepository implements IHabitRepository {
 
       return updatedHabitDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 
@@ -104,7 +104,7 @@ export class HabitRepository implements IHabitRepository {
 
       return deletedHabitDoc;
     } catch (err) {
-      throw MongoRepositoryError.fromMongoose(err);
+      throw DatabaseError.fromMongoose(err);
     }
   }
 }
