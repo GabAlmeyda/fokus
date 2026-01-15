@@ -8,12 +8,12 @@ import {
   CreateCategorySchema,
   EntityIdSchema,
   UpdateCategorySchema,
+  CategoryFilterSchema,
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category-interfaces.js';
 import { CategoryService } from '../services/category-service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
-import { AppServerError } from '../helpers/app-server-error.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
@@ -61,42 +61,22 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async findOneByName(
-    req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
-    try {
-      const userId = EntityIdSchema.parse(req.userId);
-
-      const name = req.params?.name;
-      if (!name) {
-        throw new AppServerError(
-          'BAD_REQUEST',
-          'Name of the collection not provided.',
-        );
-      }
-
-      const categoryDoc = await this.categoryService.findOneByName(
-        userId,
-        name,
-      );
-      const category = mapCategoryDocToPublicDTO(categoryDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: category };
-    } catch (err) {
-      return formatHTTPErrorResponse(err);
-    }
-  }
-
-  async findAll(
+  async findByFilter(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
     try {
+      const filter = CategoryFilterSchema.parse({
+        name: req.query?.name,
+      });
       const userId = EntityIdSchema.parse(req.userId);
 
-      const categoryDocs = await this.categoryService.findAll(userId);
-      const categories = categoryDocs.map((c) => mapCategoryDocToPublicDTO(c));
+      const returnedDocs = await this.categoryService.findByFilter(
+        filter,
+        userId,
+      );
+      const docs = returnedDocs.map((d) => mapCategoryDocToPublicDTO(d));
 
-      return { statusCode: HTTPStatusCode.OK, body: categories };
+      return { statusCode: HTTPStatusCode.OK, body: docs };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

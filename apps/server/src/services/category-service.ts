@@ -1,4 +1,5 @@
 import {
+  type CategoryFilterDTO,
   type CreateCategoryDTO,
   type EntityIdDTO,
   type UpdateCategoryDTO,
@@ -47,28 +48,16 @@ export class CategoryService implements ICategoryService {
     return categoryDoc;
   }
 
-  async findOneByName(
-    userId: EntityIdDTO,
-    name: string,
-  ): Promise<CategoryDocument> {
-    const categoryDoc = await this.categoryRepository.findOneByName(
-      name,
+  async findByFilter(
+    filter: CategoryFilterDTO,
+    userId: string,
+  ): Promise<CategoryDocument[]> {
+    const returnedDocs = await this.categoryRepository.findByFilter(
+      filter,
       userId,
     );
-    if (!categoryDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Category with name '${name}' not found.`,
-      );
-    }
 
-    return categoryDoc;
-  }
-
-  async findAll(userId: EntityIdDTO): Promise<CategoryDocument[]> {
-    const categoryDocs = await this.categoryRepository.findAll(userId);
-
-    return categoryDocs;
+    return returnedDocs;
   }
 
   async update(

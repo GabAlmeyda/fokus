@@ -140,7 +140,7 @@ export const CreateGoalSchema = BaseGoalSchema.extend({
 }).superRefine(goalRefinement);
 
 export const GoalFilterSchema = z
-  .object({
+  .strictObject({
     title: BaseGoalSchema.shape.title,
     categoryId: z.union([
       z.literal('none', { error: "Expected value was 'none'." }),

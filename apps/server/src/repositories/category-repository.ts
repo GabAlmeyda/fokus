@@ -2,6 +2,7 @@ import type {
   CreateCategoryDTO,
   UpdateCategoryDTO,
   EntityIdDTO,
+  CategoryFilterDTO,
 } from '@fokus/shared';
 import type { ICategoryRepository } from '../interfaces/category-interfaces.js';
 import {
@@ -37,29 +38,36 @@ export class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findOneByName(
-    name: string,
-    userId: EntityIdDTO,
-  ): Promise<CategoryDocument | null> {
+  async findByFilter(
+    filter: CategoryFilterDTO,
+    userId: string,
+  ): Promise<CategoryDocument[]> {
     try {
-      const categoryDoc = await CategoryModel.findOne({
-        userId,
-        name,
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const query: Record<string, any> = { userId };
 
-      return categoryDoc;
-    } catch (err) {
-      throw DatabaseError.fromMongoose(err);
-    }
-  }
+      const property = Object.keys(filter).find(
+        (k) => typeof filter[k as keyof CategoryFilterDTO] !== 'undefined',
+      ) as keyof CategoryFilterDTO | undefined;
 
-  async findAll(userId: EntityIdDTO): Promise<CategoryDocument[]> {
-    try {
-      const categoryDocs = await CategoryModel.find({
-        userId,
-      });
+      switch (property) {
+        case 'name':
+          query[property] = filter[property];
+          break;
 
-      return categoryDocs;
+        case undefined:
+          break;
+
+        default: {
+          const exhaustiveCheck: never = property;
+          throw new Error(
+            `[category-repository.ts (server)] Unhandled case '${exhaustiveCheck}'.`,
+          );
+        }
+      }
+
+      const returnedDocs = CategoryModel.find(query);
+      return returnedDocs;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

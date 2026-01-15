@@ -24,12 +24,18 @@ const categorySchema = new Schema(
   },
   {
     timestamps: true,
+    collation: { locale: 'pt', strength: 2 },
   },
 );
 
 categorySchema.index(
   { userId: 1, name: 1 },
-  { name: 'uidx_userId_name', background: true, unique: true },
+  {
+    name: 'uidx_userId_name',
+    background: true,
+    unique: true,
+    collation: { locale: 'pt', strength: 2 },
+  },
 );
 
 type CategorySchema = InferSchemaType<typeof categorySchema>;

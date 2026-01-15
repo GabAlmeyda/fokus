@@ -5,6 +5,7 @@ import type {
   ResponseCategoryDTO,
   HTTPResponse,
   EntityIdDTO,
+  CategoryFilterDTO,
 } from '@fokus/shared';
 import type { CategoryDocument } from '../models/category-model.js';
 
@@ -16,12 +17,10 @@ export interface ICategoryRepository {
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
 
-  findOneByName(
-    userId: EntityIdDTO,
-    name: string,
-  ): Promise<CategoryDocument | null>;
-
-  findAll(userId: EntityIdDTO): Promise<CategoryDocument[]>;
+  findByFilter(
+    filter: CategoryFilterDTO,
+    userId: string,
+  ): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
@@ -43,9 +42,10 @@ export interface ICategoryService {
     userId: EntityIdDTO,
   ): Promise<CategoryDocument>;
 
-  findOneByName(userId: EntityIdDTO, name: string): Promise<CategoryDocument>;
-
-  findAll(userId?: string): Promise<CategoryDocument[]>;
+  findByFilter(
+    filter: CategoryFilterDTO,
+    userId: string,
+  ): Promise<CategoryDocument[]>;
 
   update(
     newData: UpdateCategoryDTO,
@@ -65,11 +65,9 @@ export interface ICategoryController {
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ResponseCategoryDTO>>;
 
-  findOneByName(
+  findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
-
-  findAll(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
+  ): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
 
   update(
     req: HTTPRequest<UpdateCategoryDTO>,

@@ -16,16 +16,6 @@ categoryRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-categoryRoutes.get('/names/:name', authMiddleware, async (req, res) => {
-  const { params, user } = req as AuthRequest;
-
-  const { statusCode, body } = await categoryController.findOneByName({
-    params,
-    userId: user.id,
-  });
-  return res.status(statusCode).json(body);
-});
-
 categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 
@@ -37,9 +27,10 @@ categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
 });
 
 categoryRoutes.get('/', authMiddleware, async (req, res) => {
-  const { user } = req as AuthRequest;
+  const { query, user } = req as AuthRequest;
 
-  const { statusCode, body } = await categoryController.findAll({
+  const { statusCode, body } = await categoryController.findByFilter({
+    query,
     userId: user.id,
   });
   return res.status(statusCode).json(body);

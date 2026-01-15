@@ -121,6 +121,7 @@ export const HabitFilterSchema = BaseHabitSchema.pick({
     weekDay: BaseHabitSchema.shape.weekDays.element,
   })
   .partial()
+  .strict()
   .superRefine(
     (data: z.infer<typeof HabitFilterSchema>, ctx: z.RefinementCtx) => {
       const filledKeys = Object.keys(data).filter(
