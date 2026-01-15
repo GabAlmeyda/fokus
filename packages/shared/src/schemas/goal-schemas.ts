@@ -137,6 +137,7 @@ export const CreateGoalSchema = BaseGoalSchema.extend({
   categoryId: BaseGoalSchema.shape.categoryId.default(null),
   targetValue: BaseGoalSchema.shape.targetValue.default(null),
   unitOfMeasure: BaseGoalSchema.shape.unitOfMeasure.default(null),
+  deadline: BaseGoalSchema.shape.deadline.default(null),
 }).superRefine(goalRefinement);
 
 export const GoalFilterSchema = z

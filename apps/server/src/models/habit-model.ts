@@ -1,11 +1,22 @@
-import {
-  Schema,
-  model,
-  type HydratedDocument,
-  type InferSchemaType,
-} from 'mongoose';
+import { Schema, model, type HydratedDocument } from 'mongoose';
 
-const habitSchema = new Schema(
+interface IHabit {
+  userId: Schema.Types.ObjectId | string;
+  title: string;
+  type: 'qualitative' | 'quantitative';
+  progressImpactValue: number | null;
+  unitOfMeasure: string | null;
+  weekDays: ('seg' | 'ter' | 'qua' | 'qui' | 'sex' | 'sab' | 'dom')[];
+  reminder: string | null;
+  streak: number;
+  bestStreak: number;
+  color: string;
+  icon: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const habitSchema = new Schema<IHabit>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -24,12 +35,12 @@ const habitSchema = new Schema(
       default: 'qualitative',
     },
     progressImpactValue: {
-      type: Number as unknown as typeof Number | null,
+      type: Number,
       min: 1,
       default: null,
     },
     unitOfMeasure: {
-      type: String as unknown as typeof String | null,
+      type: String,
       trim: true,
       minLength: 1,
       lowercase: true,
@@ -41,7 +52,7 @@ const habitSchema = new Schema(
       required: true,
     },
     reminder: {
-      type: String as unknown as typeof String | null,
+      type: String,
       match: /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
       default: null,
     },
@@ -92,6 +103,5 @@ habitSchema.index(
   },
 );
 
-type HabitSchema = InferSchemaType<typeof habitSchema>;
-export type HabitDocument = HydratedDocument<HabitSchema>;
-export const HabitModel = model<HabitDocument>('Habit', habitSchema);
+export type HabitDocument = HydratedDocument<IHabit>;
+export const HabitModel = model<IHabit>('Habit', habitSchema);

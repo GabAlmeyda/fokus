@@ -1,12 +1,16 @@
-import {
-  Schema,
-  model,
-  type HydratedDocument,
-  type InferSchemaType,
-} from 'mongoose';
+import { Schema, model, type HydratedDocument } from 'mongoose';
 import emailValidator from 'email-validator';
 
-const userSchema = new Schema(
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  themeMode: 'light' | 'dark';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -47,6 +51,5 @@ userSchema.index(
   { name: 'uidx_email', unique: true, background: true },
 );
 
-type UserSchema = InferSchemaType<typeof userSchema>;
-export type UserDocument = HydratedDocument<UserSchema>;
-export const UserModel = model<UserDocument>('User', userSchema);
+export type UserDocument = HydratedDocument<IUser>;
+export const UserModel = model<IUser>('User', userSchema);

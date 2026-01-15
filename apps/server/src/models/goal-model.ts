@@ -1,11 +1,23 @@
-import {
-  Schema,
-  model,
-  type HydratedDocument,
-  type InferSchemaType,
-} from 'mongoose';
+import { Types, Schema, model, type HydratedDocument } from 'mongoose';
 
-const goalSchema = new Schema(
+interface IGoal {
+  userId: Types.ObjectId | string;
+  categoryId: Types.ObjectId | string | null;
+  title: string;
+  type: 'qualitative' | 'quantitative';
+  currentValue: number | null;
+  targetValue: number | null;
+  unitOfMeasure: string | null;
+  habits: (Types.ObjectId | string)[];
+  deadline: Date | null;
+  isActive: boolean;
+  color: string;
+  icon: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const goalSchema = new Schema<IGoal>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -13,9 +25,7 @@ const goalSchema = new Schema(
       required: true,
     },
     categoryId: {
-      type: Schema.Types.ObjectId as unknown as
-        | typeof Schema.Types.ObjectId
-        | null,
+      type: Schema.Types.ObjectId,
       ref: 'Category',
       default: null,
     },
@@ -31,17 +41,17 @@ const goalSchema = new Schema(
       default: 'qualitative',
     },
     currentValue: {
-      type: Number as unknown as typeof Number | null,
+      type: Number,
       min: 0,
       default: null,
     },
     targetValue: {
-      type: Number as unknown as typeof Number | null,
+      type: 'Number',
       min: 0,
       default: null,
     },
     unitOfMeasure: {
-      type: String as unknown as typeof String | null,
+      type: String,
       minLength: 1,
       trim: true,
       lowercase: true,
@@ -53,7 +63,7 @@ const goalSchema = new Schema(
       default: [],
     },
     deadline: {
-      type: Date as unknown as typeof Date | null,
+      type: Date,
       default: null,
       set: function (val: Date | null) {
         if (!val) return null;
@@ -108,6 +118,5 @@ goalSchema.index(
   { name: 'idx_userId_deadline', background: true },
 );
 
-type GoalSchema = InferSchemaType<typeof goalSchema>;
-export type GoalDocument = HydratedDocument<GoalSchema>;
-export const GoalModel = model<GoalDocument>('Goal', goalSchema);
+export type GoalDocument = HydratedDocument<IGoal>;
+export const GoalModel = model<IGoal>('Goal', goalSchema);
