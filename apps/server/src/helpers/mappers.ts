@@ -1,8 +1,10 @@
 import type { CategoryDocument } from '../models/category-model.js';
 import type { GoalDocument } from '../models/goal-model.js';
 import type { HabitDocument } from '../models/habit-model.js';
+import type { ProgressLogDocument } from '../models/progress-log-model.js';
 import type { UserDocument } from '../models/user-model.js';
 import type {
+  ProgressLogResponseDTO,
   ResponseCategoryDTO,
   ResponseGoalDTO,
   ResponseHabitDTO,
@@ -60,5 +62,18 @@ export function mapGoalDocToPublicDTO(goal: GoalDocument): ResponseGoalDTO {
     isActive: goal.isActive,
     color: goal.color,
     icon: goal.icon,
+  };
+}
+
+export function mapProgressLogDocToPublicDTO(
+  progressLog: ProgressLogDocument,
+): ProgressLogResponseDTO {
+  return {
+    id: progressLog._id.toString(),
+    userId: progressLog.userId.toString(),
+    goalId: progressLog.goalId?.toString() || null,
+    habitId: progressLog.habitId?.toString() || null,
+    value: progressLog.value,
+    dateString: progressLog.dateString,
   };
 }
