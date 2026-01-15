@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id-schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 
 const ProgressLogBaseSchema = z.object({
   userId: EntityIdSchema,

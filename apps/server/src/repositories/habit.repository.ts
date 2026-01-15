@@ -1,15 +1,15 @@
 import type {
-  CreateHabitDTO,
+  HabitCreateDTO,
   HabitFilterDTO,
   EntityIdDTO,
-  UpdateHabitDTO,
+  HabitUpdateDTO,
 } from '@fokus/shared';
-import type { IHabitRepository } from '../interfaces/habit-interfaces.js';
-import { HabitModel, type HabitDocument } from '../models/habit-model.js';
-import { DatabaseError } from '../helpers/database-error.js';
+import type { IHabitRepository } from '../interfaces/habit.interfaces.js';
+import { HabitModel, type HabitDocument } from '../models/habit.model.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class HabitRepository implements IHabitRepository {
-  async create(habit: CreateHabitDTO): Promise<HabitDocument> {
+  async create(habit: HabitCreateDTO): Promise<HabitDocument> {
     try {
       const createdHabitDoc = await HabitModel.create(habit);
 
@@ -76,7 +76,7 @@ export class HabitRepository implements IHabitRepository {
 
   async update(
     habitId: EntityIdDTO,
-    newData: UpdateHabitDTO,
+    newData: HabitUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<HabitDocument | null> {
     try {

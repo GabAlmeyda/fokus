@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
-import type { AuthRequest } from '../types/express-types.js';
-import { AppServerError } from '../helpers/app-server-error.js';
+import type { AuthRequest } from '../types/express.types.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import jwt from 'jsonwebtoken';
 import { type TokenPayloadDTO } from 'packages/shared/dist/index.js';
-import { UserRepository } from '../repositories/user-repository.js';
+import { UserRepository } from '../repositories/user.repository.js';
 
 const userRepository = new UserRepository();
 

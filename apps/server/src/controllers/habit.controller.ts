@@ -1,28 +1,28 @@
 import {
   type HTTPRequest,
-  type CreateHabitDTO,
+  type HabitCreateDTO,
   type HTTPResponse,
-  type ResponseHabitDTO,
+  type HabitResponseDTO,
   HTTPStatusCode,
-  CreateHabitSchema,
+  HabitCreateSchema,
   EntityIdSchema,
-  UpdateHabitSchema,
-  type UpdateHabitDTO,
+  HabitUpdateSchema,
+  type HabitUpdateDTO,
   HabitFilterSchema,
 } from '@fokus/shared';
-import type { IHabitController } from '../interfaces/habit-interfaces.js';
-import { HabitService } from '../services/habit-service.js';
+import type { IHabitController } from '../interfaces/habit.interfaces.js';
+import { HabitService } from '../services/habit.service.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
-import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class HabitController implements IHabitController {
   private readonly habitService = new HabitService();
 
   async create(
-    req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+    req: HTTPRequest<Omit<HabitCreateDTO, 'userId'>>,
+  ): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
-      const habit = CreateHabitSchema.parse({
+      const habit = HabitCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
@@ -38,7 +38,7 @@ export class HabitController implements IHabitController {
 
   async findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+  ): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
       const userId = EntityIdSchema.parse(req.userId);
@@ -54,7 +54,7 @@ export class HabitController implements IHabitController {
 
   async findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO[]>> {
+  ): Promise<HTTPResponse<HabitResponseDTO[]>> {
     try {
       const filter = HabitFilterSchema.parse({
         title: req.query?.title,
@@ -72,11 +72,11 @@ export class HabitController implements IHabitController {
   }
 
   async update(
-    req: HTTPRequest<UpdateHabitDTO>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>> {
+    req: HTTPRequest<HabitUpdateDTO>,
+  ): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
-      const newData = UpdateHabitSchema.parse(req.body);
+      const newData = HabitUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
       const updatedHabitDoc = await this.habitService.update(

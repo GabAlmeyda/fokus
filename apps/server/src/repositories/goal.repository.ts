@@ -1,18 +1,18 @@
 import type {
-  CreateGoalDTO,
+  GoalCreateDTO,
   GoalFilterDTO,
   EntityIdDTO,
-  UpdateGoalDTO,
+  GoalUpdateDTO,
 } from '@fokus/shared';
-import type { IGoalRepository } from '../interfaces/goal-interfaces.js';
-import { GoalModel, type GoalDocument } from '../models/goal-model.js';
-import { DatabaseError } from '../helpers/database-error.js';
+import type { IGoalRepository } from '../interfaces/goal.interfaces.js';
+import { GoalModel, type GoalDocument } from '../models/goal.model.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { Types } from 'mongoose';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 export class GoalRepository implements IGoalRepository {
   async create(
-    goal: CreateGoalDTO & { currentValue: number | null },
+    goal: GoalCreateDTO & { currentValue: number | null },
   ): Promise<GoalDocument> {
     try {
       const goalToCreate = {
@@ -99,7 +99,7 @@ export class GoalRepository implements IGoalRepository {
 
   async update(
     goalId: EntityIdDTO,
-    newData: UpdateGoalDTO,
+    newData: GoalUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {

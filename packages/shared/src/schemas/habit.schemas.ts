@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id-schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 
-const BaseHabitSchema = z.object({
+const HabitBaseSchema = z.object({
   userId: EntityIdSchema,
 
   title: z
@@ -56,7 +56,7 @@ const BaseHabitSchema = z.object({
     .min(1, 'Icon name cannot be less than 1 character.'),
 });
 
-type HabitRefinementData = z.infer<ReturnType<typeof BaseHabitSchema.partial>>;
+type HabitRefinementData = z.infer<ReturnType<typeof HabitBaseSchema.partial>>;
 function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
@@ -109,16 +109,11 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   }
 }
 
-export const CreateHabitSchema = BaseHabitSchema.extend({
-  progressImpactValue: BaseHabitSchema.shape.progressImpactValue.default(null),
-  unitOfMeasure: BaseHabitSchema.shape.unitOfMeasure.default(null),
-}).superRefine(habitRefinement);
-
-export const HabitFilterSchema = BaseHabitSchema.pick({
+export const HabitFilterSchema = HabitBaseSchema.pick({
   title: true,
 })
   .extend({
-    weekDay: BaseHabitSchema.shape.weekDays.element,
+    weekDay: HabitBaseSchema.shape.weekDays.element,
   })
   .partial()
   .strict()
@@ -140,13 +135,22 @@ export const HabitFilterSchema = BaseHabitSchema.pick({
       }
     },
   );
-export const UpdateHabitSchema = BaseHabitSchema.omit({
+export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
+
+export const HabitCreateSchema = HabitBaseSchema.extend({
+  progressImpactValue: HabitBaseSchema.shape.progressImpactValue.default(null),
+  unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure.default(null),
+}).superRefine(habitRefinement);
+export type HabitCreateDTO = z.infer<typeof HabitCreateSchema>;
+
+export const HabitUpdateSchema = HabitBaseSchema.omit({
   userId: true,
 })
   .partial()
   .superRefine(habitRefinement);
+export type HabitUpdateDTO = z.infer<typeof HabitUpdateSchema>;
 
-export const ResponseHabitSchema = BaseHabitSchema.extend({
+export const HabitResponseSchema = HabitBaseSchema.extend({
   id: EntityIdSchema,
 
   streak: z
@@ -159,8 +163,4 @@ export const ResponseHabitSchema = BaseHabitSchema.extend({
     .min(0, 'Minimum value is 0.')
     .default(0),
 });
-
-export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
-export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
-export type UpdateHabitDTO = z.infer<typeof UpdateHabitSchema>;
-export type ResponseHabitDTO = z.infer<typeof ResponseHabitSchema>;
+export type HabitResponseDTO = z.infer<typeof HabitResponseSchema>;

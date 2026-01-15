@@ -1,21 +1,21 @@
 import {
-  UpdateGoalSchema,
-  type CreateGoalDTO,
+  GoalUpdateSchema,
+  type GoalCreateDTO,
   type GoalFilterDTO,
   type EntityIdDTO,
-  type UpdateGoalDTO,
+  type GoalUpdateDTO,
 } from '@fokus/shared';
-import type { IGoalService } from '../interfaces/goal-interfaces.js';
-import type { GoalDocument } from '../models/goal-model.js';
-import { GoalRepository } from '../repositories/goal-repository.js';
-import { AppServerError } from '../helpers/app-server-error.js';
-import { DatabaseError } from '../helpers/database-error.js';
+import type { IGoalService } from '../interfaces/goal.interfaces.js';
+import type { GoalDocument } from '../models/goal.model.js';
+import { GoalRepository } from '../repositories/goal.repository.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
 
-  async create(goal: CreateGoalDTO): Promise<GoalDocument> {
-    const goalToCreate: CreateGoalDTO & { currentValue: number | null } = {
+  async create(goal: GoalCreateDTO): Promise<GoalDocument> {
+    const goalToCreate: GoalCreateDTO & { currentValue: number | null } = {
       ...goal,
       currentValue: null,
     };
@@ -65,7 +65,7 @@ export class GoalService implements IGoalService {
 
   async update(
     goalId: EntityIdDTO,
-    newData: UpdateGoalDTO,
+    newData: GoalUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument> {
     // Verifies if the goal exists
@@ -83,7 +83,7 @@ export class GoalService implements IGoalService {
     // Validate the provided data
     const mergedGoal = { ...currentGoalDoc.toObject(), ...newData };
     mergedGoal.categoryId = mergedGoal.categoryId?.toString() ?? null;
-    UpdateGoalSchema.parse(mergedGoal);
+    GoalUpdateSchema.parse(mergedGoal);
 
     try {
       const updatedGoalDoc = await this.goalRepository.update(

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { CategoryController } from '../controllers/category-controller.js';
-import authMiddleware from '../middlewares/auth-middleware.js';
-import type { AuthRequest } from '../types/express-types.js';
+import { CategoryController } from '../controllers/category.controller.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
+import type { AuthRequest } from '../types/express.types.js';
 
 const categoryController = new CategoryController();
 const categoryRoutes = Router({ mergeParams: true });

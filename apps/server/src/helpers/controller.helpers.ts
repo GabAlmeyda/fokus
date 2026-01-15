@@ -3,7 +3,7 @@ import {
   HTTPStatusCode,
   type HTTPErrorResponse,
 } from '@fokus/shared';
-import { AppServerError } from './app-server-error.js';
+import { AppServerError } from './errors/app-server.errors.js';
 import { ZodError } from 'zod';
 
 export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {

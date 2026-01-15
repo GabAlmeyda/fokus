@@ -1,17 +1,17 @@
-import type { CategoryDocument } from '../models/category-model.js';
-import type { GoalDocument } from '../models/goal-model.js';
-import type { HabitDocument } from '../models/habit-model.js';
-import type { ProgressLogDocument } from '../models/progress-log-model.js';
-import type { UserDocument } from '../models/user-model.js';
+import type { CategoryDocument } from '../models/category.model.js';
+import type { GoalDocument } from '../models/goal.model.js';
+import type { HabitDocument } from '../models/habit.model.js';
+import type { ProgressLogDocument } from '../models/progress-log.model.js';
+import type { UserDocument } from '../models/user.model.js';
 import type {
   ProgressLogResponseDTO,
-  ResponseCategoryDTO,
-  ResponseGoalDTO,
-  ResponseHabitDTO,
-  ResponseUserDTO,
+  CategoryResponseDTO,
+  GoalResponseDTO,
+  HabitResponseDTO,
+  UserResponseDTO,
 } from '@fokus/shared';
 
-export function mapUserDocToPublicDTO(user: UserDocument): ResponseUserDTO {
+export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
   return {
     id: user._id.toString(),
     email: user.email,
@@ -22,7 +22,7 @@ export function mapUserDocToPublicDTO(user: UserDocument): ResponseUserDTO {
 
 export function mapCategoryDocToPublicDTO(
   category: CategoryDocument,
-): ResponseCategoryDTO {
+): CategoryResponseDTO {
   return {
     id: category._id.toString(),
     userId: category.userId.toString(),
@@ -30,7 +30,7 @@ export function mapCategoryDocToPublicDTO(
   };
 }
 
-export function mapHabitDocToPublicDTO(habit: HabitDocument): ResponseHabitDTO {
+export function mapHabitDocToPublicDTO(habit: HabitDocument): HabitResponseDTO {
   return {
     id: habit._id.toString(),
     userId: habit.userId.toString(),
@@ -47,7 +47,7 @@ export function mapHabitDocToPublicDTO(habit: HabitDocument): ResponseHabitDTO {
   };
 }
 
-export function mapGoalDocToPublicDTO(goal: GoalDocument): ResponseGoalDTO {
+export function mapGoalDocToPublicDTO(goal: GoalDocument): GoalResponseDTO {
   return {
     id: goal._id.toString(),
     userId: goal.userId.toString(),

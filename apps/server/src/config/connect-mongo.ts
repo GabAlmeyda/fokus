@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { UserModel } from '../models/user-model.js';
-import { CategoryModel } from '../models/category-model.js';
-import { HabitModel } from '../models/habit-model.js';
-import { GoalModel } from '../models/goal-model.js';
+import { UserModel } from '../models/user.model.js';
+import { CategoryModel } from '../models/category.model.js';
+import { HabitModel } from '../models/habit.model.js';
+import { GoalModel } from '../models/goal.model.js';
 
 export async function connectToMongoDB() {
   const MONGO_URI = process.env.MONGO_URI as string;

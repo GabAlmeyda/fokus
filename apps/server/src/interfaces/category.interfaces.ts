@@ -1,16 +1,16 @@
 import type {
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
+  CategoryCreateDTO,
+  CategoryUpdateDTO,
   HTTPRequest,
-  ResponseCategoryDTO,
+  CategoryResponseDTO,
   HTTPResponse,
   EntityIdDTO,
   CategoryFilterDTO,
 } from '@fokus/shared';
-import type { CategoryDocument } from '../models/category-model.js';
+import type { CategoryDocument } from '../models/category.model.js';
 
 export interface ICategoryRepository {
-  create(category: CreateCategoryDTO): Promise<CategoryDocument>;
+  create(category: CategoryCreateDTO): Promise<CategoryDocument>;
 
   findOneById(
     categoryId: EntityIdDTO,
@@ -23,7 +23,7 @@ export interface ICategoryRepository {
   ): Promise<CategoryDocument[]>;
 
   update(
-    newData: UpdateCategoryDTO,
+    newData: CategoryUpdateDTO,
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
@@ -35,7 +35,7 @@ export interface ICategoryRepository {
 }
 
 export interface ICategoryService {
-  create(category: CreateCategoryDTO): Promise<CategoryDocument>;
+  create(category: CategoryCreateDTO): Promise<CategoryDocument>;
 
   findOneById(
     categoryId: EntityIdDTO,
@@ -48,7 +48,7 @@ export interface ICategoryService {
   ): Promise<CategoryDocument[]>;
 
   update(
-    newData: UpdateCategoryDTO,
+    newData: CategoryUpdateDTO,
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<CategoryDocument>;
@@ -58,20 +58,20 @@ export interface ICategoryService {
 
 export interface ICategoryController {
   create(
-    req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
+    req: HTTPRequest<Omit<CategoryCreateDTO, 'userId'>>,
+  ): Promise<HTTPResponse<CategoryResponseDTO>>;
 
   findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
+  ): Promise<HTTPResponse<CategoryResponseDTO>>;
 
   findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO[]>>;
+  ): Promise<HTTPResponse<CategoryResponseDTO[]>>;
 
   update(
-    req: HTTPRequest<UpdateCategoryDTO>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>>;
+    req: HTTPRequest<CategoryUpdateDTO>,
+  ): Promise<HTTPResponse<CategoryResponseDTO>>;
 
   delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

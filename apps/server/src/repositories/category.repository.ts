@@ -1,18 +1,18 @@
 import type {
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
+  CategoryCreateDTO,
+  CategoryUpdateDTO,
   EntityIdDTO,
   CategoryFilterDTO,
 } from '@fokus/shared';
-import type { ICategoryRepository } from '../interfaces/category-interfaces.js';
+import type { ICategoryRepository } from '../interfaces/category.interfaces.js';
 import {
   CategoryModel,
   type CategoryDocument,
-} from '../models/category-model.js';
-import { DatabaseError } from '../helpers/database-error.js';
+} from '../models/category.model.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class CategoryRepository implements ICategoryRepository {
-  async create(category: CreateCategoryDTO): Promise<CategoryDocument> {
+  async create(category: CategoryCreateDTO): Promise<CategoryDocument> {
     try {
       const createdCategoryDoc = await CategoryModel.create(category);
 
@@ -74,7 +74,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async update(
-    newData: UpdateCategoryDTO,
+    newData: CategoryUpdateDTO,
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {

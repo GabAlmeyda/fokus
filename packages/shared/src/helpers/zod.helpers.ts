@@ -1,5 +1,5 @@
 import type { ZodError } from 'zod';
-import type { HTTPStatusCode, InvalidField } from '../types/http-types.js';
+import type { HTTPStatusCode, InvalidField } from '../types/http.types.js';
 
 export function formatZodError(error: ZodError): {
   errorType: keyof typeof HTTPStatusCode;

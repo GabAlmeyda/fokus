@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id-schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 
 const BaseCategorySchema = z.object({
   userId: EntityIdSchema,
@@ -32,18 +32,17 @@ export const CategoryFilterSchema = BaseCategorySchema.pick({
       }
     },
   );
+export type CategoryFilterDTO = z.infer<typeof CategoryFilterSchema>;
 
-export const CreateCategorySchema = BaseCategorySchema;
+export const CategoryCreateSchema = BaseCategorySchema;
+export type CategoryCreateDTO = z.infer<typeof CategoryCreateSchema>;
 
-export const UpdateCategorySchema = BaseCategorySchema.pick({
+export const CategoryUpdateSchema = BaseCategorySchema.pick({
   name: true,
 }).partial();
+export type CategoryUpdateDTO = z.infer<typeof CategoryUpdateSchema>;
 
-export const ResponseCategorySchema = BaseCategorySchema.extend({
+export const CategoryResponseSchema = BaseCategorySchema.extend({
   id: EntityIdSchema,
 });
-
-export type CategoryFilterDTO = z.infer<typeof CategoryFilterSchema>;
-export type CreateCategoryDTO = z.infer<typeof CreateCategorySchema>;
-export type UpdateCategoryDTO = z.infer<typeof UpdateCategorySchema>;
-export type ResponseCategoryDTO = z.infer<typeof ResponseCategorySchema>;
+export type CategoryResponseDTO = z.infer<typeof CategoryResponseSchema>;

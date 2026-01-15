@@ -1,15 +1,15 @@
 import type {
   EntityIdDTO,
-  RegisterUserDTO,
-  UpdateUserDTO,
+  UserRegisterDTO,
+  UserUpdateDTO,
 } from '@fokus/shared';
-import type { IUserRepository } from '../interfaces/user-interfaces.js';
-import type { UserDocument } from '../models/user-model.js';
-import { UserModel } from '../models/user-model.js';
-import { DatabaseError } from '../helpers/database-error.js';
+import type { IUserRepository } from '../interfaces/user.interfaces.js';
+import type { UserDocument } from '../models/user.model.js';
+import { UserModel } from '../models/user.model.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class UserRepository implements IUserRepository {
-  async register(user: RegisterUserDTO): Promise<UserDocument> {
+  async register(user: UserRegisterDTO): Promise<UserDocument> {
     try {
       const createdUserDoc = await UserModel.create(user);
 
@@ -43,7 +43,7 @@ export class UserRepository implements IUserRepository {
 
   async update(
     userId: EntityIdDTO,
-    newData: UpdateUserDTO,
+    newData: UserUpdateDTO,
   ): Promise<UserDocument | null> {
     try {
       const updatedUserDoc = await UserModel.findOneAndUpdate(

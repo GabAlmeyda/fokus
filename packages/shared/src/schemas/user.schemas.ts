@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id-schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 
-const BaseUserSchema = z.object({
+const UserBaseSchema = z.object({
   name: z
     .string("Expected type was 'string'.")
     .trim()
@@ -21,36 +21,35 @@ const BaseUserSchema = z.object({
   }),
 });
 
-export const RegisterUserSchema = BaseUserSchema;
+export const UserRegisterSchema = UserBaseSchema;
+export type UserRegisterDTO = z.infer<typeof UserRegisterSchema>;
 
-export const UpdateUserSchema = BaseUserSchema.omit({
+export const UserUpdateSchema = UserBaseSchema.omit({
   password: true,
 }).partial();
+export type UserUpdateDTO = z.infer<typeof UserUpdateSchema>;
 
-export const LoginUserSchema = BaseUserSchema.pick({
+export const UserLoginSchema = UserBaseSchema.pick({
   email: true,
   password: true,
 });
+export type UserLoginDTO = z.infer<typeof UserLoginSchema>;
 
-export const ResponseUserSchema = BaseUserSchema.omit({
+export const UserResponseSchema = UserBaseSchema.omit({
   password: true,
 }).extend({
   id: EntityIdSchema,
 });
+export type UserResponseDTO = z.infer<typeof UserResponseSchema>;
 
-export const ResponseAuthSchema = z.object({
-  user: ResponseUserSchema,
+export const AuthResponseSchema = z.object({
+  user: UserResponseSchema,
   token: z.jwt('Invalid JsonWebToken provided.'),
 });
+export type AuthResponseDTO = z.infer<typeof AuthResponseSchema>;
 
 export const TokenPayloadSchema = z.object({
   id: EntityIdSchema,
   email: z.email('Invalid email provided.').toLowerCase().trim(),
 });
-
-export type RegisterUserDTO = z.infer<typeof RegisterUserSchema>;
-export type UpdateUserDTO = z.infer<typeof UpdateUserSchema>;
-export type LoginUserDTO = z.infer<typeof LoginUserSchema>;
-export type ResponseUserDTO = z.infer<typeof ResponseUserSchema>;
-export type ResponseAuthDTO = z.infer<typeof ResponseAuthSchema>;
 export type TokenPayloadDTO = z.infer<typeof TokenPayloadSchema>;

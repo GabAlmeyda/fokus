@@ -1,30 +1,30 @@
 import {
   type HTTPRequest,
-  type RegisterUserDTO,
+  type UserRegisterDTO,
   HTTPStatusCode,
-  type ResponseAuthDTO,
-  type LoginUserDTO,
-  type ResponseUserDTO,
-  type UpdateUserDTO,
+  type AuthResponseDTO,
+  type UserLoginDTO,
+  type UserResponseDTO,
+  type UserUpdateDTO,
   type HTTPResponse,
-  RegisterUserSchema,
-  LoginUserSchema,
+  UserRegisterSchema,
+  UserLoginSchema,
   EntityIdSchema,
-  UpdateUserSchema,
+  UserUpdateSchema,
 } from '@fokus/shared';
-import type { IUserController } from '../interfaces/user-interfaces.js';
-import { UserService } from '../services/user-service.js';
+import type { IUserController } from '../interfaces/user.interfaces.js';
+import { UserService } from '../services/user.service.js';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
-import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class UserController implements IUserController {
   private readonly userService = new UserService();
 
   async register(
-    req: HTTPRequest<RegisterUserDTO>,
-  ): Promise<HTTPResponse<ResponseAuthDTO>> {
+    req: HTTPRequest<UserRegisterDTO>,
+  ): Promise<HTTPResponse<AuthResponseDTO>> {
     try {
-      const user = RegisterUserSchema.parse(req.body);
+      const user = UserRegisterSchema.parse(req.body);
 
       const { userDoc: registeredUserDoc, token } =
         await this.userService.register(user);
@@ -40,10 +40,10 @@ export class UserController implements IUserController {
   }
 
   async login(
-    req: HTTPRequest<LoginUserDTO>,
-  ): Promise<HTTPResponse<ResponseAuthDTO>> {
+    req: HTTPRequest<UserLoginDTO>,
+  ): Promise<HTTPResponse<AuthResponseDTO>> {
     try {
-      const user = LoginUserSchema.parse(req.body);
+      const user = UserLoginSchema.parse(req.body);
 
       const { userDoc: loggedUserDoc, token } =
         await this.userService.login(user);
@@ -60,7 +60,7 @@ export class UserController implements IUserController {
 
   async findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseUserDTO>> {
+  ): Promise<HTTPResponse<UserResponseDTO>> {
     try {
       const userId = EntityIdSchema.parse(req.userId);
 
@@ -77,10 +77,10 @@ export class UserController implements IUserController {
   }
 
   async update(
-    req: HTTPRequest<UpdateUserDTO>,
-  ): Promise<HTTPResponse<ResponseUserDTO>> {
+    req: HTTPRequest<UserUpdateDTO>,
+  ): Promise<HTTPResponse<UserResponseDTO>> {
     try {
-      const newData = UpdateUserSchema.parse(req.body);
+      const newData = UserUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
       const updatedUserDoc = await this.userService.update(userId, newData);

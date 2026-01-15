@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { HabitController } from '../controllers/habit-controller.js';
-import type { AuthRequest } from '../types/express-types.js';
-import authMiddleware from '../middlewares/auth-middleware.js';
+import { HabitController } from '../controllers/habit.controller.js';
+import type { AuthRequest } from '../types/express.types.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 
 const habitController = new HabitController();
 const habitRoutes = Router({ mergeParams: true });

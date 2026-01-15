@@ -9,12 +9,12 @@ import cors from 'cors';
 
 import { API_URL, HTTPStatusCode } from '@fokus/shared';
 import { connectToMongoDB } from './config/connect-mongo.js';
-import { AppServerError } from './helpers/app-server-error.js';
+import { AppServerError } from './helpers/errors/app-server.errors.js';
 import cookieParser from 'cookie-parser';
-import userRoutes from './routes/user-routes.js';
-import categoryRoutes from './routes/category-routes.js';
-import habitRoutes from './routes/habit-routes.js';
-import goalRoutes from './routes/goal-routes.js';
+import userRoutes from './routes/user.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import habitRoutes from './routes/habit.routes.js';
+import goalRoutes from './routes/goal.routes.js';
 
 async function main() {
   await connectToMongoDB();

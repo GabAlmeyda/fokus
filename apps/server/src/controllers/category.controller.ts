@@ -1,28 +1,28 @@
 import {
   type HTTPRequest,
-  type CreateCategoryDTO,
-  type ResponseCategoryDTO,
+  type CategoryCreateDTO,
+  type CategoryResponseDTO,
   HTTPStatusCode,
-  type UpdateCategoryDTO,
+  type CategoryUpdateDTO,
   type HTTPResponse,
-  CreateCategorySchema,
+  CategoryCreateSchema,
   EntityIdSchema,
-  UpdateCategorySchema,
+  CategoryUpdateSchema,
   CategoryFilterSchema,
 } from '@fokus/shared';
-import type { ICategoryController } from '../interfaces/category-interfaces.js';
-import { CategoryService } from '../services/category-service.js';
+import type { ICategoryController } from '../interfaces/category.interfaces.js';
+import { CategoryService } from '../services/category.service.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
-import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
+import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class CategoryController implements ICategoryController {
   private readonly categoryService = new CategoryService();
 
   async create(
-    req: HTTPRequest<Omit<CreateCategoryDTO, 'userId'>>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+    req: HTTPRequest<Omit<CategoryCreateDTO, 'userId'>>,
+  ): Promise<HTTPResponse<CategoryResponseDTO>> {
     try {
-      const category = CreateCategorySchema.parse({
+      const category = CategoryCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
@@ -41,7 +41,7 @@ export class CategoryController implements ICategoryController {
 
   async findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+  ): Promise<HTTPResponse<CategoryResponseDTO>> {
     try {
       const categoryId = EntityIdSchema.parse(req.params?.categoryId);
       const userId = EntityIdSchema.parse(req.userId);
@@ -63,7 +63,7 @@ export class CategoryController implements ICategoryController {
 
   async findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO[]>> {
+  ): Promise<HTTPResponse<CategoryResponseDTO[]>> {
     try {
       const filter = CategoryFilterSchema.parse({
         name: req.query?.name,
@@ -83,10 +83,10 @@ export class CategoryController implements ICategoryController {
   }
 
   async update(
-    req: HTTPRequest<UpdateCategoryDTO>,
-  ): Promise<HTTPResponse<ResponseCategoryDTO>> {
+    req: HTTPRequest<CategoryUpdateDTO>,
+  ): Promise<HTTPResponse<CategoryResponseDTO>> {
     try {
-      const newData = UpdateCategorySchema.parse(req.body);
+      const newData = CategoryUpdateSchema.parse(req.body);
       const categoryId = EntityIdSchema.parse(req.params?.categoryId);
       const userId = EntityIdSchema.parse(req.userId);
 

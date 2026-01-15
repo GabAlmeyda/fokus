@@ -1,28 +1,28 @@
 import {
   type HTTPRequest,
-  type CreateGoalDTO,
+  type GoalCreateDTO,
   type HTTPResponse,
-  type ResponseGoalDTO,
-  CreateGoalSchema,
+  type GoalResponseDTO,
+  GoalCreateSchema,
   HTTPStatusCode,
   EntityIdSchema,
   GoalFilterSchema,
-  type UpdateGoalDTO,
-  UpdateGoalSchema,
+  type GoalUpdateDTO,
+  GoalUpdateSchema,
 } from '@fokus/shared';
-import type { IGoalController } from '../interfaces/goal-interfaces.js';
-import { formatHTTPErrorResponse } from '../helpers/controller-helpers.js';
-import { GoalService } from '../services/goal-services.js';
+import type { IGoalController } from '../interfaces/goal.interfaces.js';
+import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
+import { GoalService } from '../services/goal.services.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
 
 export class GoalController implements IGoalController {
   private readonly goalService = new GoalService();
 
   async create(
-    req: HTTPRequest<CreateGoalDTO>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+    req: HTTPRequest<GoalCreateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
-      const goal = CreateGoalSchema.parse({
+      const goal = GoalCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
@@ -38,7 +38,7 @@ export class GoalController implements IGoalController {
 
   async findOneById(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
       const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);
@@ -54,7 +54,7 @@ export class GoalController implements IGoalController {
 
   async findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO[]>> {
+  ): Promise<HTTPResponse<GoalResponseDTO[]>> {
     try {
       const filter = GoalFilterSchema.parse({
         title: req.query?.title,
@@ -74,11 +74,11 @@ export class GoalController implements IGoalController {
   }
 
   async update(
-    req: HTTPRequest<UpdateGoalDTO>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>> {
+    req: HTTPRequest<GoalUpdateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
       const goalId = EntityIdSchema.parse(req.params?.goalId);
-      const newData = UpdateGoalSchema.parse(req.body);
+      const newData = GoalUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
       const updatedGoalDoc = await this.goalService.update(
@@ -94,7 +94,7 @@ export class GoalController implements IGoalController {
     }
   }
 
-  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>> {
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
       const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);

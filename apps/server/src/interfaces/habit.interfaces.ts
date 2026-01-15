@@ -1,16 +1,16 @@
 import type {
-  CreateHabitDTO,
+  HabitCreateDTO,
   HabitFilterDTO,
   HTTPRequest,
   HTTPResponse,
   EntityIdDTO,
-  ResponseHabitDTO,
-  UpdateHabitDTO,
+  HabitResponseDTO,
+  HabitUpdateDTO,
 } from '@fokus/shared';
-import type { HabitDocument } from '../models/habit-model.js';
+import type { HabitDocument } from '../models/habit.model.js';
 
 export interface IHabitRepository {
-  create(habit: CreateHabitDTO): Promise<HabitDocument>;
+  create(habit: HabitCreateDTO): Promise<HabitDocument>;
 
   findOneById(
     habitId: EntityIdDTO,
@@ -24,7 +24,7 @@ export interface IHabitRepository {
 
   update(
     habitId: EntityIdDTO,
-    newData: UpdateHabitDTO,
+    newData: HabitUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<HabitDocument | null>;
 
@@ -35,7 +35,7 @@ export interface IHabitRepository {
 }
 
 export interface IHabitService {
-  create(habit: CreateHabitDTO): Promise<HabitDocument>;
+  create(habit: HabitCreateDTO): Promise<HabitDocument>;
 
   findOneById(
     habitId: EntityIdDTO,
@@ -49,7 +49,7 @@ export interface IHabitService {
 
   update(
     habitId: EntityIdDTO,
-    newData: UpdateHabitDTO,
+    newData: HabitUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<HabitDocument>;
 
@@ -58,18 +58,18 @@ export interface IHabitService {
 
 export interface IHabitController {
   create(
-    req: HTTPRequest<Omit<CreateHabitDTO, 'userId'>>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>>;
+    req: HTTPRequest<Omit<HabitCreateDTO, 'userId'>>,
+  ): Promise<HTTPResponse<HabitResponseDTO>>;
 
-  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseHabitDTO>>;
+  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>>;
 
   findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseHabitDTO[]>>;
+  ): Promise<HTTPResponse<HabitResponseDTO[]>>;
 
   update(
-    req: HTTPRequest<UpdateHabitDTO>,
-  ): Promise<HTTPResponse<ResponseHabitDTO>>;
+    req: HTTPRequest<HabitUpdateDTO>,
+  ): Promise<HTTPResponse<HabitResponseDTO>>;
 
   delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

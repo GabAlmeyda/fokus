@@ -5,7 +5,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['node_modules', 'dist', 'build'],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', '**/*.d.ts'],
   },
 
   js.configs.recommended,
@@ -22,7 +22,7 @@ export default [
   },
 
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js'],
+    files: ['**/*.ts', '**/*.js'],
     plugins: {
       prettier: prettierPlugin,
     },

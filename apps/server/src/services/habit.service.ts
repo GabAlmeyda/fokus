@@ -1,20 +1,20 @@
 import {
-  UpdateHabitSchema,
-  type CreateHabitDTO,
+  HabitUpdateSchema,
+  type HabitCreateDTO,
   type HabitFilterDTO,
   type EntityIdDTO,
-  type UpdateHabitDTO,
+  type HabitUpdateDTO,
 } from '@fokus/shared';
-import type { IHabitService } from '../interfaces/habit-interfaces.js';
-import type { HabitDocument } from '../models/habit-model.js';
-import { AppServerError } from '../helpers/app-server-error.js';
-import { HabitRepository } from '../repositories/habit-repository.js';
-import { DatabaseError } from '../helpers/database-error.js';
+import type { IHabitService } from '../interfaces/habit.interfaces.js';
+import type { HabitDocument } from '../models/habit.model.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
+import { HabitRepository } from '../repositories/habit.repository.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class HabitService implements IHabitService {
   private readonly habitRepository = new HabitRepository();
 
-  async create(habit: CreateHabitDTO): Promise<HabitDocument> {
+  async create(habit: HabitCreateDTO): Promise<HabitDocument> {
     try {
       const createdHabitDoc = await this.habitRepository.create(habit);
       return createdHabitDoc;
@@ -57,7 +57,7 @@ export class HabitService implements IHabitService {
 
   async update(
     habitId: EntityIdDTO,
-    newData: UpdateHabitDTO,
+    newData: HabitUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<HabitDocument> {
     // Verifies if the habit exists
@@ -74,7 +74,7 @@ export class HabitService implements IHabitService {
 
     // Validate the provided data
     const mergedHabit = { ...currentHabitDoc.toObject(), ...newData };
-    UpdateHabitSchema.parse(mergedHabit);
+    HabitUpdateSchema.parse(mergedHabit);
 
     try {
       const updatedHabitDoc = await this.habitRepository.update(

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { AppServerError } from './app-server-error.js';
+import { AppServerError } from './app-server.errors.js';
 import type { HTTPStatusCode, InvalidField } from '@fokus/shared';
 
 export class DatabaseError extends AppServerError {

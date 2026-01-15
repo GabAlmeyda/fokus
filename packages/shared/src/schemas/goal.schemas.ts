@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { EntityIdSchema } from './id-schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 
-const BaseGoalSchema = z.object({
+const GoalBaseSchema = z.object({
   userId: EntityIdSchema,
 
   categoryId: EntityIdSchema.nullable(),
@@ -58,7 +58,7 @@ const BaseGoalSchema = z.object({
     .min(1, 'Icon name cannot be less than 1 character.'),
 });
 
-type GoalRefinementData = z.infer<ReturnType<typeof BaseGoalSchema.partial>>;
+type GoalRefinementData = z.infer<ReturnType<typeof GoalBaseSchema.partial>>;
 function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
@@ -133,16 +133,9 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   }
 }
 
-export const CreateGoalSchema = BaseGoalSchema.extend({
-  categoryId: BaseGoalSchema.shape.categoryId.default(null),
-  targetValue: BaseGoalSchema.shape.targetValue.default(null),
-  unitOfMeasure: BaseGoalSchema.shape.unitOfMeasure.default(null),
-  deadline: BaseGoalSchema.shape.deadline.default(null),
-}).superRefine(goalRefinement);
-
 export const GoalFilterSchema = z
   .strictObject({
-    title: BaseGoalSchema.shape.title,
+    title: GoalBaseSchema.shape.title,
     categoryId: z.union([
       z.literal('none', { error: "Expected value was 'none'." }),
       EntityIdSchema,
@@ -173,12 +166,22 @@ export const GoalFilterSchema = z
       }
     },
   );
+export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 
-export const UpdateGoalSchema = BaseGoalSchema.omit({ userId: true })
+export const GoalCreateSchema = GoalBaseSchema.extend({
+  categoryId: GoalBaseSchema.shape.categoryId.default(null),
+  targetValue: GoalBaseSchema.shape.targetValue.default(null),
+  unitOfMeasure: GoalBaseSchema.shape.unitOfMeasure.default(null),
+  deadline: GoalBaseSchema.shape.deadline.default(null),
+}).superRefine(goalRefinement);
+export type GoalCreateDTO = z.infer<typeof GoalCreateSchema>;
+
+export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .partial()
   .superRefine(goalRefinement);
+export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
-export const ResponseGoalSchema = BaseGoalSchema.extend({
+export const GoalResponseSchema = GoalBaseSchema.extend({
   id: EntityIdSchema,
 
   isActive: z.boolean("Expected type was 'boolean'.").default(true),
@@ -189,8 +192,4 @@ export const ResponseGoalSchema = BaseGoalSchema.extend({
     .nullable()
     .default(null),
 });
-
-export type CreateGoalDTO = z.infer<typeof CreateGoalSchema>;
-export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
-export type UpdateGoalDTO = z.infer<typeof UpdateGoalSchema>;
-export type ResponseGoalDTO = z.infer<typeof ResponseGoalSchema>;
+export type GoalResponseDTO = z.infer<typeof GoalResponseSchema>;

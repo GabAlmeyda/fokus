@@ -1,17 +1,17 @@
 import type {
-  CreateGoalDTO,
+  GoalCreateDTO,
   GoalFilterDTO,
   HTTPRequest,
   HTTPResponse,
   EntityIdDTO,
-  ResponseGoalDTO,
-  UpdateGoalDTO,
+  GoalResponseDTO,
+  GoalUpdateDTO,
 } from '@fokus/shared';
-import type { GoalDocument } from '../models/goal-model.js';
+import type { GoalDocument } from '../models/goal.model.js';
 
 export interface IGoalRepository {
   create(
-    goal: CreateGoalDTO & { currentValue: number | null },
+    goal: GoalCreateDTO & { currentValue: number | null },
   ): Promise<GoalDocument>;
 
   findOneById(
@@ -26,7 +26,7 @@ export interface IGoalRepository {
 
   update(
     goalId: EntityIdDTO,
-    newData: UpdateGoalDTO,
+    newData: GoalUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument | null>;
 
@@ -37,7 +37,7 @@ export interface IGoalRepository {
 }
 
 export interface IGoalService {
-  create(goal: CreateGoalDTO): Promise<GoalDocument>;
+  create(goal: GoalCreateDTO): Promise<GoalDocument>;
 
   findOneById(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<GoalDocument>;
 
@@ -48,7 +48,7 @@ export interface IGoalService {
 
   update(
     goalId: EntityIdDTO,
-    newData: UpdateGoalDTO,
+    newData: GoalUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument>;
 
@@ -57,18 +57,18 @@ export interface IGoalService {
 
 export interface IGoalController {
   create(
-    req: HTTPRequest<CreateGoalDTO>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>>;
+    req: HTTPRequest<GoalCreateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>>;
 
-  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
+  findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<GoalResponseDTO>>;
 
   findByFilter(
     req: HTTPRequest<null>,
-  ): Promise<HTTPResponse<ResponseGoalDTO[]>>;
+  ): Promise<HTTPResponse<GoalResponseDTO[]>>;
 
   update(
-    req: HTTPRequest<UpdateGoalDTO>,
-  ): Promise<HTTPResponse<ResponseGoalDTO>>;
+    req: HTTPRequest<GoalUpdateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>>;
 
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<ResponseGoalDTO>>;
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<GoalResponseDTO>>;
 }

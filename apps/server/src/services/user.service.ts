@@ -1,14 +1,14 @@
 import {
-  type LoginUserDTO,
+  type UserLoginDTO,
   type EntityIdDTO,
-  type RegisterUserDTO,
+  type UserRegisterDTO,
   type TokenPayloadDTO,
-  type UpdateUserDTO,
+  type UserUpdateDTO,
 } from '@fokus/shared';
-import type { UserDocument } from '../models/user-model.js';
-import type { IUserService } from '../interfaces/user-interfaces.js';
-import { UserRepository } from '../repositories/user-repository.js';
-import { AppServerError } from '../helpers/app-server-error.js';
+import type { UserDocument } from '../models/user.model.js';
+import type { IUserService } from '../interfaces/user.interfaces.js';
+import { UserRepository } from '../repositories/user.repository.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 
@@ -16,7 +16,7 @@ export class UserService implements IUserService {
   private readonly userRepository = new UserRepository();
 
   async register(
-    user: RegisterUserDTO,
+    user: UserRegisterDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
     const hashedPassword = await argon2.hash(user.password);
     const registerUserData = { ...user, password: hashedPassword };
@@ -35,7 +35,7 @@ export class UserService implements IUserService {
   }
 
   async login(
-    user: LoginUserDTO,
+    user: UserLoginDTO,
   ): Promise<{ userDoc: UserDocument; token: string }> {
     const loggedUserDoc = await this.userRepository.findOneByEmail(user.email);
     if (!loggedUserDoc) {
@@ -79,7 +79,7 @@ export class UserService implements IUserService {
 
   async update(
     userId: EntityIdDTO,
-    newData: UpdateUserDTO,
+    newData: UserUpdateDTO,
   ): Promise<UserDocument> {
     const updatedUserDoc = await this.userRepository.update(userId, newData);
     if (!updatedUserDoc) {

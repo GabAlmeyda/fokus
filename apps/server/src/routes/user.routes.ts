@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { UserController } from '../controllers/user-controller.js';
-import { HTTPStatusCode, ResponseAuthSchema } from '@fokus/shared';
-import authMiddleware from '../middlewares/auth-middleware.js';
-import type { AuthRequest } from '../types/express-types.js';
+import { UserController } from '../controllers/user.controller.js';
+import { HTTPStatusCode, AuthResponseSchema } from '@fokus/shared';
+import authMiddleware from '../middlewares/auth.middleware.js';
+import type { AuthRequest } from '../types/express.types.js';
 
 const userRoutes = Router({ mergeParams: true });
 const userController = new UserController();
@@ -14,7 +14,7 @@ userRoutes.post('/auth/register', async (req, res) => {
     body: reqBody,
   });
 
-  const validation = ResponseAuthSchema.safeParse(body);
+  const validation = AuthResponseSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
       httpOnly: true,
@@ -33,7 +33,7 @@ userRoutes.post('/auth/login', async (req, res) => {
     body: reqBody,
   });
 
-  const validation = ResponseAuthSchema.safeParse(body);
+  const validation = AuthResponseSchema.safeParse(body);
   if (validation.success) {
     res.cookie('access_token', validation.data.token, {
       httpOnly: true,
