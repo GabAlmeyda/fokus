@@ -42,5 +42,29 @@ const progressLogSchema = new Schema<IProgressLog>({
   },
 });
 
+progressLogSchema.index(
+  { userId: 1, goalId: 1, dateString: 1 },
+  {
+    name: 'idx_userId_goalId_dateString',
+    partialFilterExpression: { goalId: { $type: 'objectId' } },
+    background: true,
+  },
+);
+progressLogSchema.index(
+  { userId: 1, habitId: 1, dateString: 1 },
+  {
+    name: 'idx_userId_habitId_dateString',
+    partialFilterExpression: { habitId: { $type: 'objectId' } },
+    background: true,
+  },
+);
+progressLogSchema.index(
+  {
+    userId: 1,
+    dateString: 1,
+  },
+  { name: 'idx_userId_dateString', background: true },
+);
+
 export type ProgressLogDocument = HydratedDocument<IProgressLog>;
 export const ProgressLogModel = model('ProgressLog', progressLogSchema);

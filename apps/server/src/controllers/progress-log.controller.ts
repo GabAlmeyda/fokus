@@ -5,6 +5,7 @@ import {
   type ProgressLogResponseDTO,
   ProgressLogCreateSchema,
   HTTPStatusCode,
+  EntityIdSchema,
 } from '@fokus/shared';
 
 import type { IProgressLogController } from '../interfaces/progress-log.interfaces.js';
@@ -30,7 +31,26 @@ export class ProgressLogController implements IProgressLogController {
         createdProgressLogDoc,
       );
 
-      return { statusCode: HTTPStatusCode.OK, body: createdProgressLog };
+      return { statusCode: HTTPStatusCode.CREATED, body: createdProgressLog };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findOneById(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ProgressLogResponseDTO>> {
+    try {
+      const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const progressLogDoc = await this.progressLogService.findOneById(
+        progressLogId,
+        userId,
+      );
+      const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
+
+      return { statusCode: HTTPStatusCode.OK, body: progressLog };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

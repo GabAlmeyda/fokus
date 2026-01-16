@@ -1,4 +1,4 @@
-import type { ProgressLogCreateDTO } from '@fokus/shared';
+import type { EntityIdDTO, ProgressLogCreateDTO } from '@fokus/shared';
 import type { IProgressLogRepository } from '../interfaces/progress-log.interfaces.js';
 import {
   ProgressLogModel,
@@ -14,6 +14,22 @@ export class ProgressLogRepository implements IProgressLogRepository {
       const createdProgressLogDoc = await ProgressLogModel.create(progressLog);
 
       return createdProgressLogDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async findOneById(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument | null> {
+    try {
+      const progressLogDoc = await ProgressLogModel.findOne({
+        _id: progressLogId,
+        userId,
+      });
+
+      return progressLogDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

@@ -14,7 +14,16 @@ progressLogRoutes.post('/', authMiddleware, async (req, res) => {
     body: reqBody,
     userId: user.id,
   });
+  return res.status(statusCode).json(body);
+});
 
+progressLogRoutes.get('/:progressLogId', authMiddleware, async (req, res) => {
+  const { params, user } = req as AuthRequest;
+
+  const { statusCode, body } = await progressLogController.findOneById({
+    params,
+    userId: user.id,
+  });
   return res.status(statusCode).json(body);
 });
 

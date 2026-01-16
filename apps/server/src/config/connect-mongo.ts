@@ -3,6 +3,7 @@ import { UserModel } from '../models/user.model.js';
 import { CategoryModel } from '../models/category.model.js';
 import { HabitModel } from '../models/habit.model.js';
 import { GoalModel } from '../models/goal.model.js';
+import { ProgressLogModel } from '../models/progress-log.model.js';
 
 export async function connectToMongoDB() {
   const MONGO_URI = process.env.MONGO_URI as string;
@@ -16,6 +17,7 @@ export async function connectToMongoDB() {
     await CategoryModel.syncIndexes();
     await HabitModel.syncIndexes();
     await GoalModel.syncIndexes();
+    await ProgressLogModel.syncIndexes();
     console.log('Indexes synchronized');
   } catch (err) {
     console.error(
