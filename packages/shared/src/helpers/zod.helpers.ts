@@ -15,7 +15,7 @@ export function formatZodError(error: ZodError): {
     ? 'Invalid payload provided.'
     : 'Invalid data provided.';
   const invalidFields: InvalidField[] = error.issues.map((iss) => ({
-    field: iss.path.join(''),
+    field: iss.path.join('.'),
     message: iss.message,
   }));
 

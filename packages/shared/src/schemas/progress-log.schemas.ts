@@ -35,8 +35,8 @@ function progressLogRefinement(
   if (!data.habitId && !data.goalId) {
     ctx.addIssue({
       code: 'custom',
-      path: ['habitId', 'goalId'],
-      message: "Or 'habitId' or 'goalId' must be provided.",
+      path: ['habitId'],
+      message: "Either 'habitId' or 'goalId' must be provided.",
     });
   }
 }

@@ -20,13 +20,13 @@ const progressLogSchema = new Schema<IProgressLog>({
   habitId: {
     type: Schema.Types.ObjectId,
     ref: 'Habit',
-    required: true,
+    default: null,
   },
 
   goalId: {
     type: Schema.Types.ObjectId,
     ref: 'Goal',
-    required: true,
+    default: null,
   },
 
   value: {
