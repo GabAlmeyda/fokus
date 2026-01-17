@@ -49,4 +49,19 @@ export class ProgressLogService implements IProgressService {
 
     return progressLogDocs;
   }
+
+  async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {
+    const deletedProgressLogDoc = await this.progressLogRepository.delete(
+      progressLogId,
+      userId,
+    );
+    if (!deletedProgressLogDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Progress log with ID '${progressLogId}' not found.`,
+      );
+    }
+
+    return null;
+  }
 }

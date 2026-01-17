@@ -37,4 +37,18 @@ progressLogRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+progressLogRoutes.delete(
+  '/:progressLogId',
+  authMiddleware,
+  async (req, res) => {
+    const { params, user } = req as AuthRequest;
+
+    const { statusCode, body } = await progressLogController.delete({
+      params,
+      userId: user.id,
+    });
+    return res.status(statusCode).json(body);
+  },
+);
+
 export default progressLogRoutes;

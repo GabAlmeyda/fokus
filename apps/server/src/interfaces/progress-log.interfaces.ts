@@ -20,6 +20,11 @@ export interface IProgressLogRepository {
     filter: ProgressLogFilterDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument[]>;
+
+  delete(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument | null>;
 }
 
 export interface IProgressService {
@@ -34,6 +39,8 @@ export interface IProgressService {
     filter: ProgressLogFilterDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument[]>;
+
+  delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null>;
 }
 
 export interface IProgressLogController {
@@ -48,4 +55,6 @@ export interface IProgressLogController {
   findByFilter(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ProgressLogResponseDTO[]>>;
+
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

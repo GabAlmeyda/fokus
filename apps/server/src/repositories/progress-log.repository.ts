@@ -95,4 +95,20 @@ export class ProgressLogRepository implements IProgressLogRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async delete(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument | null> {
+    try {
+      const deletedProgressLogDoc = await ProgressLogModel.findOneAndDelete({
+        _id: progressLogId,
+        userId,
+      });
+
+      return deletedProgressLogDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

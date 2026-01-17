@@ -84,4 +84,17 @@ export class ProgressLogController implements IProgressLogController {
       return formatHTTPErrorResponse(err);
     }
   }
+
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
+    try {
+      const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      await this.progressLogService.delete(progressLogId, userId);
+
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
 }
