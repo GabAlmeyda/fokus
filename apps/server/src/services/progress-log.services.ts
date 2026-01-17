@@ -1,4 +1,8 @@
-import type { EntityIdDTO, ProgressLogCreateDTO } from '@fokus/shared';
+import type {
+  EntityIdDTO,
+  ProgressLogCreateDTO,
+  ProgressLogFilterDTO,
+} from '@fokus/shared';
 import type { IProgressService } from '../interfaces/progress-log.interfaces.js';
 import type { ProgressLogDocument } from '../models/progress-log.model.js';
 import { ProgressLogRepository } from '../repositories/progress-log.repository.js';
@@ -32,5 +36,17 @@ export class ProgressLogService implements IProgressService {
     }
 
     return progressLogDoc;
+  }
+
+  async findByFilter(
+    filter: ProgressLogFilterDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument[]> {
+    const progressLogDocs = await this.progressLogRepository.findByFilter(
+      filter,
+      userId,
+    );
+
+    return progressLogDocs;
   }
 }

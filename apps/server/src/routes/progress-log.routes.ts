@@ -27,4 +27,14 @@ progressLogRoutes.get('/:progressLogId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+progressLogRoutes.get('/', authMiddleware, async (req, res) => {
+  const { query, user } = req as AuthRequest;
+
+  const { statusCode, body } = await progressLogController.findByFilter({
+    query,
+    userId: user.id,
+  });
+  return res.status(statusCode).json(body);
+});
+
 export default progressLogRoutes;

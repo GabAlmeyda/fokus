@@ -74,6 +74,6 @@ export function mapProgressLogDocToPublicDTO(
     goalId: progressLog.goalId?.toString() || null,
     habitId: progressLog.habitId?.toString() || null,
     value: progressLog.value,
-    dateString: progressLog.dateString,
+    date: progressLog.date,
   };
 }

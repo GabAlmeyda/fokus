@@ -58,9 +58,9 @@ export class GoalService implements IGoalService {
     filter: GoalFilterDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument[]> {
-    const ret = await this.goalRepository.findByFilter(filter, userId);
+    const goalDocs = await this.goalRepository.findByFilter(filter, userId);
 
-    return ret;
+    return goalDocs;
   }
 
   async update(

@@ -5,7 +5,7 @@ interface IProgressLog {
   habitId: string | Schema.Types.ObjectId | null;
   goalId: string | Schema.Types.ObjectId | null;
   value: number;
-  dateString: string;
+  date: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,10 +35,15 @@ const progressLogSchema = new Schema<IProgressLog>({
     default: 1,
   },
 
-  dateString: {
-    type: String,
+  date: {
+    type: Date,
     required: true,
-    match: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/,
+    set: (val: Date) => {
+      const date = new Date(val);
+
+      date.setUTCHours(0, 0, 0, 0);
+      return date;
+    },
   },
 });
 
@@ -61,7 +66,7 @@ progressLogSchema.index(
 progressLogSchema.index(
   {
     userId: 1,
-    dateString: 1,
+    date: 1,
   },
   { name: 'idx_userId_dateString', background: true },
 );

@@ -3,6 +3,7 @@ import type {
   HTTPRequest,
   HTTPResponse,
   ProgressLogCreateDTO,
+  ProgressLogFilterDTO,
   ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type { ProgressLogDocument } from '../models/progress-log.model.js';
@@ -14,6 +15,11 @@ export interface IProgressLogRepository {
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument | null>;
+
+  findByFilter(
+    filter: ProgressLogFilterDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument[]>;
 }
 
 export interface IProgressService {
@@ -23,6 +29,11 @@ export interface IProgressService {
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument>;
+
+  findByFilter(
+    filter: ProgressLogFilterDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument[]>;
 }
 
 export interface IProgressLogController {
@@ -33,4 +44,8 @@ export interface IProgressLogController {
   findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<ProgressLogResponseDTO>>;
+
+  findByFilter(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ProgressLogResponseDTO[]>>;
 }

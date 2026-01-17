@@ -6,6 +6,7 @@ import {
   ProgressLogCreateSchema,
   HTTPStatusCode,
   EntityIdSchema,
+  ProgressLogFilterQuerySchema,
 } from '@fokus/shared';
 
 import type { IProgressLogController } from '../interfaces/progress-log.interfaces.js';
@@ -51,6 +52,34 @@ export class ProgressLogController implements IProgressLogController {
       const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
 
       return { statusCode: HTTPStatusCode.OK, body: progressLog };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async findByFilter(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ProgressLogResponseDTO[]>> {
+    try {
+      const { date, interval, goalId, habitId } =
+        ProgressLogFilterQuerySchema.parse(req.query);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const filter = {
+        habitId,
+        goalId,
+        period: date && interval ? { date, interval } : undefined,
+      };
+
+      const progressLogDocs = await this.progressLogService.findByFilter(
+        filter,
+        userId,
+      );
+      const progressLogs = progressLogDocs.map((p) =>
+        mapProgressLogDocToPublicDTO(p),
+      );
+
+      return { statusCode: HTTPStatusCode.OK, body: progressLogs };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

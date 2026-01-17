@@ -64,8 +64,8 @@ export class GoalController implements IGoalController {
 
       const userId = EntityIdSchema.parse(req.userId);
 
-      const ret = await this.goalService.findByFilter(filter, userId);
-      const goals = ret.map((g) => mapGoalDocToPublicDTO(g));
+      const goalDocs = await this.goalService.findByFilter(filter, userId);
+      const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
 
       return { statusCode: HTTPStatusCode.OK, body: goals };
     } catch (err) {

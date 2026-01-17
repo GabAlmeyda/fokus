@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import * as z from 'zod';
+
 import { EntityIdSchema } from './id.schemas.js';
 
 const GoalBaseSchema = z.object({
@@ -33,7 +34,7 @@ const GoalBaseSchema = z.object({
 
   deadline: z.coerce
     .date('Invalid date format provided.')
-    .nullish()
+    .nullable()
     .transform((val) => {
       if (!val) return val;
 

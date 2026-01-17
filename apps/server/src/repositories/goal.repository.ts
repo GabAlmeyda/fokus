@@ -67,8 +67,8 @@ export class GoalRepository implements IGoalRepository {
       ) as keyof GoalFilterDTO | undefined;
 
       if (!property) {
-        const ret = await GoalModel.find(query);
-        return ret;
+        const goalDocs = await GoalModel.find(query);
+        return goalDocs;
       }
 
       switch (property) {
@@ -90,8 +90,8 @@ export class GoalRepository implements IGoalRepository {
         }
       }
 
-      const ret = await GoalModel.find(query);
-      return ret;
+      const goalDocs = await GoalModel.find(query);
+      return goalDocs;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
