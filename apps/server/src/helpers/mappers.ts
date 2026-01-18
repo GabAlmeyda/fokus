@@ -54,7 +54,6 @@ export function mapGoalDocToPublicDTO(goal: GoalDocument): GoalResponseDTO {
     categoryId: goal.categoryId?.toString() || null,
     title: goal.title,
     type: goal.type,
-    currentValue: goal.currentValue,
     targetValue: goal.targetValue,
     unitOfMeasure: goal.unitOfMeasure,
     habits: goal.habits.map((id) => id.toString()),

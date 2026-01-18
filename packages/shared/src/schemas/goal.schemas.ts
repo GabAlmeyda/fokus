@@ -186,11 +186,5 @@ export const GoalResponseSchema = GoalBaseSchema.extend({
   id: EntityIdSchema,
 
   isActive: z.boolean("Expected type was 'boolean'.").default(true),
-
-  currentValue: z
-    .number("Expected type was 'number'.")
-    .min(0, 'Minimun value is 0.')
-    .nullable()
-    .default(null),
 });
 export type GoalResponseDTO = z.infer<typeof GoalResponseSchema>;

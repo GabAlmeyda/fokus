@@ -11,9 +11,7 @@ import { Types } from 'mongoose';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 export class GoalRepository implements IGoalRepository {
-  async create(
-    goal: GoalCreateDTO & { currentValue: number | null },
-  ): Promise<GoalDocument> {
+  async create(goal: GoalCreateDTO): Promise<GoalDocument> {
     try {
       const goalToCreate = {
         ...goal,

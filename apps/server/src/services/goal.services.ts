@@ -15,16 +15,8 @@ export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
 
   async create(goal: GoalCreateDTO): Promise<GoalDocument> {
-    const goalToCreate: GoalCreateDTO & { currentValue: number | null } = {
-      ...goal,
-      currentValue: null,
-    };
-    if (goalToCreate.type === 'quantitative') {
-      goalToCreate.currentValue = 0;
-    }
-
     try {
-      const createdGoalDoc = await this.goalRepository.create(goalToCreate);
+      const createdGoalDoc = await this.goalRepository.create(goal);
       return createdGoalDoc;
     } catch (err) {
       if (err instanceof DatabaseError && err.isConflict) {

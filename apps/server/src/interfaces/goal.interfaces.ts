@@ -10,9 +10,7 @@ import type {
 import type { GoalDocument } from '../models/goal.model.js';
 
 export interface IGoalRepository {
-  create(
-    goal: GoalCreateDTO & { currentValue: number | null },
-  ): Promise<GoalDocument>;
+  create(goal: GoalCreateDTO): Promise<GoalDocument>;
 
   findOneById(
     goalId: EntityIdDTO,
