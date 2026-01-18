@@ -8,8 +8,6 @@ interface IHabit {
   unitOfMeasure: string | null;
   weekDays: ('seg' | 'ter' | 'qua' | 'qui' | 'sex' | 'sab' | 'dom')[];
   reminder: string | null;
-  streak: number;
-  bestStreak: number;
   color: string;
   icon: string;
   createdAt: Date;
@@ -55,16 +53,6 @@ const habitSchema = new Schema<IHabit>(
       type: String,
       match: /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
       default: null,
-    },
-    streak: {
-      type: Number,
-      min: 0,
-      default: 0,
-    },
-    bestStreak: {
-      type: Number,
-      min: 0,
-      default: 0,
     },
     color: {
       type: String,

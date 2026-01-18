@@ -150,17 +150,20 @@ export const HabitUpdateSchema = HabitBaseSchema.omit({
   .superRefine(habitRefinement);
 export type HabitUpdateDTO = z.infer<typeof HabitUpdateSchema>;
 
+export const HabitCheckSchema = z.object({
+  userId: HabitBaseSchema.shape.userId,
+
+  habitId: EntityIdSchema,
+
+  date: z.coerce.date('Invalid date format provided').transform((val) => {
+    const date = new Date(val);
+    date.setUTCHours(0, 0, 0, 0);
+    return date;
+  }),
+});
+export type HabitCheckDTO = z.infer<typeof HabitCheckSchema>;
+
 export const HabitResponseSchema = HabitBaseSchema.extend({
   id: EntityIdSchema,
-
-  streak: z
-    .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.')
-    .default(0),
-
-  bestStreak: z
-    .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.')
-    .default(0),
 });
 export type HabitResponseDTO = z.infer<typeof HabitResponseSchema>;

@@ -5,12 +5,10 @@ interface IGoal {
   categoryId: Types.ObjectId | string | null;
   title: string;
   type: 'qualitative' | 'quantitative';
-  currentValue: number | null;
   targetValue: number | null;
   unitOfMeasure: string | null;
   habits: (Types.ObjectId | string)[];
   deadline: Date | null;
-  isActive: boolean;
   color: string;
   icon: string;
   createdAt: Date;
@@ -40,11 +38,6 @@ const goalSchema = new Schema<IGoal>(
       enum: ['qualitative', 'quantitative'],
       default: 'qualitative',
     },
-    currentValue: {
-      type: Number,
-      min: 0,
-      default: null,
-    },
     targetValue: {
       type: 'Number',
       min: 0,
@@ -73,10 +66,6 @@ const goalSchema = new Schema<IGoal>(
 
         return date;
       },
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
     },
     color: {
       type: String,

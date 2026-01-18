@@ -14,11 +14,8 @@ const ProgressLogBaseSchema = z.object({
     .min(1, "'value' cannot be less than 1."),
 
   date: z.coerce.date('Invalid date format provided.').transform((val) => {
-    if (!val) return val;
-
     const date = new Date(val);
     date.setUTCHours(0, 0, 0, 0);
-
     return date;
   }),
 });

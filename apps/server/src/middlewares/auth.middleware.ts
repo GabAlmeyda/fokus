@@ -34,7 +34,7 @@ export default async function authMiddleware(
     authReq.user = {
       id: user._id.toString(),
       email: user.email,
-    };
+    } as TokenPayloadDTO;
 
     return next();
   } catch (err) {
