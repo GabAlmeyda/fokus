@@ -1,5 +1,6 @@
 import type {
   EntityIdDTO,
+  HabitStatsDTO,
   HTTPRequest,
   HTTPResponse,
   ProgressLogCreateDTO,
@@ -21,6 +22,12 @@ export interface IProgressLogRepository {
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument[]>;
 
+  getEntityDates(
+    userId: EntityIdDTO,
+    entityType: 'habitId' | 'goalId',
+    entityId?: EntityIdDTO,
+  ): Promise<{ entityId: EntityIdDTO; dates: Date[] }[]>;
+
   delete(
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
@@ -39,6 +46,11 @@ export interface IProgressService {
     filter: ProgressLogFilterDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument[]>;
+
+  getHabitStats(
+    userId: EntityIdDTO,
+    habitId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, HabitStatsDTO>>;
 
   delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null>;
 }

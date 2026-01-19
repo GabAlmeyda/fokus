@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-import { EntityIdSchema } from './id.schemas.js';
+import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
 const ProgressLogBaseSchema = z.object({
   userId: EntityIdSchema,
@@ -115,7 +115,6 @@ export const ProgressLogCreateSchema = ProgressLogBaseSchema.extend({
 }).superRefine(progressLogRefinement);
 export type ProgressLogCreateDTO = z.infer<typeof ProgressLogCreateSchema>;
 
-export const ProgressLogResponseSchema = ProgressLogBaseSchema.extend({
-  id: EntityIdSchema,
-});
-export type ProgressLogResponseDTO = z.infer<typeof ProgressLogResponseSchema>;
+export type ProgressLogResponseDTO = z.infer<typeof ProgressLogBaseSchema> & {
+  id: EntityIdDTO;
+};

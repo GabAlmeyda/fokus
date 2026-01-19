@@ -1,5 +1,8 @@
+import { differenceInDays, startOfDay } from 'date-fns';
+
 import type {
   EntityIdDTO,
+  HabitStatsDTO,
   ProgressLogCreateDTO,
   ProgressLogFilterDTO,
 } from '@fokus/shared';
@@ -48,6 +51,66 @@ export class ProgressLogService implements IProgressService {
     );
 
     return progressLogDocs;
+  }
+
+  async getHabitStats(
+    userId: EntityIdDTO,
+    habitId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, HabitStatsDTO>> {
+    const habitDates = await this.progressLogRepository.getEntityDates(
+      userId,
+      'habitId',
+      habitId,
+    );
+
+    const stats: Record<EntityIdDTO, HabitStatsDTO> = {};
+
+    for (const data of habitDates) {
+      const dates = data.dates;
+
+      if (dates.length === 0) continue;
+
+      // Logic for 'isCompletedToday'
+      const today = startOfDay(new Date());
+      const lastLogDate = dates[0]!;
+      const isCompletedToday = differenceInDays(today, lastLogDate) === 0;
+
+      // Logic for 'streak'
+      let streak = 0;
+      if (differenceInDays(today, lastLogDate) <= 1) {
+        streak = 1;
+
+        for (let i = 0; i < dates.length - 1; i++) {
+          const currDate = dates[i]!;
+          const lastDate = dates[i + 1]!;
+
+          if (differenceInDays(currDate, lastDate) === 1) {
+            streak++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      // logic for 'bestStreak'
+      let bestStreak = 1;
+      let tempStreak = 1;
+      for (let i = 0; i < dates.length - 1; i++) {
+        const currDate = dates[i]!;
+        const lastDate = dates[i + 1]!;
+
+        if (differenceInDays(currDate, lastDate) === 1) {
+          tempStreak++;
+          bestStreak = Math.max(bestStreak, tempStreak);
+        } else {
+          tempStreak = 1;
+        }
+      }
+
+      stats[data.entityId] = { streak, bestStreak, isCompletedToday };
+    }
+
+    return stats;
   }
 
   async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {

@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id.schemas.js';
+import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
 const UserBaseSchema = z.object({
   name: z
@@ -48,8 +48,7 @@ export const AuthResponseSchema = z.object({
 });
 export type AuthResponseDTO = z.infer<typeof AuthResponseSchema>;
 
-export const TokenPayloadSchema = z.object({
-  id: EntityIdSchema,
-  email: z.email('Invalid email provided.').toLowerCase().trim(),
-});
-export type TokenPayloadDTO = z.infer<typeof TokenPayloadSchema>;
+export type TokenPayloadDTO = {
+  id: EntityIdDTO;
+  email: string;
+};

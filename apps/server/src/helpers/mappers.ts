@@ -9,6 +9,7 @@ import type {
   GoalResponseDTO,
   HabitResponseDTO,
   UserResponseDTO,
+  HabitStatsDTO,
 } from '@fokus/shared';
 
 export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
@@ -30,7 +31,12 @@ export function mapCategoryDocToPublicDTO(
   };
 }
 
-export function mapHabitDocToPublicDTO(habit: HabitDocument): HabitResponseDTO {
+export function mapHabitDocToPublicDTO(
+  doc: HabitDocument,
+  stats: HabitStatsDTO,
+): HabitResponseDTO {
+  const habit = doc.toObject();
+
   return {
     id: habit._id.toString(),
     userId: habit.userId.toString(),
@@ -40,10 +46,11 @@ export function mapHabitDocToPublicDTO(habit: HabitDocument): HabitResponseDTO {
     unitOfMeasure: habit.unitOfMeasure,
     weekDays: habit.weekDays,
     reminder: habit.reminder,
-    streak: habit.streak,
-    bestStreak: habit.bestStreak,
     color: habit.color,
     icon: habit.icon,
+    streak: stats.streak,
+    bestStreak: stats.bestStreak,
+    isCompletedToday: stats.isCompletedToday,
   };
 }
 
@@ -58,7 +65,6 @@ export function mapGoalDocToPublicDTO(goal: GoalDocument): GoalResponseDTO {
     unitOfMeasure: goal.unitOfMeasure,
     habits: goal.habits.map((id) => id.toString()),
     deadline: goal.deadline,
-    isActive: goal.isActive,
     color: goal.color,
     icon: goal.icon,
   };

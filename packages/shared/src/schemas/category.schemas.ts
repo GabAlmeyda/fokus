@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id.schemas.js';
+import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
-const BaseCategorySchema = z.object({
+const CategoryBaseSchema = z.object({
   userId: EntityIdSchema,
 
   name: z
@@ -11,7 +11,7 @@ const BaseCategorySchema = z.object({
     .min(2, 'Name cannot be less than 2 characters.'),
 });
 
-export const CategoryFilterSchema = BaseCategorySchema.pick({
+export const CategoryFilterSchema = CategoryBaseSchema.pick({
   name: true,
 })
   .partial()
@@ -34,15 +34,14 @@ export const CategoryFilterSchema = BaseCategorySchema.pick({
   );
 export type CategoryFilterDTO = z.infer<typeof CategoryFilterSchema>;
 
-export const CategoryCreateSchema = BaseCategorySchema;
+export const CategoryCreateSchema = CategoryBaseSchema;
 export type CategoryCreateDTO = z.infer<typeof CategoryCreateSchema>;
 
-export const CategoryUpdateSchema = BaseCategorySchema.pick({
+export const CategoryUpdateSchema = CategoryBaseSchema.pick({
   name: true,
 }).partial();
 export type CategoryUpdateDTO = z.infer<typeof CategoryUpdateSchema>;
 
-export const CategoryResponseSchema = BaseCategorySchema.extend({
-  id: EntityIdSchema,
-});
-export type CategoryResponseDTO = z.infer<typeof CategoryResponseSchema>;
+export type CategoryResponseDTO = z.infer<typeof CategoryBaseSchema> & {
+  id: EntityIdDTO;
+};

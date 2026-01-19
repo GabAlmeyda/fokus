@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-import { EntityIdSchema } from './id.schemas.js';
+import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
 const GoalBaseSchema = z.object({
   userId: EntityIdSchema,
@@ -182,9 +182,9 @@ export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .superRefine(goalRefinement);
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
-export const GoalResponseSchema = GoalBaseSchema.extend({
-  id: EntityIdSchema,
-
-  isActive: z.boolean("Expected type was 'boolean'.").default(true),
-});
-export type GoalResponseDTO = z.infer<typeof GoalResponseSchema>;
+// export type GoalCalculatedData = {
+//   isCompleted: boolean;
+// };
+export type GoalResponseDTO = z.infer<typeof GoalBaseSchema> & {
+  id: EntityIdDTO;
+};

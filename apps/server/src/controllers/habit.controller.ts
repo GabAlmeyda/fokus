@@ -12,7 +12,6 @@ import {
 } from '@fokus/shared';
 import type { IHabitController } from '../interfaces/habit.interfaces.js';
 import { HabitService } from '../services/habit.service.js';
-import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class HabitController implements IHabitController {
@@ -22,15 +21,13 @@ export class HabitController implements IHabitController {
     req: HTTPRequest<Omit<HabitCreateDTO, 'userId'>>,
   ): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
-      const habit = HabitCreateSchema.parse({
+      const newData = HabitCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
 
-      const createdHabitDoc = await this.habitService.create(habit);
-      const createdHabit = mapHabitDocToPublicDTO(createdHabitDoc);
-
-      return { statusCode: HTTPStatusCode.CREATED, body: createdHabit };
+      const habit = await this.habitService.create(newData);
+      return { statusCode: HTTPStatusCode.CREATED, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -43,9 +40,7 @@ export class HabitController implements IHabitController {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habitDoc = await this.habitService.findOneById(habitId, userId);
-      const habit = mapHabitDocToPublicDTO(habitDoc);
-
+      const habit = await this.habitService.findOneById(habitId, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -62,9 +57,7 @@ export class HabitController implements IHabitController {
       });
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habitDocs = await this.habitService.findByFilter(filter, userId);
-      const habits = habitDocs.map((h) => mapHabitDocToPublicDTO(h));
-
+      const habits = await this.habitService.findByFilter(filter, userId);
       return { statusCode: HTTPStatusCode.OK, body: habits };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -79,14 +72,8 @@ export class HabitController implements IHabitController {
       const newData = HabitUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const updatedHabitDoc = await this.habitService.update(
-        habitId,
-        newData,
-        userId,
-      );
-      const updatedHabit = mapHabitDocToPublicDTO(updatedHabitDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: updatedHabit };
+      const habit = await this.habitService.update(habitId, newData, userId);
+      return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -98,7 +85,6 @@ export class HabitController implements IHabitController {
       const userId = EntityIdSchema.parse(req.userId);
 
       await this.habitService.delete(habitId, userId);
-
       return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);

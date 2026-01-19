@@ -17,6 +17,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
+import { Types } from 'mongoose';
 
 export class ProgressLogRepository implements IProgressLogRepository {
   async create(
@@ -91,6 +92,50 @@ export class ProgressLogRepository implements IProgressLogRepository {
 
       const progressLogDocs = await ProgressLogModel.find(query);
       return progressLogDocs;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async getEntityDates(
+    userId: EntityIdDTO,
+    entityType: 'habitId' | 'goalId',
+    entityId?: EntityIdDTO,
+  ): Promise<{ entityId: EntityIdDTO; dates: Date[] }[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const matchQuery: any = { userId: new Types.ObjectId(userId) };
+      if (entityId) {
+        matchQuery[entityType] = new Types.ObjectId(entityId);
+      } else {
+        matchQuery[entityType] = { $exists: true, $ne: null };
+      }
+
+      const entityDates: { entityId: EntityIdDTO; dates: Date[] }[] =
+        await ProgressLogModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+
+          {
+            $group: {
+              _id: `$${entityType}`,
+              dates: { $addToSet: '$date' },
+            },
+          },
+
+          {
+            $project: {
+              entityId: { $toString: '$_id' },
+              _id: 0,
+              dates: {
+                $sortArray: { input: '$dates', sortBy: -1 },
+              },
+            },
+          },
+        ]);
+
+      return entityDates;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

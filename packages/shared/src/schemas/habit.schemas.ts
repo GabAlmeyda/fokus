@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { EntityIdSchema } from './id.schemas.js';
+import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
 const HabitBaseSchema = z.object({
   userId: EntityIdSchema,
@@ -163,7 +163,10 @@ export const HabitCheckSchema = z.object({
 });
 export type HabitCheckDTO = z.infer<typeof HabitCheckSchema>;
 
-export const HabitResponseSchema = HabitBaseSchema.extend({
-  id: EntityIdSchema,
-});
-export type HabitResponseDTO = z.infer<typeof HabitResponseSchema>;
+export type HabitStatsDTO = {
+  streak: number;
+  bestStreak: number;
+  isCompletedToday: boolean;
+};
+export type HabitResponseDTO = z.infer<typeof HabitBaseSchema> &
+  HabitStatsDTO & { id: EntityIdDTO };

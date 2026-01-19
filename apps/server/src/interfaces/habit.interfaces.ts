@@ -10,7 +10,7 @@ import type {
 import type { HabitDocument } from '../models/habit.model.js';
 
 export interface IHabitRepository {
-  create(habit: HabitCreateDTO): Promise<HabitDocument>;
+  create(newData: HabitCreateDTO): Promise<HabitDocument>;
 
   findOneById(
     habitId: EntityIdDTO,
@@ -35,23 +35,23 @@ export interface IHabitRepository {
 }
 
 export interface IHabitService {
-  create(habit: HabitCreateDTO): Promise<HabitDocument>;
+  create(newData: HabitCreateDTO): Promise<HabitResponseDTO>;
 
   findOneById(
     habitId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<HabitDocument>;
+  ): Promise<HabitResponseDTO>;
 
   findByFilter(
     filter: HabitFilterDTO,
     userId: EntityIdDTO,
-  ): Promise<HabitDocument[]>;
+  ): Promise<HabitResponseDTO[]>;
 
   update(
     habitId: EntityIdDTO,
     newData: HabitUpdateDTO,
     userId: EntityIdDTO,
-  ): Promise<HabitDocument>;
+  ): Promise<HabitResponseDTO>;
 
   delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
