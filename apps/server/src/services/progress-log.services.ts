@@ -5,28 +5,27 @@ import type {
   HabitStatsDTO,
   ProgressLogCreateDTO,
   ProgressLogFilterDTO,
+  ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type { IProgressService } from '../interfaces/progress-log.interfaces.js';
-import type { ProgressLogDocument } from '../models/progress-log.model.js';
 import { ProgressLogRepository } from '../repositories/progress-log.repository.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
+import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.js';
 
 export class ProgressLogService implements IProgressService {
   private readonly progressLogRepository = new ProgressLogRepository();
 
-  async create(
-    progressLog: ProgressLogCreateDTO,
-  ): Promise<ProgressLogDocument> {
-    const createdProgressLogDoc =
-      await this.progressLogRepository.create(progressLog);
+  async create(newData: ProgressLogCreateDTO): Promise<ProgressLogResponseDTO> {
+    const progressLogDoc = await this.progressLogRepository.create(newData);
 
-    return createdProgressLogDoc;
+    const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
+    return progressLog;
   }
 
   async findOneById(
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument> {
+  ): Promise<ProgressLogResponseDTO> {
     const progressLogDoc = await this.progressLogRepository.findOneById(
       progressLogId,
       userId,
@@ -38,19 +37,23 @@ export class ProgressLogService implements IProgressService {
       );
     }
 
-    return progressLogDoc;
+    const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
+    return progressLog;
   }
 
   async findByFilter(
     filter: ProgressLogFilterDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument[]> {
+  ): Promise<ProgressLogResponseDTO[]> {
     const progressLogDocs = await this.progressLogRepository.findByFilter(
       filter,
       userId,
     );
 
-    return progressLogDocs;
+    const progressLogs = progressLogDocs.map((p) =>
+      mapProgressLogDocToPublicDTO(p),
+    );
+    return progressLogs;
   }
 
   async getHabitStats(
@@ -114,11 +117,11 @@ export class ProgressLogService implements IProgressService {
   }
 
   async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {
-    const deletedProgressLogDoc = await this.progressLogRepository.delete(
+    const progressLogDoc = await this.progressLogRepository.delete(
       progressLogId,
       userId,
     );
-    if (!deletedProgressLogDoc) {
+    if (!progressLogDoc) {
       throw new AppServerError(
         'NOT_FOUND',
         `Progress log with ID '${progressLogId}' not found.`,

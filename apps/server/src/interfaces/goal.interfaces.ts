@@ -10,7 +10,7 @@ import type {
 import type { GoalDocument } from '../models/goal.model.js';
 
 export interface IGoalRepository {
-  create(goal: GoalCreateDTO): Promise<GoalDocument>;
+  create(newData: GoalCreateDTO): Promise<GoalDocument>;
 
   findOneById(
     goalId: EntityIdDTO,
@@ -35,22 +35,25 @@ export interface IGoalRepository {
 }
 
 export interface IGoalService {
-  create(goal: GoalCreateDTO): Promise<GoalDocument>;
+  create(newData: GoalCreateDTO): Promise<GoalResponseDTO>;
 
-  findOneById(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<GoalDocument>;
+  findOneById(
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<GoalResponseDTO>;
 
   findByFilter(
     filter: GoalFilterDTO,
     userId: EntityIdDTO,
-  ): Promise<GoalDocument[]>;
+  ): Promise<GoalResponseDTO[]>;
 
   update(
     goalId: EntityIdDTO,
     newData: GoalUpdateDTO,
     userId: EntityIdDTO,
-  ): Promise<GoalDocument>;
+  ): Promise<GoalResponseDTO>;
 
-  delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<GoalDocument>;
+  delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<null>;
 }
 
 export interface IGoalController {
@@ -68,5 +71,5 @@ export interface IGoalController {
     req: HTTPRequest<GoalUpdateDTO>,
   ): Promise<HTTPResponse<GoalResponseDTO>>;
 
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<GoalResponseDTO>>;
+  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }

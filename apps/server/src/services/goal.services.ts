@@ -4,25 +4,28 @@ import {
   type GoalFilterDTO,
   type EntityIdDTO,
   type GoalUpdateDTO,
+  type GoalResponseDTO,
 } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal.interfaces.js';
-import type { GoalDocument } from '../models/goal.model.js';
 import { GoalRepository } from '../repositories/goal.repository.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
+import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
 
-  async create(goal: GoalCreateDTO): Promise<GoalDocument> {
+  async create(newData: GoalCreateDTO): Promise<GoalResponseDTO> {
     try {
-      const createdGoalDoc = await this.goalRepository.create(goal);
-      return createdGoalDoc;
+      const goalDoc = await this.goalRepository.create(newData);
+
+      const goal = mapGoalDocToPublicDTO(goalDoc);
+      return goal;
     } catch (err) {
       if (err instanceof DatabaseError && err.isConflict) {
         throw new AppServerError(
           'CONFLICT',
-          `Goal with title '${goal.title}' already exists.`,
+          `Goal with title '${newData.title}' already exists.`,
           [{ field: 'title', message: 'Value is already registered.' }],
         );
       }
@@ -34,7 +37,7 @@ export class GoalService implements IGoalService {
   async findOneById(
     goalId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<GoalDocument> {
+  ): Promise<GoalResponseDTO> {
     const goalDoc = await this.goalRepository.findOneById(goalId, userId);
     if (!goalDoc) {
       throw new AppServerError(
@@ -43,23 +46,25 @@ export class GoalService implements IGoalService {
       );
     }
 
-    return goalDoc;
+    const goal = mapGoalDocToPublicDTO(goalDoc);
+    return goal;
   }
 
   async findByFilter(
     filter: GoalFilterDTO,
     userId: EntityIdDTO,
-  ): Promise<GoalDocument[]> {
+  ): Promise<GoalResponseDTO[]> {
     const goalDocs = await this.goalRepository.findByFilter(filter, userId);
 
-    return goalDocs;
+    const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
+    return goals;
   }
 
   async update(
     goalId: EntityIdDTO,
     newData: GoalUpdateDTO,
     userId: EntityIdDTO,
-  ): Promise<GoalDocument> {
+  ): Promise<GoalResponseDTO> {
     // Verifies if the goal exists
     const currentGoalDoc = await this.goalRepository.findOneById(
       goalId,
@@ -78,19 +83,16 @@ export class GoalService implements IGoalService {
     GoalUpdateSchema.parse(mergedGoal);
 
     try {
-      const updatedGoalDoc = await this.goalRepository.update(
-        goalId,
-        newData,
-        userId,
-      );
-      if (!updatedGoalDoc) {
+      const goalDoc = await this.goalRepository.update(goalId, newData, userId);
+      if (!goalDoc) {
         throw new AppServerError(
           'NOT_FOUND',
           `Goal with ID '${goalId}' not found.`,
         );
       }
 
-      return updatedGoalDoc;
+      const goal = mapGoalDocToPublicDTO(goalDoc);
+      return goal;
     } catch (err) {
       if (err instanceof DatabaseError && err.isConflict) {
         throw new AppServerError(
@@ -104,18 +106,15 @@ export class GoalService implements IGoalService {
     }
   }
 
-  async delete(
-    goalId: EntityIdDTO,
-    userId: EntityIdDTO,
-  ): Promise<GoalDocument> {
-    const deletedGoalDoc = await this.goalRepository.delete(goalId, userId);
-    if (!deletedGoalDoc) {
+  async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {
+    const goalDoc = await this.goalRepository.delete(goalId, userId);
+    if (!goalDoc) {
       throw new AppServerError(
         'NOT_FOUND',
         `Goal with ID '${goalId}' not found.`,
       );
     }
 
-    return deletedGoalDoc;
+    return null;
   }
 }

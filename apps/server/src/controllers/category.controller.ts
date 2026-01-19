@@ -12,7 +12,6 @@ import {
 } from '@fokus/shared';
 import type { ICategoryController } from '../interfaces/category.interfaces.js';
 import { CategoryService } from '../services/category.service.js';
-import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class CategoryController implements ICategoryController {
@@ -22,17 +21,15 @@ export class CategoryController implements ICategoryController {
     req: HTTPRequest<Omit<CategoryCreateDTO, 'userId'>>,
   ): Promise<HTTPResponse<CategoryResponseDTO>> {
     try {
-      const category = CategoryCreateSchema.parse({
+      const newData = CategoryCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
 
-      const createdCategoryDoc = await this.categoryService.create(category);
-      const createdCategory = mapCategoryDocToPublicDTO(createdCategoryDoc);
-
+      const category = await this.categoryService.create(newData);
       return {
         statusCode: HTTPStatusCode.CREATED,
-        body: createdCategory,
+        body: category,
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -46,12 +43,10 @@ export class CategoryController implements ICategoryController {
       const categoryId = EntityIdSchema.parse(req.params?.categoryId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const categoryDoc = await this.categoryService.findOneById(
+      const category = await this.categoryService.findOneById(
         categoryId,
         userId,
       );
-      const category = mapCategoryDocToPublicDTO(categoryDoc);
-
       return {
         statusCode: HTTPStatusCode.OK,
         body: category,
@@ -70,13 +65,11 @@ export class CategoryController implements ICategoryController {
       });
       const userId = EntityIdSchema.parse(req.userId);
 
-      const returnedDocs = await this.categoryService.findByFilter(
+      const categories = await this.categoryService.findByFilter(
         filter,
         userId,
       );
-      const docs = returnedDocs.map((d) => mapCategoryDocToPublicDTO(d));
-
-      return { statusCode: HTTPStatusCode.OK, body: docs };
+      return { statusCode: HTTPStatusCode.OK, body: categories };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -90,14 +83,12 @@ export class CategoryController implements ICategoryController {
       const categoryId = EntityIdSchema.parse(req.params?.categoryId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const updatedCategoryDoc = await this.categoryService.update(
+      const category = await this.categoryService.update(
         newData,
         categoryId,
         userId,
       );
-      const updatedCategory = mapCategoryDocToPublicDTO(updatedCategoryDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: updatedCategory };
+      return { statusCode: HTTPStatusCode.OK, body: category };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

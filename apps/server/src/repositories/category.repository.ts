@@ -12,11 +12,11 @@ import {
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class CategoryRepository implements ICategoryRepository {
-  async create(category: CategoryCreateDTO): Promise<CategoryDocument> {
+  async create(newData: CategoryCreateDTO): Promise<CategoryDocument> {
     try {
-      const createdCategoryDoc = await CategoryModel.create(category);
+      const categoryDoc = await CategoryModel.create(newData);
 
-      return createdCategoryDoc;
+      return categoryDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -66,8 +66,8 @@ export class CategoryRepository implements ICategoryRepository {
         }
       }
 
-      const returnedDocs = CategoryModel.find(query);
-      return returnedDocs;
+      const categoryDocs = CategoryModel.find(query);
+      return categoryDocs;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -79,13 +79,13 @@ export class CategoryRepository implements ICategoryRepository {
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const updatedCategoryDoc = await CategoryModel.findOneAndUpdate(
+      const categoryDoc = await CategoryModel.findOneAndUpdate(
         { _id: categoryId, userId },
         { $set: newData },
         { new: true, runValidators: true },
       );
 
-      return updatedCategoryDoc;
+      return categoryDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -96,12 +96,12 @@ export class CategoryRepository implements ICategoryRepository {
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {
-      const deletedCategoryDoc = await CategoryModel.findOneAndDelete({
+      const categoryDoc = await CategoryModel.findOneAndDelete({
         _id: categoryId,
         userId,
       });
 
-      return deletedCategoryDoc;
+      return categoryDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

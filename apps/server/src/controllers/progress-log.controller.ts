@@ -12,7 +12,6 @@ import {
 import type { IProgressLogController } from '../interfaces/progress-log.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 import { ProgressLogService } from '../services/progress-log.services.js';
-import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.js';
 
 export class ProgressLogController implements IProgressLogController {
   private readonly progressLogService = new ProgressLogService();
@@ -21,18 +20,13 @@ export class ProgressLogController implements IProgressLogController {
     req: HTTPRequest<ProgressLogCreateDTO>,
   ): Promise<HTTPResponse<ProgressLogResponseDTO>> {
     try {
-      const progressLog = ProgressLogCreateSchema.parse({
+      const newData = ProgressLogCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
 
-      const createdProgressLogDoc =
-        await this.progressLogService.create(progressLog);
-      const createdProgressLog = mapProgressLogDocToPublicDTO(
-        createdProgressLogDoc,
-      );
-
-      return { statusCode: HTTPStatusCode.CREATED, body: createdProgressLog };
+      const progressLog = await this.progressLogService.create(newData);
+      return { statusCode: HTTPStatusCode.CREATED, body: progressLog };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -45,12 +39,10 @@ export class ProgressLogController implements IProgressLogController {
       const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const progressLogDoc = await this.progressLogService.findOneById(
+      const progressLog = await this.progressLogService.findOneById(
         progressLogId,
         userId,
       );
-      const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
-
       return { statusCode: HTTPStatusCode.OK, body: progressLog };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -71,14 +63,10 @@ export class ProgressLogController implements IProgressLogController {
         period: date && interval ? { date, interval } : undefined,
       };
 
-      const progressLogDocs = await this.progressLogService.findByFilter(
+      const progressLogs = await this.progressLogService.findByFilter(
         filter,
         userId,
       );
-      const progressLogs = progressLogDocs.map((p) =>
-        mapProgressLogDocToPublicDTO(p),
-      );
-
       return { statusCode: HTTPStatusCode.OK, body: progressLogs };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -91,7 +79,6 @@ export class ProgressLogController implements IProgressLogController {
       const userId = EntityIdSchema.parse(req.userId);
 
       await this.progressLogService.delete(progressLogId, userId);
-
       return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);

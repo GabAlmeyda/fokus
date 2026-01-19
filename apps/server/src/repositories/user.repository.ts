@@ -11,9 +11,9 @@ import { DatabaseError } from '../helpers/errors/database.errors.js';
 export class UserRepository implements IUserRepository {
   async register(user: UserRegisterDTO): Promise<UserDocument> {
     try {
-      const createdUserDoc = await UserModel.create(user);
+      const userDoc = await UserModel.create(user);
 
-      return createdUserDoc;
+      return userDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -21,11 +21,11 @@ export class UserRepository implements IUserRepository {
 
   async findOneByEmail(email: string): Promise<UserDocument | null> {
     try {
-      const loggedUserDoc = await UserModel.findOne({
+      const userDoc = await UserModel.findOne({
         email,
       }).select('+password');
 
-      return loggedUserDoc;
+      return userDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -46,7 +46,7 @@ export class UserRepository implements IUserRepository {
     newData: UserUpdateDTO,
   ): Promise<UserDocument | null> {
     try {
-      const updatedUserDoc = await UserModel.findOneAndUpdate(
+      const userDoc = await UserModel.findOneAndUpdate(
         { _id: userId },
         { $set: newData },
         {
@@ -55,7 +55,7 @@ export class UserRepository implements IUserRepository {
         },
       );
 
-      return updatedUserDoc;
+      return userDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -63,9 +63,9 @@ export class UserRepository implements IUserRepository {
 
   async delete(userId: EntityIdDTO): Promise<UserDocument | null> {
     try {
-      const deletedUserDoc = await UserModel.findOneAndDelete({ _id: userId });
+      const userDoc = await UserModel.findOneAndDelete({ _id: userId });
 
-      return deletedUserDoc;
+      return userDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

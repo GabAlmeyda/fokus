@@ -11,7 +11,7 @@ import type {
 import type { UserDocument } from '../models/user.model.js';
 
 export interface IUserRepository {
-  register(user: UserRegisterDTO): Promise<UserDocument>;
+  register(registerData: UserRegisterDTO): Promise<UserDocument>;
 
   findOneByEmail(email: string): Promise<UserDocument | null>;
 
@@ -26,15 +26,13 @@ export interface IUserRepository {
 }
 
 export interface IUserService {
-  register(
-    user: UserRegisterDTO,
-  ): Promise<{ userDoc: UserDocument; token: string }>;
+  register(registerData: UserRegisterDTO): Promise<AuthResponseDTO>;
 
-  login(user: UserLoginDTO): Promise<{ userDoc: UserDocument; token: string }>;
+  login(loginData: UserLoginDTO): Promise<AuthResponseDTO>;
 
-  findOneById(userId: EntityIdDTO): Promise<UserDocument>;
+  findOneById(userId: EntityIdDTO): Promise<UserResponseDTO>;
 
-  update(userId: EntityIdDTO, newData: UserUpdateDTO): Promise<UserDocument>;
+  update(userId: EntityIdDTO, newData: UserUpdateDTO): Promise<UserResponseDTO>;
 
   delete(userId: EntityIdDTO): Promise<void>;
 }

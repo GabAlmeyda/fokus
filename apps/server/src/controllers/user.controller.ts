@@ -14,7 +14,6 @@ import {
 } from '@fokus/shared';
 import type { IUserController } from '../interfaces/user.interfaces.js';
 import { UserService } from '../services/user.service.js';
-import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class UserController implements IUserController {
@@ -24,15 +23,12 @@ export class UserController implements IUserController {
     req: HTTPRequest<UserRegisterDTO>,
   ): Promise<HTTPResponse<AuthResponseDTO>> {
     try {
-      const user = UserRegisterSchema.parse(req.body);
+      const registerData = UserRegisterSchema.parse(req.body);
 
-      const { userDoc: registeredUserDoc, token } =
-        await this.userService.register(user);
-      const registeredUser = mapUserDocToPublicDTO(registeredUserDoc);
-
+      const { user, token } = await this.userService.register(registerData);
       return {
         statusCode: 201,
-        body: { user: registeredUser, token },
+        body: { user, token },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -43,15 +39,12 @@ export class UserController implements IUserController {
     req: HTTPRequest<UserLoginDTO>,
   ): Promise<HTTPResponse<AuthResponseDTO>> {
     try {
-      const user = UserLoginSchema.parse(req.body);
+      const loginData = UserLoginSchema.parse(req.body);
 
-      const { userDoc: loggedUserDoc, token } =
-        await this.userService.login(user);
-      const loggedUser = mapUserDocToPublicDTO(loggedUserDoc);
-
+      const { user, token } = await this.userService.login(loginData);
       return {
         statusCode: 200,
-        body: { user: loggedUser, token },
+        body: { user, token },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -64,9 +57,7 @@ export class UserController implements IUserController {
     try {
       const userId = EntityIdSchema.parse(req.userId);
 
-      const userDoc = await this.userService.findOneById(userId);
-      const user = mapUserDocToPublicDTO(userDoc);
-
+      const user = await this.userService.findOneById(userId);
       return {
         statusCode: HTTPStatusCode.OK,
         body: user,
@@ -83,12 +74,10 @@ export class UserController implements IUserController {
       const newData = UserUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const updatedUserDoc = await this.userService.update(userId, newData);
-      const updatedUser = mapUserDocToPublicDTO(updatedUserDoc);
-
+      const user = await this.userService.update(userId, newData);
       return {
         statusCode: HTTPStatusCode.OK,
-        body: updatedUser,
+        body: user,
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);

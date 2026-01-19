@@ -20,13 +20,11 @@ import {
 import { Types } from 'mongoose';
 
 export class ProgressLogRepository implements IProgressLogRepository {
-  async create(
-    progressLog: ProgressLogCreateDTO,
-  ): Promise<ProgressLogDocument> {
+  async create(newData: ProgressLogCreateDTO): Promise<ProgressLogDocument> {
     try {
-      const createdProgressLogDoc = await ProgressLogModel.create(progressLog);
+      const progressLogDoc = await ProgressLogModel.create(newData);
 
-      return createdProgressLogDoc;
+      return progressLogDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -146,12 +144,12 @@ export class ProgressLogRepository implements IProgressLogRepository {
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument | null> {
     try {
-      const deletedProgressLogDoc = await ProgressLogModel.findOneAndDelete({
+      const progressLogDoc = await ProgressLogModel.findOneAndDelete({
         _id: progressLogId,
         userId,
       });
 
-      return deletedProgressLogDoc;
+      return progressLogDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

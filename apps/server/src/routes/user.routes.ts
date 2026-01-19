@@ -20,7 +20,7 @@ userRoutes.post('/auth/register', async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
-      maxAge: 1000 * 60 * 15,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
   }
   return res.status(statusCode).json(body);
@@ -39,7 +39,7 @@ userRoutes.post('/auth/login', async (req, res) => {
       httpOnly: true,
       sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 15,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
   }
   return res.status(statusCode).json(body);

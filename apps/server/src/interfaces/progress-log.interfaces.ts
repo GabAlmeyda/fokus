@@ -10,7 +10,7 @@ import type {
 import type { ProgressLogDocument } from '../models/progress-log.model.js';
 
 export interface IProgressLogRepository {
-  create(progressLog: ProgressLogCreateDTO): Promise<ProgressLogDocument>;
+  create(newData: ProgressLogCreateDTO): Promise<ProgressLogDocument>;
 
   findOneById(
     progressLogId: EntityIdDTO,
@@ -35,17 +35,17 @@ export interface IProgressLogRepository {
 }
 
 export interface IProgressService {
-  create(progressLog: ProgressLogCreateDTO): Promise<ProgressLogDocument>;
+  create(newData: ProgressLogCreateDTO): Promise<ProgressLogResponseDTO>;
 
   findOneById(
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument>;
+  ): Promise<ProgressLogResponseDTO>;
 
   findByFilter(
     filter: ProgressLogFilterDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument[]>;
+  ): Promise<ProgressLogResponseDTO[]>;
 
   getHabitStats(
     userId: EntityIdDTO,

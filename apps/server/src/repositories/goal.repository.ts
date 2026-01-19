@@ -11,15 +11,15 @@ import { Types } from 'mongoose';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 export class GoalRepository implements IGoalRepository {
-  async create(goal: GoalCreateDTO): Promise<GoalDocument> {
+  async create(newData: GoalCreateDTO): Promise<GoalDocument> {
     try {
-      const goalToCreate = {
-        ...goal,
-        habits: goal.habits.map((h) => new Types.ObjectId(h)),
+      const goalData = {
+        ...newData,
+        habits: newData.habits.map((h) => new Types.ObjectId(h)),
       };
-      const createdGoalDoc = await GoalModel.create(goalToCreate);
+      const goalDoc = await GoalModel.create(goalData);
 
-      return createdGoalDoc;
+      return goalDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -101,13 +101,13 @@ export class GoalRepository implements IGoalRepository {
     userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {
-      const updatedGoalDoc = await GoalModel.findOneAndUpdate(
+      const goalDoc = await GoalModel.findOneAndUpdate(
         { _id: goalId, userId },
         { $set: newData },
         { new: true, runValidators: true },
       );
 
-      return updatedGoalDoc;
+      return goalDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }
@@ -118,12 +118,12 @@ export class GoalRepository implements IGoalRepository {
     userId: EntityIdDTO,
   ): Promise<GoalDocument | null> {
     try {
-      const deletedGoalDoc = await GoalModel.findOneAndDelete({
+      const goalDoc = await GoalModel.findOneAndDelete({
         _id: goalId,
         userId,
       });
 
-      return deletedGoalDoc;
+      return goalDoc;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

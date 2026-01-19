@@ -13,7 +13,6 @@ import {
 import type { IGoalController } from '../interfaces/goal.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 import { GoalService } from '../services/goal.services.js';
-import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
 
 export class GoalController implements IGoalController {
   private readonly goalService = new GoalService();
@@ -22,15 +21,13 @@ export class GoalController implements IGoalController {
     req: HTTPRequest<GoalCreateDTO>,
   ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
-      const goal = GoalCreateSchema.parse({
+      const newData = GoalCreateSchema.parse({
         ...req.body,
         userId: req.userId,
       });
 
-      const createdGoalDoc = await this.goalService.create(goal);
-      const createdGoal = mapGoalDocToPublicDTO(createdGoalDoc);
-
-      return { statusCode: HTTPStatusCode.CREATED, body: createdGoal };
+      const goal = await this.goalService.create(newData);
+      return { statusCode: HTTPStatusCode.CREATED, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -43,9 +40,7 @@ export class GoalController implements IGoalController {
       const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const goalDoc = await this.goalService.findOneById(goalId, userId);
-      const goal = mapGoalDocToPublicDTO(goalDoc);
-
+      const goal = await this.goalService.findOneById(goalId, userId);
       return { statusCode: HTTPStatusCode.OK, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -64,9 +59,7 @@ export class GoalController implements IGoalController {
 
       const userId = EntityIdSchema.parse(req.userId);
 
-      const goalDocs = await this.goalService.findByFilter(filter, userId);
-      const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
-
+      const goals = await this.goalService.findByFilter(filter, userId);
       return { statusCode: HTTPStatusCode.OK, body: goals };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -81,28 +74,20 @@ export class GoalController implements IGoalController {
       const newData = GoalUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const updatedGoalDoc = await this.goalService.update(
-        goalId,
-        newData,
-        userId,
-      );
-      const updatedGoal = mapGoalDocToPublicDTO(updatedGoalDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: updatedGoal };
+      const goalDoc = await this.goalService.update(goalId, newData, userId);
+      return { statusCode: HTTPStatusCode.OK, body: goalDoc };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
   }
 
-  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<GoalResponseDTO>> {
+  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
       const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const deletedGoalDoc = await this.goalService.delete(goalId, userId);
-      const deletedGoal = mapGoalDocToPublicDTO(deletedGoalDoc);
-
-      return { statusCode: HTTPStatusCode.OK, body: deletedGoal };
+      await this.goalService.delete(goalId, userId);
+      return { statusCode: HTTPStatusCode.OK, body: null };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

@@ -10,7 +10,7 @@ import type {
 import type { CategoryDocument } from '../models/category.model.js';
 
 export interface ICategoryRepository {
-  create(category: CategoryCreateDTO): Promise<CategoryDocument>;
+  create(newData: CategoryCreateDTO): Promise<CategoryDocument>;
 
   findOneById(
     categoryId: EntityIdDTO,
@@ -35,23 +35,23 @@ export interface ICategoryRepository {
 }
 
 export interface ICategoryService {
-  create(category: CategoryCreateDTO): Promise<CategoryDocument>;
+  create(newData: CategoryCreateDTO): Promise<CategoryResponseDTO>;
 
   findOneById(
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<CategoryDocument>;
+  ): Promise<CategoryResponseDTO>;
 
   findByFilter(
     filter: CategoryFilterDTO,
     userId: string,
-  ): Promise<CategoryDocument[]>;
+  ): Promise<CategoryResponseDTO[]>;
 
   update(
     newData: CategoryUpdateDTO,
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
-  ): Promise<CategoryDocument>;
+  ): Promise<CategoryResponseDTO>;
 
   delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
