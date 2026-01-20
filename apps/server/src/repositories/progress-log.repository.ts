@@ -96,8 +96,8 @@ export class ProgressLogRepository implements IProgressLogRepository {
   }
 
   async getEntityDates(
-    userId: EntityIdDTO,
     entityType: 'habitId' | 'goalId',
+    userId: EntityIdDTO,
     entityId?: EntityIdDTO,
   ): Promise<{ entityId: EntityIdDTO; dates: Date[] }[]> {
     try {
@@ -134,6 +134,48 @@ export class ProgressLogRepository implements IProgressLogRepository {
         ]);
 
       return entityDates;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async getGoalCurrentValues(
+    userId: EntityIdDTO,
+    goalId?: EntityIdDTO,
+  ): Promise<{ goalId: EntityIdDTO; currentValue: number }[]> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const matchQuery: any = { userId };
+      if (goalId) {
+        matchQuery.goalId = new Types.ObjectId(goalId);
+      } else {
+        matchQuery.goalId = { $exists: true, $ne: null };
+      }
+
+      const currentValues: { goalId: EntityIdDTO; currentValue: number }[] =
+        await ProgressLogModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+          {
+            $group: {
+              _id: '$goalId',
+              currentValue: { $sum: '$value' },
+            },
+          },
+          {
+            $project: {
+              goalId: { $toString: '$_id' },
+              _id: 0,
+              currentValue: 1,
+            },
+          },
+          {
+            $sort: { currentValue: -1 },
+          },
+        ]);
+
+      return currentValues;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

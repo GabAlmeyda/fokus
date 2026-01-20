@@ -23,10 +23,15 @@ export interface IProgressLogRepository {
   ): Promise<ProgressLogDocument[]>;
 
   getEntityDates(
-    userId: EntityIdDTO,
     entityType: 'habitId' | 'goalId',
+    userId: EntityIdDTO,
     entityId?: EntityIdDTO,
   ): Promise<{ entityId: EntityIdDTO; dates: Date[] }[]>;
+
+  getGoalCurrentValues(
+    userId: EntityIdDTO,
+    goalId?: EntityIdDTO,
+  ): Promise<{ goalId: EntityIdDTO; currentValue: number }[]>;
 
   delete(
     progressLogId: EntityIdDTO,
@@ -47,10 +52,15 @@ export interface IProgressService {
     userId: EntityIdDTO,
   ): Promise<ProgressLogResponseDTO[]>;
 
-  getHabitStats(
+  getHabitActivityStats(
     userId: EntityIdDTO,
     habitId?: EntityIdDTO,
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>>;
+
+  getGoalActivityStats(
+    userId: EntityIdDTO,
+    goalId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, number>>;
 
   delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null>;
 }

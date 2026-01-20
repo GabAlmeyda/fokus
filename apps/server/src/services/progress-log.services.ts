@@ -11,15 +11,34 @@ import type { IProgressService } from '../interfaces/progress-log.interfaces.js'
 import { ProgressLogRepository } from '../repositories/progress-log.repository.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.js';
+import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class ProgressLogService implements IProgressService {
   private readonly progressLogRepository = new ProgressLogRepository();
 
   async create(newData: ProgressLogCreateDTO): Promise<ProgressLogResponseDTO> {
-    const progressLogDoc = await this.progressLogRepository.create(newData);
+    try {
+      const progressLogDoc = await this.progressLogRepository.create(newData);
 
-    const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
-    return progressLog;
+      const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
+      return progressLog;
+    } catch (err) {
+      if (err instanceof DatabaseError && err.isConflict) {
+        throw new AppServerError(
+          'CONFLICT',
+          'Cannot have two progress logs for habit with the same date.',
+          [
+            {
+              field: 'date',
+              message:
+                'The provided date is already registered for this habit.',
+            },
+          ],
+        );
+      }
+
+      throw err;
+    }
   }
 
   async findOneById(
@@ -56,13 +75,13 @@ export class ProgressLogService implements IProgressService {
     return progressLogs;
   }
 
-  async getHabitStats(
+  async getHabitActivityStats(
     userId: EntityIdDTO,
     habitId?: EntityIdDTO,
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>> {
     const habitDates = await this.progressLogRepository.getEntityDates(
-      userId,
       'habitId',
+      userId,
       habitId,
     );
 
@@ -111,6 +130,23 @@ export class ProgressLogService implements IProgressService {
       }
 
       stats[data.entityId] = { streak, bestStreak, isCompletedToday };
+    }
+
+    return stats;
+  }
+
+  async getGoalActivityStats(
+    userId: EntityIdDTO,
+    goalId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, number>> {
+    const currentValues = await this.progressLogRepository.getGoalCurrentValues(
+      userId,
+      goalId,
+    );
+
+    const stats: Record<EntityIdDTO, number> = {};
+    for (const c of currentValues) {
+      stats[c.goalId] = c.currentValue;
     }
 
     return stats;

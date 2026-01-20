@@ -58,9 +58,10 @@ progressLogSchema.index(
 progressLogSchema.index(
   { userId: 1, habitId: 1, dateString: 1 },
   {
-    name: 'idx_userId_habitId_dateString',
+    name: 'uidx_userId_habitId_dateString',
     partialFilterExpression: { habitId: { $type: 'objectId' } },
     background: true,
+    unique: true,
   },
 );
 progressLogSchema.index(

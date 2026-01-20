@@ -53,13 +53,7 @@ export class HabitService implements IHabitService {
         `Habit with ID '${habitId}' not found.`,
       );
     }
-    const stats = (
-      await this.progressLogService.getHabitStats(userId, habitId)
-    )[habitId] || {
-      streak: 0,
-      bestStreak: 0,
-      isCompletedToday: false,
-    };
+    const stats = (await this.getHabitStats(userId, habitId))[habitId]!;
 
     const habit = mapHabitDocToPublicDTO(doc, stats);
     return habit;
@@ -70,17 +64,10 @@ export class HabitService implements IHabitService {
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO[]> {
     const docs = await this.habitRepository.findByFilter(filter, userId);
-    const stats = await this.progressLogService.getHabitStats(userId);
+    const stats = await this.getHabitStats(userId);
 
     const habits = docs.map((d) =>
-      mapHabitDocToPublicDTO(
-        d,
-        stats[d._id.toString()] || {
-          streak: 0,
-          bestStreak: 0,
-          isCompletedToday: false,
-        },
-      ),
+      mapHabitDocToPublicDTO(d, stats[d._id.toString()]!),
     );
     return habits;
   }
@@ -115,13 +102,7 @@ export class HabitService implements IHabitService {
           `Habit with ID '${habitId}' not found.`,
         );
       }
-      const stats = (
-        await this.progressLogService.getHabitStats(userId, habitId)
-      )[habitId] || {
-        streak: 0,
-        bestStreak: 0,
-        isCompletedToday: false,
-      };
+      const stats = (await this.getHabitStats(userId, habitId))[habitId]!;
 
       const habit = mapHabitDocToPublicDTO(updatedDoc, stats);
       return habit;
@@ -136,6 +117,33 @@ export class HabitService implements IHabitService {
 
       throw err;
     }
+  }
+
+  private async getHabitStats(
+    userId: EntityIdDTO,
+    habitId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, HabitStatsDTO>> {
+    const registeredStats = await this.progressLogService.getHabitActivityStats(
+      userId,
+      habitId,
+    );
+
+    const habits = habitId
+      ? [await this.habitRepository.findOneById(habitId, userId)]
+      : await this.habitRepository.findByFilter({}, userId);
+
+    const stats: Record<EntityIdDTO, HabitStatsDTO> = {};
+    for (const h of habits) {
+      if (!h) continue;
+
+      stats[h._id.toString()] = registeredStats[h._id.toString()] || {
+        streak: 0,
+        bestStreak: 0,
+        isCompletedToday: false,
+      };
+    }
+
+    return stats;
   }
 
   async delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
