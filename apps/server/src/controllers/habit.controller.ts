@@ -10,12 +10,20 @@ import {
   type HabitUpdateDTO,
   HabitFilterSchema,
 } from '@fokus/shared';
-import type { IHabitController } from '../interfaces/habit.interfaces.js';
+import type {
+  IHabitController,
+  IHabitService,
+} from '../interfaces/habit.interfaces.js';
 import { HabitService } from '../services/habit.service.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
+import { ProgressLogService } from '../services/progress-log.services.js';
 
 export class HabitController implements IHabitController {
-  private readonly habitService = new HabitService();
+  private readonly habitService: IHabitService;
+  constructor() {
+    const progressLogService = new ProgressLogService();
+    this.habitService = new HabitService(progressLogService);
+  }
 
   async create(
     req: HTTPRequest<Omit<HabitCreateDTO, 'userId'>>,

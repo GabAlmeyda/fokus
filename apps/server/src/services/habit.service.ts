@@ -11,12 +11,16 @@ import type { IHabitService } from '../interfaces/habit.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { HabitRepository } from '../repositories/habit.repository.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
-import { ProgressLogService } from './progress-log.services.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
+import type { IProgressLogService } from '../interfaces/progress-log.interfaces.js';
 
 export class HabitService implements IHabitService {
   private readonly habitRepository = new HabitRepository();
-  private readonly progressLogService = new ProgressLogService();
+
+  private readonly progressLogService;
+  constructor(progressLogService: IProgressLogService) {
+    this.progressLogService = progressLogService;
+  }
 
   async create(newData: HabitCreateDTO): Promise<HabitResponseDTO> {
     try {
