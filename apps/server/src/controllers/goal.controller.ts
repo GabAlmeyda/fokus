@@ -54,6 +54,7 @@ export class GoalController implements IGoalController {
       const filter = GoalFilterSchema.parse({
         title: req.query?.title,
         categoryId: req.query?.categoryId,
+        habitId: req.query?.habitId,
         deadlineType: req.query?.deadlineType,
       });
 

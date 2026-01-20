@@ -7,7 +7,7 @@ interface IGoal {
   type: 'qualitative' | 'quantitative';
   targetValue: number | null;
   unitOfMeasure: string | null;
-  habits: (Types.ObjectId | string)[];
+  habitId: Types.ObjectId | string | null;
   deadline: Date | null;
   color: string;
   icon: string;
@@ -50,10 +50,10 @@ const goalSchema = new Schema<IGoal>(
       lowercase: true,
       default: null,
     },
-    habits: {
-      type: [Schema.Types.ObjectId],
+    habitId: {
+      type: Schema.Types.ObjectId,
       ref: 'Habit',
-      default: [],
+      default: null,
     },
     deadline: {
       type: Date,
@@ -101,6 +101,14 @@ goalSchema.index(
 goalSchema.index(
   { userId: 1, categoryId: 1 },
   { name: 'idx_userId_categoryId', background: true },
+);
+goalSchema.index(
+  { userId: 1, habitId: 1 },
+  {
+    name: 'idx_userId_habitId',
+    background: true,
+    partialFilterExpression: { $exists: true, $ne: null },
+  },
 );
 goalSchema.index(
   { userId: 1, deadline: 1 },

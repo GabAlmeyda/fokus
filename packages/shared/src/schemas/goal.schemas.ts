@@ -30,7 +30,7 @@ const GoalBaseSchema = z.object({
     .trim()
     .nullable(),
 
-  habits: z.array(EntityIdSchema).default([]),
+  habitId: EntityIdSchema.nullable(),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
@@ -125,11 +125,11 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
     }
   }
 
-  if (data.habits && data.habits.length > 0 && data.type === 'qualitative') {
+  if (data.type === 'qualitative' && data.habitId) {
     ctx.addIssue({
       code: 'custom',
-      path: ['habits'],
-      message: "In qualitative goals, 'habits' must be empty.",
+      path: ['habitId'],
+      message: "In qualitative goals, 'habitId' must be 'null'.",
     });
   }
 }
@@ -141,6 +141,7 @@ export const GoalFilterSchema = z
       z.literal('none', { error: "Expected value was 'none'." }),
       EntityIdSchema,
     ]),
+    habitId: GoalBaseSchema.shape.habitId,
     deadlineType: z.enum(['not-defined', 'has-deadline', 'this-week'], {
       error: () => ({
         message:
@@ -171,6 +172,7 @@ export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 
 export const GoalCreateSchema = GoalBaseSchema.extend({
   categoryId: GoalBaseSchema.shape.categoryId.default(null),
+  habitId: GoalBaseSchema.shape.habitId.default(null),
   targetValue: GoalBaseSchema.shape.targetValue.default(null),
   unitOfMeasure: GoalBaseSchema.shape.unitOfMeasure.default(null),
   deadline: GoalBaseSchema.shape.deadline.default(null),
@@ -182,9 +184,11 @@ export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .superRefine(goalRefinement);
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
-// export type GoalCalculatedData = {
-//   isCompleted: boolean;
-// };
-export type GoalResponseDTO = z.infer<typeof GoalBaseSchema> & {
-  id: EntityIdDTO;
+export type GoalStatsDTO = {
+  isCompleted: boolean;
 };
+
+export type GoalResponseDTO = z.infer<typeof GoalBaseSchema> &
+  GoalStatsDTO & {
+    id: EntityIdDTO;
+  };

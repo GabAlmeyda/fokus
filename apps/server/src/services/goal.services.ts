@@ -11,12 +11,33 @@ import { GoalRepository } from '../repositories/goal.repository.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
+import { HabitService } from './habit.service.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
+  private readonly habitService = new HabitService();
 
   async create(newData: GoalCreateDTO): Promise<GoalResponseDTO> {
     try {
+      if (newData.habitId) {
+        const habit = await this.habitService.findOneById(
+          newData.habitId,
+          newData.userId,
+        );
+        if (habit.type !== newData.type) {
+          throw new AppServerError(
+            'UNPROCESSABLE',
+            'Goal and Habit types are incompatible.',
+            [
+              {
+                field: 'habitId',
+                message: `Expected habit 'type' was '${newData.type}' to match the goal.`,
+              },
+            ],
+          );
+        }
+      }
+
       const goalDoc = await this.goalRepository.create(newData);
 
       const goal = mapGoalDocToPublicDTO(goalDoc);
@@ -81,6 +102,25 @@ export class GoalService implements IGoalService {
     const mergedGoal = { ...currentGoalDoc.toObject(), ...newData };
     mergedGoal.categoryId = mergedGoal.categoryId?.toString() ?? null;
     GoalUpdateSchema.parse(mergedGoal);
+
+    if (newData.habitId) {
+      const habit = await this.habitService.findOneById(
+        newData.habitId,
+        userId,
+      );
+      if (habit.type !== newData.type) {
+        throw new AppServerError(
+          'UNPROCESSABLE',
+          'Goal and Habit types are incompatible.',
+          [
+            {
+              field: 'habitId',
+              message: `Expected habit 'type' was '${newData.type}' to match the goal.`,
+            },
+          ],
+        );
+      }
+    }
 
     try {
       const goalDoc = await this.goalRepository.update(goalId, newData, userId);

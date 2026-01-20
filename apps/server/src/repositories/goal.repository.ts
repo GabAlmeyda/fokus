@@ -7,17 +7,12 @@ import type {
 import type { IGoalRepository } from '../interfaces/goal.interfaces.js';
 import { GoalModel, type GoalDocument } from '../models/goal.model.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
-import { Types } from 'mongoose';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 export class GoalRepository implements IGoalRepository {
   async create(newData: GoalCreateDTO): Promise<GoalDocument> {
     try {
-      const goalData = {
-        ...newData,
-        habits: newData.habits.map((h) => new Types.ObjectId(h)),
-      };
-      const goalDoc = await GoalModel.create(goalData);
+      const goalDoc = await GoalModel.create(newData);
 
       return goalDoc;
     } catch (err) {
@@ -71,6 +66,7 @@ export class GoalRepository implements IGoalRepository {
 
       switch (property) {
         case 'title':
+        case 'habitId':
           query[property] = filter[property];
           break;
         case 'categoryId':
