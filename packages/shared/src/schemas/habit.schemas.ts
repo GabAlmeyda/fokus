@@ -140,6 +140,7 @@ export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 export const HabitCreateSchema = HabitBaseSchema.extend({
   progressImpactValue: HabitBaseSchema.shape.progressImpactValue.default(null),
   unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure.default(null),
+  reminder: HabitBaseSchema.shape.reminder.default(null),
 }).superRefine(habitRefinement);
 export type HabitCreateDTO = z.infer<typeof HabitCreateSchema>;
 

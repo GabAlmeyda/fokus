@@ -107,7 +107,7 @@ goalSchema.index(
   {
     name: 'idx_userId_habitId',
     background: true,
-    partialFilterExpression: { $exists: true, $ne: null },
+    partialFilterExpression: { habitId: { $type: 'objectId' } },
   },
 );
 goalSchema.index(

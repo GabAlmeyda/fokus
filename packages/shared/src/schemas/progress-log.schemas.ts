@@ -36,6 +36,19 @@ function progressLogRefinement(
       message: "Either 'habitId' or 'goalId' must be provided.",
     });
   }
+
+  if (data.date) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    if (data.date > today) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['date'],
+        message: 'Date cannot be in the future.',
+      });
+    }
+  }
 }
 
 export const ProgressLogFilterSchema = z

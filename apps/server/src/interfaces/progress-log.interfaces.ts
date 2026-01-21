@@ -39,7 +39,7 @@ export interface IProgressLogRepository {
   ): Promise<ProgressLogDocument | null>;
 }
 
-export interface IProgressService {
+export interface IProgressLogService {
   create(newData: ProgressLogCreateDTO): Promise<ProgressLogResponseDTO>;
 
   findOneById(

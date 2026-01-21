@@ -145,7 +145,7 @@ export class ProgressLogRepository implements IProgressLogRepository {
   ): Promise<{ goalId: EntityIdDTO; currentValue: number }[]> {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const matchQuery: any = { userId };
+      const matchQuery: any = { userId: new Types.ObjectId(userId) };
       if (goalId) {
         matchQuery.goalId = new Types.ObjectId(goalId);
       } else {

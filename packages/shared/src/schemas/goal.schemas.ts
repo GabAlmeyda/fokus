@@ -185,6 +185,7 @@ export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
 export type GoalStatsDTO = {
+  currentValue: number;
   isCompleted: boolean;
 };
 

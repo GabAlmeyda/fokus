@@ -5,17 +5,28 @@ import {
   type EntityIdDTO,
   type GoalUpdateDTO,
   type GoalResponseDTO,
+  type GoalStatsDTO,
 } from '@fokus/shared';
 import type { IGoalService } from '../interfaces/goal.interfaces.js';
 import { GoalRepository } from '../repositories/goal.repository.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
-import { HabitService } from './habit.service.js';
+import type { IProgressLogService } from '../interfaces/progress-log.interfaces.js';
+import type { IHabitService } from '../interfaces/habit.interfaces.js';
 
 export class GoalService implements IGoalService {
   private readonly goalRepository = new GoalRepository();
-  private readonly habitService = new HabitService();
+
+  private readonly habitService: IHabitService;
+  private readonly progressLogService: IProgressLogService;
+  constructor(
+    progressLogService: IProgressLogService,
+    habitService: IHabitService,
+  ) {
+    this.progressLogService = progressLogService;
+    this.habitService = habitService;
+  }
 
   async create(newData: GoalCreateDTO): Promise<GoalResponseDTO> {
     try {
@@ -39,8 +50,12 @@ export class GoalService implements IGoalService {
       }
 
       const goalDoc = await this.goalRepository.create(newData);
+      const stats: GoalStatsDTO = {
+        currentValue: 0,
+        isCompleted: false,
+      };
 
-      const goal = mapGoalDocToPublicDTO(goalDoc);
+      const goal = mapGoalDocToPublicDTO(goalDoc, stats);
       return goal;
     } catch (err) {
       if (err instanceof DatabaseError && err.isConflict) {
@@ -66,8 +81,9 @@ export class GoalService implements IGoalService {
         `Goal with ID '${goalId}' not found.`,
       );
     }
+    const stats = (await this.getGoalStats(userId, goalId))[goalId]!;
 
-    const goal = mapGoalDocToPublicDTO(goalDoc);
+    const goal = mapGoalDocToPublicDTO(goalDoc, stats);
     return goal;
   }
 
@@ -76,8 +92,11 @@ export class GoalService implements IGoalService {
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO[]> {
     const goalDocs = await this.goalRepository.findByFilter(filter, userId);
+    const stats = await this.getGoalStats(userId);
 
-    const goals = goalDocs.map((g) => mapGoalDocToPublicDTO(g));
+    const goals = goalDocs.map((g) =>
+      mapGoalDocToPublicDTO(g, stats[g._id.toString()]!),
+    );
     return goals;
   }
 
@@ -130,8 +149,9 @@ export class GoalService implements IGoalService {
           `Goal with ID '${goalId}' not found.`,
         );
       }
+      const stats = (await this.getGoalStats(userId, goalId))[goalId]!;
 
-      const goal = mapGoalDocToPublicDTO(goalDoc);
+      const goal = mapGoalDocToPublicDTO(goalDoc, stats);
       return goal;
     } catch (err) {
       if (err instanceof DatabaseError && err.isConflict) {
@@ -144,6 +164,33 @@ export class GoalService implements IGoalService {
 
       throw err;
     }
+  }
+
+  private async getGoalStats(
+    userId: EntityIdDTO,
+    goalId?: EntityIdDTO,
+  ): Promise<Record<EntityIdDTO, GoalStatsDTO>> {
+    const registeredStats = await this.progressLogService.getGoalActivityStats(
+      userId,
+      goalId,
+    );
+
+    const goals = goalId
+      ? [await this.goalRepository.findOneById(goalId, userId)]
+      : await this.goalRepository.findByFilter({}, userId);
+
+    const stats: Record<EntityIdDTO, GoalStatsDTO> = {};
+    for (const g of goals) {
+      if (!g) continue;
+
+      const currValue = registeredStats[g._id.toString()] || 0;
+      stats[g._id.toString()] = {
+        currentValue: registeredStats[g._id.toString()] || 0,
+        isCompleted: currValue >= (g.targetValue || 1),
+      };
+    }
+
+    return stats;
   }
 
   async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {

@@ -10,6 +10,7 @@ import type {
   HabitResponseDTO,
   UserResponseDTO,
   HabitStatsDTO,
+  GoalStatsDTO,
 } from '@fokus/shared';
 
 export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
@@ -54,16 +55,21 @@ export function mapHabitDocToPublicDTO(
   };
 }
 
-export function mapGoalDocToPublicDTO(goal: GoalDocument): GoalResponseDTO {
+export function mapGoalDocToPublicDTO(
+  goal: GoalDocument,
+  stats: GoalStatsDTO,
+): GoalResponseDTO {
   return {
     id: goal._id.toString(),
     userId: goal.userId.toString(),
     categoryId: goal.categoryId?.toString() || null,
     title: goal.title,
     type: goal.type,
+    currentValue: stats.currentValue,
     targetValue: goal.targetValue,
+    isCompleted: stats.isCompleted,
     unitOfMeasure: goal.unitOfMeasure,
-    habits: goal.habits.map((id) => id.toString()),
+    habitId: goal.habitId?.toString() || null,
     deadline: goal.deadline,
     color: goal.color,
     icon: goal.icon,
