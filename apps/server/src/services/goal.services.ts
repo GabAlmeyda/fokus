@@ -185,8 +185,8 @@ export class GoalService implements IGoalService {
 
       const currValue = registeredStats[g._id.toString()] || 0;
       stats[g._id.toString()] = {
-        currentValue: registeredStats[g._id.toString()] || 0,
-        isCompleted: currValue >= (g.targetValue || 1),
+        currentValue: currValue,
+        isCompleted: currValue >= g.targetValue,
       };
     }
 

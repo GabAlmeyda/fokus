@@ -21,8 +21,7 @@ const GoalBaseSchema = z.object({
 
   targetValue: z
     .number("Expected type was 'number'.")
-    .min(1, 'Minimun value is 1.')
-    .nullable(),
+    .min(1, 'Minimun value is 1.'),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
@@ -132,6 +131,14 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
       message: "In qualitative goals, 'habitId' must be 'null'.",
     });
   }
+
+  if (data.type === 'qualitative' && (data.targetValue || 1) > 1) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['targetValue'],
+      message: "In qualitative goals, 'targetValue' mut be 1",
+    });
+  }
 }
 
 export const GoalFilterSchema = z
@@ -173,7 +180,7 @@ export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 export const GoalCreateSchema = GoalBaseSchema.extend({
   categoryId: GoalBaseSchema.shape.categoryId.default(null),
   habitId: GoalBaseSchema.shape.habitId.default(null),
-  targetValue: GoalBaseSchema.shape.targetValue.default(null),
+  targetValue: GoalBaseSchema.shape.targetValue.default(1),
   unitOfMeasure: GoalBaseSchema.shape.unitOfMeasure.default(null),
   deadline: GoalBaseSchema.shape.deadline.default(null),
 }).superRefine(goalRefinement);

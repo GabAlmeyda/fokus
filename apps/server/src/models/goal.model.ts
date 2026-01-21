@@ -5,7 +5,7 @@ interface IGoal {
   categoryId: Types.ObjectId | string | null;
   title: string;
   type: 'qualitative' | 'quantitative';
-  targetValue: number | null;
+  targetValue: number;
   unitOfMeasure: string | null;
   habitId: Types.ObjectId | string | null;
   deadline: Date | null;
@@ -40,8 +40,8 @@ const goalSchema = new Schema<IGoal>(
     },
     targetValue: {
       type: 'Number',
-      min: 0,
-      default: null,
+      min: 1,
+      default: 1,
     },
     unitOfMeasure: {
       type: String,
