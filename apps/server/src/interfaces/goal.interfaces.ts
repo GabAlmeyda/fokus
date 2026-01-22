@@ -53,7 +53,7 @@ export interface IGoalService {
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO>;
 
-  delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<null>;
+  delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
 
 export interface IGoalController {

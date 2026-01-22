@@ -12,12 +12,17 @@ import {
   EntityIdSchema,
   UserUpdateSchema,
 } from '@fokus/shared';
-import type { IUserController } from '../interfaces/user.interfaces.js';
-import { UserService } from '../services/user.service.js';
+import type {
+  IUserController,
+  IUserService,
+} from '../interfaces/user.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class UserController implements IUserController {
-  private readonly userService = new UserService();
+  private readonly userService;
+  constructor(userService: IUserService) {
+    this.userService = userService;
+  }
 
   async register(
     req: HTTPRequest<UserRegisterDTO>,

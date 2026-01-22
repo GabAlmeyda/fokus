@@ -7,8 +7,10 @@ import {
   type GoalResponseDTO,
   type GoalStatsDTO,
 } from '@fokus/shared';
-import type { IGoalService } from '../interfaces/goal.interfaces.js';
-import { GoalRepository } from '../repositories/goal.repository.js';
+import type {
+  IGoalRepository,
+  IGoalService,
+} from '../interfaces/goal.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
@@ -16,16 +18,17 @@ import type { IProgressLogService } from '../interfaces/progress-log.interfaces.
 import type { IHabitService } from '../interfaces/habit.interfaces.js';
 
 export class GoalService implements IGoalService {
-  private readonly goalRepository = new GoalRepository();
-
-  private readonly habitService: IHabitService;
-  private readonly progressLogService: IProgressLogService;
+  private readonly goalRepository;
+  private readonly habitService;
+  private readonly progressLogService;
   constructor(
-    progressLogService: IProgressLogService,
+    goalRepository: IGoalRepository,
     habitService: IHabitService,
+    progressLogService: IProgressLogService,
   ) {
-    this.progressLogService = progressLogService;
+    this.goalRepository = goalRepository;
     this.habitService = habitService;
+    this.progressLogService = progressLogService;
   }
 
   async create(newData: GoalCreateDTO): Promise<GoalResponseDTO> {
@@ -193,7 +196,7 @@ export class GoalService implements IGoalService {
     return stats;
   }
 
-  async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {
+  async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
     const goalDoc = await this.goalRepository.delete(goalId, userId);
     if (!goalDoc) {
       throw new AppServerError(
@@ -201,7 +204,5 @@ export class GoalService implements IGoalService {
         `Goal with ID '${goalId}' not found.`,
       );
     }
-
-    return null;
   }
 }

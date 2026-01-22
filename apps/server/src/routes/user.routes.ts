@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import { UserController } from '../controllers/user.controller.js';
 import { HTTPStatusCode, AuthResponseSchema } from '@fokus/shared';
 import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
+import { userController } from '../config/factory.js';
 
 const userRoutes = Router({ mergeParams: true });
-const userController = new UserController();
 
 userRoutes.post('/auth/register', async (req, res) => {
   const { body: reqBody } = req;

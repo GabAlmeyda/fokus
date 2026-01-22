@@ -7,18 +7,23 @@ import {
   type HabitStatsDTO,
   type HabitResponseDTO,
 } from '@fokus/shared';
-import type { IHabitService } from '../interfaces/habit.interfaces.js';
+import type {
+  IHabitRepository,
+  IHabitService,
+} from '../interfaces/habit.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import { HabitRepository } from '../repositories/habit.repository.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapHabitDocToPublicDTO } from '../helpers/mappers.js';
 import type { IProgressLogService } from '../interfaces/progress-log.interfaces.js';
 
 export class HabitService implements IHabitService {
-  private readonly habitRepository = new HabitRepository();
-
+  private readonly habitRepository;
   private readonly progressLogService;
-  constructor(progressLogService: IProgressLogService) {
+  constructor(
+    habitRepository: IHabitRepository,
+    progressLogService: IProgressLogService,
+  ) {
+    this.habitRepository = habitRepository;
     this.progressLogService = progressLogService;
   }
 
@@ -123,6 +128,16 @@ export class HabitService implements IHabitService {
     }
   }
 
+  async delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
+    const doc = await this.habitRepository.delete(habitId, userId);
+    if (!doc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Habit with ID '${habitId}' not found.`,
+      );
+    }
+  }
+
   private async getHabitStats(
     userId: EntityIdDTO,
     habitId?: EntityIdDTO,
@@ -148,15 +163,5 @@ export class HabitService implements IHabitService {
     }
 
     return stats;
-  }
-
-  async delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
-    const doc = await this.habitRepository.delete(habitId, userId);
-    if (!doc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Habit with ID '${habitId}' not found.`,
-      );
-    }
   }
 }

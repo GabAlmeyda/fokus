@@ -7,15 +7,20 @@ import {
   type AuthResponseDTO,
   type UserResponseDTO,
 } from '@fokus/shared';
-import type { IUserService } from '../interfaces/user.interfaces.js';
-import { UserRepository } from '../repositories/user.repository.js';
+import type {
+  IUserRepository,
+  IUserService,
+} from '../interfaces/user.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
 
 export class UserService implements IUserService {
-  private readonly userRepository = new UserRepository();
+  private readonly userRepository;
+  constructor(userRepository: IUserRepository) {
+    this.userRepository = userRepository;
+  }
 
   async register(registerData: UserRegisterDTO): Promise<AuthResponseDTO> {
     const hashedPassword = await argon2.hash(registerData.password);

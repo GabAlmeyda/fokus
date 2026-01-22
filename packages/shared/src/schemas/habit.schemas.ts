@@ -16,7 +16,7 @@ const HabitBaseSchema = z.object({
     }),
   }),
 
-  progressImpactValue: z.number().min(1, 'Minimum value is 1.').nullable(),
+  progressImpactValue: z.number().min(0, 'Minimum value is 0.'),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
@@ -62,12 +62,11 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
 
   switch (data.type) {
     case 'qualitative':
-      if (data.progressImpactValue != null) {
+      if (data.progressImpactValue && data.progressImpactValue != 0) {
         ctx.addIssue({
           code: 'custom',
           path: ['progressImpactValue'],
-          message:
-            "In qualitative habits, 'progressImpactValue' must be 'null'.",
+          message: "In qualitative habits, 'progressImpactValue' must be 0.",
         });
       }
       if (data.unitOfMeasure != null) {
@@ -80,12 +79,12 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
       break;
 
     case 'quantitative':
-      if (!data.progressImpactValue) {
+      if (data.progressImpactValue && data.progressImpactValue < 1) {
         ctx.addIssue({
           code: 'custom',
           path: ['progressImpactValue'],
           message:
-            "In quantitative habits, 'progressImpactValue' must be provided.",
+            "In quantitative habits, 'progressImpactValue' must be greater than 1.",
         });
       }
       if (!data.unitOfMeasure) {
@@ -138,7 +137,7 @@ export const HabitFilterSchema = HabitBaseSchema.pick({
 export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 
 export const HabitCreateSchema = HabitBaseSchema.extend({
-  progressImpactValue: HabitBaseSchema.shape.progressImpactValue.default(null),
+  progressImpactValue: HabitBaseSchema.shape.progressImpactValue.default(0),
   unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure.default(null),
   reminder: HabitBaseSchema.shape.reminder.default(null),
 }).superRefine(habitRefinement);
@@ -156,11 +155,24 @@ export const HabitCheckSchema = z.object({
 
   habitId: EntityIdSchema,
 
-  date: z.coerce.date('Invalid date format provided').transform((val) => {
-    const date = new Date(val);
-    date.setUTCHours(0, 0, 0, 0);
-    return date;
-  }),
+  date: z.coerce
+    .date('Invalid date format provided.')
+    .transform((val) => {
+      const date = new Date(val);
+      date.setUTCHours(0, 0, 0, 0);
+      return date;
+    })
+    .refine(
+      (val) => {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        if (val.getTime() > today.getTime()) return false;
+
+        return true;
+      },
+      { message: 'Date cannot be in the future.' },
+    ),
 });
 export type HabitCheckDTO = z.infer<typeof HabitCheckSchema>;
 

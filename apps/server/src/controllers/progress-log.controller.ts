@@ -9,12 +9,17 @@ import {
   ProgressLogFilterQuerySchema,
 } from '@fokus/shared';
 
-import type { IProgressLogController } from '../interfaces/progress-log.interfaces.js';
+import type {
+  IProgressLogController,
+  IProgressLogService,
+} from '../interfaces/progress-log.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
-import { ProgressLogService } from '../services/progress-log.services.js';
 
 export class ProgressLogController implements IProgressLogController {
-  private readonly progressLogService = new ProgressLogService();
+  private readonly progressLogService;
+  constructor(progressLogService: IProgressLogService) {
+    this.progressLogService = progressLogService;
+  }
 
   async create(
     req: HTTPRequest<ProgressLogCreateDTO>,

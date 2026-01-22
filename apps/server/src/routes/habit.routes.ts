@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { HabitController } from '../controllers/habit.controller.js';
+import { habitController } from '../config/factory.js';
 import type { AuthRequest } from '../types/express.types.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
-const habitController = new HabitController();
 const habitRoutes = Router({ mergeParams: true });
 
 habitRoutes.post('/', authMiddleware, async (req, res) => {
@@ -31,6 +30,17 @@ habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
 
   const { statusCode, body } = await habitController.findOneById({
     params,
+    userId: user.id,
+  });
+  return res.status(statusCode).json(body);
+});
+
+habitRoutes.patch('/:habitId/check', authMiddleware, async (req, res) => {
+  const { params, query, user } = req as AuthRequest;
+
+  const { statusCode, body } = await habitController.check({
+    params,
+    query,
     userId: user.id,
   });
   return res.status(statusCode).json(body);

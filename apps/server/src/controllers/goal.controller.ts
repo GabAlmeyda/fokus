@@ -15,16 +15,11 @@ import type {
   IGoalService,
 } from '../interfaces/goal.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
-import { GoalService } from '../services/goal.services.js';
-import { HabitService } from '../services/habit.service.js';
-import { ProgressLogService } from '../services/progress-log.services.js';
 
 export class GoalController implements IGoalController {
-  private readonly goalService: IGoalService;
-  constructor() {
-    const progressLogService = new ProgressLogService();
-    const habitService = new HabitService(progressLogService);
-    this.goalService = new GoalService(progressLogService, habitService);
+  private readonly goalService;
+  constructor(goalService: IGoalService) {
+    this.goalService = goalService;
   }
 
   async create(

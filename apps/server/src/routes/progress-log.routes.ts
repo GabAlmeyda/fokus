@@ -1,10 +1,9 @@
 import { Router } from 'express';
 
-import { ProgressLogController } from '../controllers/progress-log.controller.js';
+import { progressLogController } from '../config/factory.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
 
-const progressLogController = new ProgressLogController();
 const progressLogRoutes = Router({ mergeParams: true });
 
 progressLogRoutes.post('/', authMiddleware, async (req, res) => {

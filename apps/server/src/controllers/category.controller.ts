@@ -10,12 +10,17 @@ import {
   CategoryUpdateSchema,
   CategoryFilterSchema,
 } from '@fokus/shared';
-import type { ICategoryController } from '../interfaces/category.interfaces.js';
-import { CategoryService } from '../services/category.service.js';
+import type {
+  ICategoryController,
+  ICategoryService,
+} from '../interfaces/category.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class CategoryController implements ICategoryController {
-  private readonly categoryService = new CategoryService();
+  private readonly categoryService;
+  constructor(categoryService: ICategoryService) {
+    this.categoryService = categoryService;
+  }
 
   async create(
     req: HTTPRequest<Omit<CategoryCreateDTO, 'userId'>>,

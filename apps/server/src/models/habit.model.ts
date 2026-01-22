@@ -4,7 +4,7 @@ interface IHabit {
   userId: Schema.Types.ObjectId | string;
   title: string;
   type: 'qualitative' | 'quantitative';
-  progressImpactValue: number | null;
+  progressImpactValue: number;
   unitOfMeasure: string | null;
   weekDays: ('seg' | 'ter' | 'qua' | 'qui' | 'sex' | 'sab' | 'dom')[];
   reminder: string | null;
@@ -35,7 +35,7 @@ const habitSchema = new Schema<IHabit>(
     progressImpactValue: {
       type: Number,
       min: 1,
-      default: null,
+      default: 0,
     },
     unitOfMeasure: {
       type: String,

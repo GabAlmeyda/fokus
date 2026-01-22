@@ -41,7 +41,7 @@ function progressLogRefinement(
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    if (data.date > today) {
+    if (data.date.getTime() > today.getTime()) {
       ctx.addIssue({
         code: 'custom',
         path: ['date'],

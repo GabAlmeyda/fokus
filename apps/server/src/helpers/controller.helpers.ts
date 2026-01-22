@@ -25,6 +25,8 @@ export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {
     };
   }
 
+  //! (DELETE) Remover após confirmar o erro
+  console.error(err);
   return {
     statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
     body: { message: 'An unexpected error occurred.', invalidFields: [] },

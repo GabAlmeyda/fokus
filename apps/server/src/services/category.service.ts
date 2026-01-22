@@ -5,14 +5,19 @@ import {
   type CategoryUpdateDTO,
   type CategoryResponseDTO,
 } from '@fokus/shared';
-import type { ICategoryService } from '../interfaces/category.interfaces.js';
-import { CategoryRepository } from '../repositories/category.repository.js';
+import type {
+  ICategoryRepository,
+  ICategoryService,
+} from '../interfaces/category.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.js';
 
 export class CategoryService implements ICategoryService {
-  private readonly categoryRepository = new CategoryRepository();
+  private readonly categoryRepository;
+  constructor(categoryRepository: ICategoryRepository) {
+    this.categoryRepository = categoryRepository;
+  }
 
   async create(newData: CategoryCreateDTO): Promise<CategoryResponseDTO> {
     try {

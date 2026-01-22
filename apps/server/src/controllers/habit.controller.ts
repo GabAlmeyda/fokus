@@ -9,20 +9,24 @@ import {
   HabitUpdateSchema,
   type HabitUpdateDTO,
   HabitFilterSchema,
+  HabitCheckSchema,
 } from '@fokus/shared';
 import type {
+  IhabitCompletionService,
   IHabitController,
   IHabitService,
 } from '../interfaces/habit.interfaces.js';
-import { HabitService } from '../services/habit.service.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
-import { ProgressLogService } from '../services/progress-log.services.js';
 
 export class HabitController implements IHabitController {
-  private readonly habitService: IHabitService;
-  constructor() {
-    const progressLogService = new ProgressLogService();
-    this.habitService = new HabitService(progressLogService);
+  private readonly habitService;
+  private readonly habitCompletionService;
+  constructor(
+    habitService: IHabitService,
+    habitCompletionService: IhabitCompletionService,
+  ) {
+    this.habitService = habitService;
+    this.habitCompletionService = habitCompletionService;
   }
 
   async create(
@@ -81,6 +85,21 @@ export class HabitController implements IHabitController {
       const userId = EntityIdSchema.parse(req.userId);
 
       const habit = await this.habitService.update(habitId, newData, userId);
+      return { statusCode: HTTPStatusCode.OK, body: habit };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async check(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>> {
+    try {
+      const checkData = HabitCheckSchema.parse({
+        habitId: req.params?.habitId,
+        date: req.query?.date,
+        userId: req.userId,
+      });
+
+      const habit = await this.habitCompletionService.check(checkData);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);

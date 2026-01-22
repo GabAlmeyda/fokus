@@ -6,6 +6,7 @@ import type {
   EntityIdDTO,
   HabitResponseDTO,
   HabitUpdateDTO,
+  HabitCheckDTO,
 } from '@fokus/shared';
 import type { HabitDocument } from '../models/habit.model.js';
 
@@ -56,6 +57,10 @@ export interface IHabitService {
   delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
 
+export interface IhabitCompletionService {
+  check(checkData: HabitCheckDTO): Promise<HabitResponseDTO>;
+}
+
 export interface IHabitController {
   create(
     req: HTTPRequest<Omit<HabitCreateDTO, 'userId'>>,
@@ -70,6 +75,8 @@ export interface IHabitController {
   update(
     req: HTTPRequest<HabitUpdateDTO>,
   ): Promise<HTTPResponse<HabitResponseDTO>>;
+
+  check(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>>;
 
   delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 }
