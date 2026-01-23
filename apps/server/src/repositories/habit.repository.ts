@@ -46,7 +46,6 @@ export class HabitRepository implements IHabitRepository {
       const prop = Object.keys(filter).find(
         (k) => typeof filter[k as keyof HabitFilterDTO] !== 'undefined',
       ) as keyof HabitFilterDTO | undefined;
-
       if (!prop) {
         const ret = await HabitModel.find(query);
         return ret;

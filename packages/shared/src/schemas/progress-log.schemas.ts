@@ -53,9 +53,14 @@ function progressLogRefinement(
 
 export const ProgressLogFilterSchema = z
   .object({
-    habitId: ProgressLogBaseSchema.shape.habitId,
+    entityId: EntityIdSchema,
 
-    goalId: ProgressLogBaseSchema.shape.goalId,
+    entityType: z.enum(['habitId', 'goalId'], {
+      error: () => ({
+        message:
+          "Invalid value provided. Expected values are 'habitId' or 'goalId'.",
+      }),
+    }),
 
     period: z.object({
       interval: z.enum(['daily', 'weekly', 'monthly'], {
@@ -71,13 +76,11 @@ export const ProgressLogFilterSchema = z
   .partial()
   .superRefine(
     (data: z.infer<typeof ProgressLogFilterSchema>, ctx: z.RefinementCtx) => {
-      if (!data) return;
-
-      if (data.habitId && data.goalId) {
+      if (data.entityId && !data.entityType) {
         ctx.addIssue({
           code: 'custom',
-          path: ['goalId'],
-          message: "Cannot filter by 'goalId' and 'habitId' at the same time.",
+          path: ['entityType'],
+          message: "'EntityId' cannot be provided without 'entityType'.'",
         });
       }
     },
@@ -86,9 +89,14 @@ export type ProgressLogFilterDTO = z.infer<typeof ProgressLogFilterSchema>;
 
 export const ProgressLogFilterQuerySchema = z
   .object({
-    habitId: ProgressLogFilterSchema.shape.habitId,
+    entityId: EntityIdSchema,
 
-    goalId: ProgressLogFilterSchema.shape.goalId,
+    entityType: z.enum(['habitId', 'goalId'], {
+      error: () => ({
+        message:
+          "Invalid value provided. Expected values are 'habitId' or 'goalId'.",
+      }),
+    }),
 
     interval: ProgressLogFilterSchema.shape.period.unwrap().shape.interval,
 
@@ -102,19 +110,19 @@ export const ProgressLogFilterQuerySchema = z
     ) => {
       if (!data) return;
 
-      if (data.habitId && data.goalId) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['goalId'],
-          message: "Cannot filter by 'goalId' and 'habitId' at the same time.",
-        });
-      }
-
       if ((!data.date && data.interval) || (data.date && !data.interval)) {
         ctx.addIssue({
           code: 'custom',
           path: ['date'],
           message: "'date' and 'interval' must be provided together.",
+        });
+      }
+
+      if (data.entityId && !data.entityType) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['entityType'],
+          message: "'EntityType' is requried when 'entityId' is provided.",
         });
       }
     },

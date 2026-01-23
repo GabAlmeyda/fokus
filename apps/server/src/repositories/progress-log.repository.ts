@@ -71,21 +71,18 @@ export class ProgressLogRepository implements IProgressLogRepository {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const query: Record<string, any> = { userId };
-      const properties = Object.keys(filter).filter(
-        (k) => typeof filter[k as keyof ProgressLogFilterDTO] !== 'undefined',
-      ) as (keyof ProgressLogFilterDTO)[];
+      const entityId = filter.entityId;
+      const entityType = filter.entityType;
+      const period = filter.period;
 
-      if (properties.length === 0) {
-        const progressLogDocs = await ProgressLogModel.find(query);
-        return progressLogDocs;
+      if (entityId) {
+        query[filter.entityType!] = filter.entityId;
       }
-
-      for (const p of properties) {
-        if (p === 'period') {
-          query.date = PERIOD_MAP[filter.period!.interval](filter.period!.date);
-        } else {
-          query[p] = filter[p];
-        }
+      if (entityType && !entityId) {
+        query[filter.entityType!] = { $ne: null };
+      }
+      if (period) {
+        query.date = PERIOD_MAP[filter.period!.interval](filter.period!.date);
       }
 
       const progressLogDocs = await ProgressLogModel.find(query);
