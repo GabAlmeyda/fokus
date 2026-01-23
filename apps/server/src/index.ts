@@ -15,7 +15,6 @@ import userRoutes from './routes/user.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import habitRoutes from './routes/habit.routes.js';
 import goalRoutes from './routes/goal.routes.js';
-import progressLogRoutes from './routes/progress-log.routes.js';
 
 async function main() {
   await connectToMongoDB();
@@ -36,7 +35,6 @@ async function main() {
   app.use('/categories', categoryRoutes);
   app.use('/habits', habitRoutes);
   app.use('/goals', goalRoutes);
-  app.use('/progressLogs', progressLogRoutes);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

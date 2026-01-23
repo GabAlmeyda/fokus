@@ -6,6 +6,7 @@ import type {
   EntityIdDTO,
   GoalResponseDTO,
   GoalUpdateDTO,
+  GoalProgressEntryDTO,
 } from '@fokus/shared';
 import type { GoalDocument } from '../models/goal.model.js';
 
@@ -56,6 +57,12 @@ export interface IGoalService {
   delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
 
+export interface IGoalCompletionService {
+  addProgressEntry(
+    progressEntry: GoalProgressEntryDTO,
+  ): Promise<GoalResponseDTO>;
+}
+
 export interface IGoalController {
   create(
     req: HTTPRequest<GoalCreateDTO>,
@@ -69,6 +76,10 @@ export interface IGoalController {
 
   update(
     req: HTTPRequest<GoalUpdateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>>;
+
+  addProgressEntry(
+    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
   ): Promise<HTTPResponse<GoalResponseDTO>>;
 
   delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;

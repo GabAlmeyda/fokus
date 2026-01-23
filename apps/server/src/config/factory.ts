@@ -15,7 +15,7 @@ import { UserController } from '../controllers/user.controller.js';
 import { CategoryController } from '../controllers/category.controller.js';
 import { HabitController } from '../controllers/habit.controller.js';
 import { GoalController } from '../controllers/goal.controller.js';
-import { ProgressLogController } from '../controllers/progress-log.controller.js';
+import { GoalCompletionService } from '../services/goal-completion.service.js';
 
 // Repositories
 export const userRepository = new UserRepository();
@@ -37,6 +37,10 @@ export const goalService = new GoalService(
   habitService,
   progressLogService,
 );
+export const goalCompletionService = new GoalCompletionService(
+  goalService,
+  progressLogService,
+);
 export const habitCompletionService = new HabitCompletionService(
   habitService,
   goalService,
@@ -50,7 +54,7 @@ export const habitController = new HabitController(
   habitService,
   habitCompletionService,
 );
-export const goalController = new GoalController(goalService);
-export const progressLogController = new ProgressLogController(
-  progressLogService,
+export const goalController = new GoalController(
+  goalService,
+  goalCompletionService,
 );

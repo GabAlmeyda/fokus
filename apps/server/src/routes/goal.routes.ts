@@ -35,6 +35,18 @@ goalRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+goalRoutes.patch('/:goalId/log', authMiddleware, async (req, res) => {
+  const { body: reqBody, params, query, user } = req as AuthRequest;
+
+  const { statusCode, body } = await goalController.addProgressEntry({
+    body: reqBody,
+    params,
+    query,
+    userId: user.id,
+  });
+  return res.status(statusCode).json(body);
+});
+
 goalRoutes.patch('/:goalId', authMiddleware, async (req, res) => {
   const { params, body: reqBody, user } = req as AuthRequest;
 

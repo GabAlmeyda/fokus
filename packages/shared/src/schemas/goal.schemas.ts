@@ -191,11 +191,38 @@ export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .superRefine(goalRefinement);
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
+export const GoalProgressEntrySchema = z.object({
+  goalId: EntityIdSchema,
+
+  date: z.coerce
+    .date('Invalid date format provided.')
+    .transform((val) => {
+      const date = new Date(val);
+      date.setUTCHours(0, 0, 0, 0);
+      return date;
+    })
+    .refine(
+      (val) => {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        if (val.getTime() > today.getTime()) return false;
+
+        return true;
+      },
+      { message: 'Date cannot be in the future.' },
+    ),
+
+  value: z.number("Expected type was 'number'.").min(1, 'Minimum value is 1.'),
+
+  userId: GoalBaseSchema.shape.userId,
+});
+export type GoalProgressEntryDTO = z.infer<typeof GoalProgressEntrySchema>;
+
 export type GoalStatsDTO = {
   currentValue: number;
   isCompleted: boolean;
 };
-
 export type GoalResponseDTO = z.infer<typeof GoalBaseSchema> &
   GoalStatsDTO & {
     id: EntityIdDTO;

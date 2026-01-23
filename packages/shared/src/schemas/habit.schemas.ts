@@ -16,7 +16,9 @@ const HabitBaseSchema = z.object({
     }),
   }),
 
-  progressImpactValue: z.number().min(0, 'Minimum value is 0.'),
+  progressImpactValue: z
+    .number("Expected type was 'number'.")
+    .min(0, 'Minimum value is 0.'),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")

@@ -44,9 +44,6 @@ export class HabitCompletionService implements IhabitCompletionService {
       log.goalId = goal.id;
     }
     await this.progressLogService.create(log);
-    const newStats = (
-      await this.progressLogService.getHabitActivityStats(userId, habit.id)
-    )[habit.id]!;
-    return { ...habit, ...newStats };
+    return habit;
   }
 }

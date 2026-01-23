@@ -9,8 +9,11 @@ import {
   GoalFilterSchema,
   type GoalUpdateDTO,
   GoalUpdateSchema,
+  GoalProgressEntrySchema,
+  type GoalProgressEntryDTO,
 } from '@fokus/shared';
 import type {
+  IGoalCompletionService,
   IGoalController,
   IGoalService,
 } from '../interfaces/goal.interfaces.js';
@@ -18,8 +21,13 @@ import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class GoalController implements IGoalController {
   private readonly goalService;
-  constructor(goalService: IGoalService) {
+  private readonly goalCompletionService;
+  constructor(
+    goalService: IGoalService,
+    goalCompletionService: IGoalCompletionService,
+  ) {
     this.goalService = goalService;
+    this.goalCompletionService = goalCompletionService;
   }
 
   async create(
@@ -80,8 +88,26 @@ export class GoalController implements IGoalController {
       const newData = GoalUpdateSchema.parse(req.body);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const goalDoc = await this.goalService.update(goalId, newData, userId);
-      return { statusCode: HTTPStatusCode.OK, body: goalDoc };
+      const goal = await this.goalService.update(goalId, newData, userId);
+      return { statusCode: HTTPStatusCode.OK, body: goal };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async addProgressEntry(
+    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
+    try {
+      const progressEntry = GoalProgressEntrySchema.parse({
+        goalId: req.params?.goalId,
+        ...req.body,
+        userId: req.userId,
+      });
+
+      const goal =
+        await this.goalCompletionService.addProgressEntry(progressEntry);
+      return { statusCode: HTTPStatusCode.OK, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
