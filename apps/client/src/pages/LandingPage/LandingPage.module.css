@@ -1,0 +1,33 @@
+.hero {
+  margin-top: 2rem;
+}
+
+.hero h1, .hero h2 {
+  max-width: 80%;
+}
+
+.hero h2 {
+  margin-top: .5rem;
+
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.btns {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+
+  margin-top: 5rem;
+
+  background-color: var(--bg-primary);
+
+  text-align: center;
+}
+
+.heroImg {
+  margin-top: 3rem;
+
+  width: 100%;
+}

@@ -1,0 +1,14 @@
+.pageView {
+  display: flex;
+  flex-direction: column;
+
+  height: 100dvh;
+  width: 100%;
+}
+
+.pageView .footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

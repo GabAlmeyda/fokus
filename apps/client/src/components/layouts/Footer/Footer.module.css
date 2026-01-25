@@ -1,0 +1,13 @@
+.footer {
+  width: 100%;
+
+  padding: .3rem 1rem;
+
+  background-color: var(--bg-inverse);
+
+  text-align: center;
+}
+
+.footer p small{
+  color: var(--text-inverse);
+}
