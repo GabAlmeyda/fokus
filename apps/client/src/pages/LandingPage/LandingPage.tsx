@@ -46,6 +46,17 @@ export default function LandingPage(): JSX.Element {
             description="Usando o Fokus fica fácil criar tarefas recorrentes diárias, semanais ou mensais."
           />
         </section>
+
+        <section className={styles.cta}>
+          <h2>Construa seu próximo hábito.</h2>
+          <p>
+            Crie uma nova versão mais organizada, saudável e melhor de si mesmo.
+          </p>
+
+          <div className={styles.cta__btn}>
+            <Button>Crie agora sua conta</Button>
+          </div>
+        </section>
       </Main>
     </PageView>
   );
