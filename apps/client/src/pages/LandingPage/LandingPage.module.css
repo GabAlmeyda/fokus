@@ -1,3 +1,4 @@
+/* HERO SECTION */
 .hero {
   margin-top: 2rem;
 }
@@ -30,4 +31,13 @@
   margin-top: 3rem;
 
   width: 100%;
+}
+
+/* FEATURES SECTION*/
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  margin-top: 10rem;
 }
