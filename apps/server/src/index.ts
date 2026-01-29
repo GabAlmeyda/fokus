@@ -7,7 +7,6 @@ import express, {
 } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import { API_URL, HTTPStatusCode } from '@fokus/shared';
 import { connectToMongoDB } from './config/connect-mongo.js';
 import { AppServerError } from './helpers/errors/app-server.errors.js';

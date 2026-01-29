@@ -30,10 +30,11 @@ export class UserController implements IUserController {
     try {
       const registerData = UserRegisterSchema.parse(req.body);
 
-      const { user, token } = await this.userService.register(registerData);
+      const { user, accessToken, refreshToken } =
+        await this.userService.register(registerData);
       return {
         statusCode: 201,
-        body: { user, token },
+        body: { user, accessToken, refreshToken },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -46,10 +47,11 @@ export class UserController implements IUserController {
     try {
       const loginData = UserLoginSchema.parse(req.body);
 
-      const { user, token } = await this.userService.login(loginData);
+      const { user, accessToken, refreshToken } =
+        await this.userService.login(loginData);
       return {
         statusCode: 200,
-        body: { user, token },
+        body: { user, accessToken, refreshToken },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);

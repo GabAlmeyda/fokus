@@ -44,7 +44,8 @@ export type UserResponseDTO = z.infer<typeof UserResponseSchema>;
 
 export const AuthResponseSchema = z.object({
   user: UserResponseSchema,
-  token: z.jwt('Invalid JsonWebToken provided.'),
+  accessToken: z.jwt('Invalid JsonWebToken provided.'),
+  refreshToken: z.string("Expected type was 'string'."),
 });
 export type AuthResponseDTO = z.infer<typeof AuthResponseSchema>;
 

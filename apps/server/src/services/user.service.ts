@@ -1,3 +1,6 @@
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 import {
   type UserLoginDTO,
   type EntityIdDTO,
@@ -12,14 +15,18 @@ import type {
   IUserService,
 } from '../interfaces/user.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
 import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
+import type { IRefreshTokenService } from '../interfaces/refresh-token.interfaces.js';
 
 export class UserService implements IUserService {
   private readonly userRepository;
-  constructor(userRepository: IUserRepository) {
+  private readonly refreshTokenService;
+  constructor(
+    userRepository: IUserRepository,
+    refreshTokenService: IRefreshTokenService,
+  ) {
     this.userRepository = userRepository;
+    this.refreshTokenService = refreshTokenService;
   }
 
   async register(registerData: UserRegisterDTO): Promise<AuthResponseDTO> {
@@ -27,16 +34,22 @@ export class UserService implements IUserService {
     const hashedRegisterData = { ...registerData, password: hashedPassword };
 
     const userDoc = await this.userRepository.register(hashedRegisterData);
+    const user = mapUserDocToPublicDTO(userDoc);
 
     const JWT_SECRET = process.env.JWT_SECRET as string;
-    const tokenPayload: TokenPayloadDTO = {
-      id: userDoc._id.toString(),
-      email: userDoc.email,
+    const accessTokenPayload: TokenPayloadDTO = {
+      id: user.id,
+      email: user.email,
     };
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
+    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+      expiresIn: '15m',
+    });
+    const refreshToken = await this.refreshTokenService.create({
+      userId: user.id,
+      familyId: randomUUID(),
+    });
 
-    const user = mapUserDocToPublicDTO(userDoc);
-    return { user, token };
+    return { user, accessToken, refreshToken: refreshToken.token };
   }
 
   async login(loginData: UserLoginDTO): Promise<AuthResponseDTO> {
@@ -47,6 +60,7 @@ export class UserService implements IUserService {
         { field: 'password', message: 'Password may be incorrect.' },
       ]);
     }
+    const user = mapUserDocToPublicDTO(userDoc);
 
     const verify = await argon2.verify(userDoc.password, loginData.password);
     if (!verify) {
@@ -57,16 +71,19 @@ export class UserService implements IUserService {
     }
 
     const JWT_SECRET = process.env.JWT_SECRET as string;
-    const tokenPayload: TokenPayloadDTO = {
-      email: userDoc.email,
-      id: userDoc._id.toString(),
+    const accessTokenPayload: TokenPayloadDTO = {
+      email: user.email,
+      id: user.id,
     };
-    const token = jwt.sign(tokenPayload, JWT_SECRET, {
-      expiresIn: '7d',
+    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+      expiresIn: '15m',
+    });
+    const refreshToken = await this.refreshTokenService.create({
+      userId: user.id,
+      familyId: randomUUID(),
     });
 
-    const user = mapUserDocToPublicDTO(userDoc);
-    return { user, token };
+    return { user, accessToken, refreshToken: refreshToken.token };
   }
 
   async findOneById(userId: EntityIdDTO): Promise<UserResponseDTO> {

@@ -2,6 +2,7 @@ import type { CategoryDocument } from '../models/category.model.js';
 import type { GoalDocument } from '../models/goal.model.js';
 import type { HabitDocument } from '../models/habit.model.js';
 import type { ProgressLogDocument } from '../models/progress-log.model.js';
+import type { RefreshTokenDocument } from '../models/refresh-token.model.js';
 import type { UserDocument } from '../models/user.model.js';
 import type {
   ProgressLogResponseDTO,
@@ -12,6 +13,7 @@ import type {
   HabitStatsDTO,
   GoalStatsDTO,
 } from '@fokus/shared';
+import type { RefreshTokenResponseDTO } from '../types/refresh-token.types.js';
 
 export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
   return {
@@ -19,6 +21,19 @@ export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
     email: user.email,
     themeMode: user.themeMode,
     name: user.name,
+  };
+}
+
+export function mapRefreskTokenDocToPublicDTO(
+  token: RefreshTokenDocument,
+): RefreshTokenResponseDTO {
+  return {
+    userId: token.userId.toString(),
+    token: token.token,
+    familyId: token.familyId,
+    isRevoked: token.isRevoked,
+    replacedAt: token.replacedAt,
+    expiresAt: token.expiresAt,
   };
 }
 
