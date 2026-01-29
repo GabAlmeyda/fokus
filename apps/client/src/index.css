@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
-  --bg-primary: #d0f0b9;
-  --bg-secondary: #9ebca8;
+  --bg-primary: #ddf7ca;
+  --bg-secondary: #b8e4c7;
+  --bg-muted: #9ebca8;
   --bg-inverse: #19221c;
 
   --text-primary: #060806;
@@ -11,7 +12,7 @@
   --text-inverse: #d5f5d5;
 
   --accent-primary: #15e03b;
-  --accent-inverse: #137B27;
+  --accent-inverse: #137b27;
 
   --white-clr: #ececec;
   --black-clr: #1e1e1e;
@@ -29,6 +30,7 @@ body,
 
   background-color: var(--bg-primary);
 
+  font-size: clamp(16px, 1.3vw, 18px);
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,6 +69,5 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 500;
   line-height: 1.1;
-  font-size: 1.7rem;
   text-wrap: balance;
 }

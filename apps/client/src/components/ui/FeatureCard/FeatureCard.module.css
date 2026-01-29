@@ -18,7 +18,7 @@
   flex-shrink: 0;
 
   width: 80px;
-  height: 80px;
+  aspect-ratio: 1 / 1;
 
   border-radius: 100%;
 }
@@ -44,17 +44,26 @@
 .card__content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: .5rem;
 
-  height: 80%;
+  height: 95%;
+  max-width: 300px;
 }
 
-.card__content h2 {
+.card__content strong {
   font-size: 1.4rem;
   font-weight: 500;
+  line-height: 1.7rem;
 }
 
 .card__content p {
   line-height: 1.3rem;
   font-size: .9rem;
+}
+
+@media screen and (min-width: 750px) {
+  .card__img {
+    width: 110px;
+  }
 }

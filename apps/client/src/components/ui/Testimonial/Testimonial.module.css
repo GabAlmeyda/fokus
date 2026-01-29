@@ -1,0 +1,56 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-width: 200px;
+  width: 100%;
+  max-width: 350px;
+  min-height: 200px;
+
+  padding: .5rem;
+  padding-top: 1rem;
+  border-radius: 10px;
+
+  background-color: var(--bg-secondary);
+}
+
+.card__comment {
+  font-style: italic;
+  text-align: left;
+  font-size: .9rem;
+}
+
+.card__user {
+  display: flex;
+  gap: .5rem;
+
+  margin-top: 1rem;
+}
+
+.user__img {
+  width: 50px;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 100%;
+
+  background-color: var(--accent-inverse);
+}
+
+.user__data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
+
+.data__name {
+  font-weight: 500;
+}
+
+.data__role {
+  color: var(--text-secondary);
+  font-size: .9rem;
+}

@@ -1,5 +1,7 @@
 .btn {
+  min-width: 150px;
   width: 100%;
+  max-width: 350px;
 
   padding: .5rem .8rem;
   border: none;
@@ -7,12 +9,14 @@
 
   background-color: var(--accent-primary);
 
-  color: var(--text-primary);
+  color: var(--white-clr);
   font-weight: 500;
 }
+
 .btn:hover {
   filter: brightness(.9);
 }
+
 .btn:active {
   filter: brightness(.8);
 }
@@ -22,6 +26,7 @@
 
   color: var(--white-clr);
 }
+
 .btn_ghost-primary {
   border: 2px solid var(--accent-primary);
 
@@ -35,6 +40,7 @@
 
   color: var(--white-clr);
 }
+
 .btn_ghost-inverse {
   border: 2px solid var(--accent-inverse);
 

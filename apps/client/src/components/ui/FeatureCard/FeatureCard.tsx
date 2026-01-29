@@ -24,7 +24,7 @@ export default function FeatureCard({
       <div className={styles.card__line}></div>
 
       <div className={styles.card__content}>
-        <h2>{title}</h2>
+        <strong>{title}</strong>
         <p>{description}</p>
       </div>
     </div>

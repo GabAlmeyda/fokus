@@ -1,0 +1,46 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+
+  padding: .5rem 1rem;
+
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5);
+
+  background-color: var(--accent-inverse);
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  user-select: none;
+}
+
+.navbar__logo * {
+  color: var(--white-clr);
+}
+
+.logo__icon {
+  font-size: 1.5rem;
+}
+
+.logo__name {
+  font-size: 1.1rem;
+}
+
+.navbar__btns {
+  display: none;
+}
+
+@media screen and (min-width: 750px) {
+  .navbar {
+    padding-inline: 1.5rem;
+  }
+
+  .navbar__btns {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+}
