@@ -51,5 +51,4 @@ export type AuthResponseDTO = z.infer<typeof AuthResponseSchema>;
 
 export type TokenPayloadDTO = {
   id: EntityIdDTO;
-  email: string;
 };

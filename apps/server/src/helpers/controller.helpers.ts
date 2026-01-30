@@ -1,11 +1,12 @@
+import { ZodError } from 'zod';
+import type { Response } from 'express';
 import {
   formatZodError,
   HTTPStatusCode,
   type HTTPErrorResponse,
 } from '@fokus/shared';
+import { env } from '../config/env-config.js';
 import { AppServerError } from './errors/app-server.errors.js';
-import { ZodError } from 'zod';
-import type { Response } from 'express';
 
 export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {
   if (err instanceof AppServerError) {
@@ -36,7 +37,7 @@ export function setTokens(
   res: Response,
   tokens: { accessToken: string; refreshToken: string },
 ) {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = env.NODE_ENV === 'production';
 
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,

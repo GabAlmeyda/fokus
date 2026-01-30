@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { env } from './env-config.js';
 import { UserModel } from '../models/user.model.js';
 import { CategoryModel } from '../models/category.model.js';
 import { HabitModel } from '../models/habit.model.js';
@@ -6,10 +7,8 @@ import { GoalModel } from '../models/goal.model.js';
 import { ProgressLogModel } from '../models/progress-log.model.js';
 
 export async function connectToMongoDB() {
-  const MONGO_URI = process.env.MONGO_URI as string;
-
   try {
-    await mongoose.connect(MONGO_URI, { autoIndex: false });
+    await mongoose.connect(env.MONGO_URI, { autoIndex: false });
     console.log('\nSuccessfully connected to MongoDB');
 
     console.log('\nSynchronizing indexes...');
@@ -24,6 +23,6 @@ export async function connectToMongoDB() {
       '[connect-mongo.ts (server)] Error when attempting to connect to MongoDB: ',
       err,
     );
-    process.exit(8080);
+    process.exit(1);
   }
 }

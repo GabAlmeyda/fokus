@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { env } from '../config/env-config.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import jwt from 'jsonwebtoken';
 import { type TokenPayloadDTO } from 'packages/shared/dist/index.js';
 import { UserRepository } from '../repositories/user.repository.js';
 
@@ -20,7 +21,7 @@ export default async function authMiddleware(
       throw new AppServerError('UNAUTHORIZED', 'Authentication token missing.');
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET as string;
+    const JWT_SECRET = env.JWT_SECRET;
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayloadDTO;
 
     const user = await userRepository.findOneById(decoded.id);
@@ -33,7 +34,6 @@ export default async function authMiddleware(
 
     authReq.user = {
       id: user._id.toString(),
-      email: user.email,
     } as TokenPayloadDTO;
 
     return next();

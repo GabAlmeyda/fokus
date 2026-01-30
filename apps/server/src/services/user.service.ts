@@ -10,6 +10,7 @@ import {
   type AuthResponseDTO,
   type UserResponseDTO,
 } from '@fokus/shared';
+import { env } from '../config/env-config.js';
 import type {
   IUserRepository,
   IUserService,
@@ -36,12 +37,10 @@ export class UserService implements IUserService {
     const userDoc = await this.userRepository.register(hashedRegisterData);
     const user = mapUserDocToPublicDTO(userDoc);
 
-    const JWT_SECRET = process.env.JWT_SECRET as string;
     const accessTokenPayload: TokenPayloadDTO = {
       id: user.id,
-      email: user.email,
     };
-    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+    const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
     const refreshToken = await this.refreshTokenService.create({
@@ -70,12 +69,10 @@ export class UserService implements IUserService {
       ]);
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET as string;
     const accessTokenPayload: TokenPayloadDTO = {
-      email: user.email,
       id: user.id,
     };
-    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+    const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
     const refreshToken = await this.refreshTokenService.create({
@@ -91,12 +88,10 @@ export class UserService implements IUserService {
 
     const user = await this.findOneById(refToken.userId);
 
-    const JWT_SECRET = process.env.JWT_SECRET as string;
     const accessTokenPayload: TokenPayloadDTO = {
-      email: user.email,
       id: user.id,
     };
-    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+    const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
 
