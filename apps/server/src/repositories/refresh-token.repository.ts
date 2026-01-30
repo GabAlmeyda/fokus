@@ -16,4 +16,14 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async findOneByToken(token: string): Promise<RefreshTokenDocument | null> {
+    try {
+      const tokenDoc = await RefreshTokenModel.findOne({ token });
+
+      return tokenDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

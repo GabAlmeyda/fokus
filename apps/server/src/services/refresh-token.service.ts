@@ -1,4 +1,5 @@
-import { mapRefreskTokenDocToPublicDTO } from '../helpers/mappers.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
+import { mapRefreshTokenDocToPublicDTO } from '../helpers/mappers.js';
 import type {
   IRefreshTokenRepository,
   IRefreshTokenService,
@@ -18,8 +19,23 @@ export class RefreshTokenService implements IRefreshTokenService {
     newData: RefreshTokenCreateDTO,
   ): Promise<RefreshTokenResponseDTO> {
     const tokenDoc = await this.refreshTokenRepository.create(newData);
-    const token = mapRefreskTokenDocToPublicDTO(tokenDoc);
+    const token = mapRefreshTokenDocToPublicDTO(tokenDoc);
 
     return token;
+  }
+
+  async findOneByToken(token: string): Promise<RefreshTokenResponseDTO> {
+    const tokenDoc = await this.refreshTokenRepository.findOneByToken(token);
+    if (!tokenDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Refresh token with token '${token}' not found.`,
+        [{ field: 'token', message: 'Value not found.' }],
+      );
+    }
+
+    const refreshToken = mapRefreshTokenDocToPublicDTO(tokenDoc);
+
+    return refreshToken;
   }
 }

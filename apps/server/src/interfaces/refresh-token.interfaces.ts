@@ -6,8 +6,12 @@ import type {
 
 export interface IRefreshTokenRepository {
   create(newData: RefreshTokenCreateDTO): Promise<RefreshTokenDocument>;
+
+  findOneByToken(token: string): Promise<RefreshTokenDocument | null>;
 }
 
 export interface IRefreshTokenService {
   create(newData: RefreshTokenCreateDTO): Promise<RefreshTokenResponseDTO>;
+
+  findOneByToken(token: string): Promise<RefreshTokenResponseDTO>;
 }

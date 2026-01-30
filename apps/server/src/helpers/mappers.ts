@@ -24,7 +24,7 @@ export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
   };
 }
 
-export function mapRefreskTokenDocToPublicDTO(
+export function mapRefreshTokenDocToPublicDTO(
   token: RefreshTokenDocument,
 ): RefreshTokenResponseDTO {
   return {
