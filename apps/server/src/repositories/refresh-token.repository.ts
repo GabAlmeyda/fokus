@@ -26,4 +26,29 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async revoke(refreshTokenId: string): Promise<RefreshTokenDocument | null> {
+    try {
+      const tokenDoc = await RefreshTokenModel.findOneAndUpdate(
+        { _id: refreshTokenId },
+        { $set: { replacedAt: new Date(), isRevoked: true } },
+        { new: true },
+      );
+
+      return tokenDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async invalidFamilyById(familyId: string): Promise<void> {
+    try {
+      await RefreshTokenModel.updateMany(
+        { familyId },
+        { $set: { isRevoked: true } },
+      );
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

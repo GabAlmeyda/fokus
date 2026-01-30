@@ -3,6 +3,7 @@ import { HTTPStatusCode, AuthResponseSchema } from '@fokus/shared';
 import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { userController } from '../config/factory.js';
+import { setTokens } from '../helpers/controller.helpers.js';
 
 const userRoutes = Router({ mergeParams: true });
 
@@ -15,20 +16,14 @@ userRoutes.post('/auth/register', async (req, res) => {
 
   const validation = AuthResponseSchema.safeParse(body);
   if (validation.success) {
-    res.cookie('access_token', validation.data.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 1000 * 60 * 15, // 15 minutes
+    setTokens(res, {
+      accessToken: validation.data.accessToken,
+      refreshToken: validation.data.refreshToken,
     });
-    res.cookie('refresh_token', validation.data.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      path: '/users/auth/refresh',
-    });
+
+    res.status(statusCode).json(validation.data.user);
   }
+
   return res.status(statusCode).json(body);
 });
 
@@ -41,20 +36,34 @@ userRoutes.post('/auth/login', async (req, res) => {
 
   const validation = AuthResponseSchema.safeParse(body);
   if (validation.success) {
-    res.cookie('access_token', validation.data.accessToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 15, // 15 minutes
+    setTokens(res, {
+      accessToken: validation.data.accessToken,
+      refreshToken: validation.data.refreshToken,
     });
-    res.cookie('refresh_token', validation.data.refreshToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      path: '/users/auth/refresh',
-    });
+
+    res.status(statusCode).json(validation.data.user);
   }
+
+  return res.status(statusCode).json(body);
+});
+
+userRoutes.post('/auth/refresh', async (req, res) => {
+  const refreshToken = req.cookies.refresh_token;
+
+  const { statusCode, body } = await userController.refreshToken({
+    refreshToken,
+  });
+
+  const validation = AuthResponseSchema.safeParse(body);
+  if (validation.success) {
+    setTokens(res, {
+      accessToken: validation.data.accessToken,
+      refreshToken: validation.data.refreshToken,
+    });
+
+    res.status(statusCode).json(validation.data.user);
+  }
+
   return res.status(statusCode).json(body);
 });
 

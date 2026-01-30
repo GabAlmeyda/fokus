@@ -17,6 +17,7 @@ import type {
   IUserService,
 } from '../interfaces/user.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
+import { AppServerError } from '../helpers/errors/app-server.errors.js';
 
 export class UserController implements IUserController {
   private readonly userService;
@@ -51,6 +52,26 @@ export class UserController implements IUserController {
         await this.userService.login(loginData);
       return {
         statusCode: 200,
+        body: { user, accessToken, refreshToken },
+      };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async refreshToken(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<AuthResponseDTO>> {
+    try {
+      const refToken = req.refreshToken;
+      if (!refToken) {
+        throw new AppServerError('BAD_REQUEST', 'Refresh token is missing.');
+      }
+
+      const { user, accessToken, refreshToken } =
+        await this.userService.refreshToken(refToken);
+      return {
+        statusCode: HTTPStatusCode.OK,
         body: { user, accessToken, refreshToken },
       };
     } catch (err) {

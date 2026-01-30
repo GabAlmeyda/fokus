@@ -28,6 +28,7 @@ export function mapRefreshTokenDocToPublicDTO(
   token: RefreshTokenDocument,
 ): RefreshTokenResponseDTO {
   return {
+    id: token._id.toString(),
     userId: token.userId.toString(),
     token: token.token,
     familyId: token.familyId,

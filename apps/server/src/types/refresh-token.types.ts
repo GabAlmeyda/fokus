@@ -3,12 +3,8 @@ export interface RefreshTokenCreateDTO {
   familyId: string;
 }
 
-export interface RefreshTokenUpdateDTO {
-  isRevoked: boolean;
-  replacedAt: Date;
-}
-
 export interface RefreshTokenResponseDTO {
+  id: string;
   userId: string;
   token: string;
   familyId: string;

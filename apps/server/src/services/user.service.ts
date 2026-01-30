@@ -86,6 +86,23 @@ export class UserService implements IUserService {
     return { user, accessToken, refreshToken: refreshToken.token };
   }
 
+  async refreshToken(token: string): Promise<AuthResponseDTO> {
+    const refToken = await this.refreshTokenService.refresh(token);
+
+    const user = await this.findOneById(refToken.userId);
+
+    const JWT_SECRET = process.env.JWT_SECRET as string;
+    const accessTokenPayload: TokenPayloadDTO = {
+      email: user.email,
+      id: user.id,
+    };
+    const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, {
+      expiresIn: '15m',
+    });
+
+    return { user, accessToken, refreshToken: refToken.token };
+  }
+
   async findOneById(userId: EntityIdDTO): Promise<UserResponseDTO> {
     const userDoc = await this.userRepository.findOneById(userId);
     if (!userDoc) {

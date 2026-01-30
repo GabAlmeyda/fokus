@@ -6,6 +6,7 @@ export type HTTPRequest<B> = {
   query?: ParsedQs;
   body?: B;
   userId?: string;
+  refreshToken?: string;
 };
 
 export type HTTPResponse<B> = HTTPSuccessResponse<B> | HTTPErrorResponse;

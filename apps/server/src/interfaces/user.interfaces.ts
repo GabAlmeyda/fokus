@@ -30,6 +30,8 @@ export interface IUserService {
 
   login(loginData: UserLoginDTO): Promise<AuthResponseDTO>;
 
+  refreshToken(token: string): Promise<AuthResponseDTO>;
+
   findOneById(userId: EntityIdDTO): Promise<UserResponseDTO>;
 
   update(userId: EntityIdDTO, newData: UserUpdateDTO): Promise<UserResponseDTO>;
@@ -43,6 +45,8 @@ export interface IUserController {
   ): Promise<HTTPResponse<AuthResponseDTO>>;
 
   login(req: HTTPRequest<UserLoginDTO>): Promise<HTTPResponse<AuthResponseDTO>>;
+
+  refreshToken(req: HTTPRequest<null>): Promise<HTTPResponse<AuthResponseDTO>>;
 
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<UserResponseDTO>>;
 
