@@ -74,8 +74,8 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async update(
-    newData: CategoryUpdateDTO,
     categoryId: EntityIdDTO,
+    newData: CategoryUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null> {
     try {

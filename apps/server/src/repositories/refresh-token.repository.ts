@@ -41,7 +41,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     }
   }
 
-  async invalidFamilyById(familyId: string): Promise<void> {
+  async invalidateFamilyById(familyId: string): Promise<void> {
     try {
       await RefreshTokenModel.updateMany(
         { familyId },

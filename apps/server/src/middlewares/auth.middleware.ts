@@ -26,10 +26,7 @@ export default async function authMiddleware(
 
     const user = await userRepository.findOneById(decoded.id);
     if (!user) {
-      throw new AppServerError(
-        'UNAUTHORIZED',
-        `User with ID '${decoded.id}' not found.`,
-      );
+      throw new AppServerError('UNAUTHORIZED', `User not found.`);
     }
 
     authReq.user = {

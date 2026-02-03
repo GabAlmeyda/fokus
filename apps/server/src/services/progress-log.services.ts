@@ -157,7 +157,7 @@ export class ProgressLogService implements IProgressLogService {
     return stats;
   }
 
-  async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<null> {
+  async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
     const progressLogDoc = await this.progressLogRepository.delete(
       progressLogId,
       userId,
@@ -168,7 +168,5 @@ export class ProgressLogService implements IProgressLogService {
         `Progress log with ID '${progressLogId}' not found.`,
       );
     }
-
-    return null;
   }
 }

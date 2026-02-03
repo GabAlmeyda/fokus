@@ -19,8 +19,8 @@ export class RefreshTokenService implements IRefreshTokenService {
     newData: RefreshTokenCreateDTO,
   ): Promise<RefreshTokenResponseDTO> {
     const tokenDoc = await this.refreshTokenRepository.create(newData);
-    const token = mapRefreshTokenDocToPublicDTO(tokenDoc);
 
+    const token = mapRefreshTokenDocToPublicDTO(tokenDoc);
     return token;
   }
 
@@ -35,12 +35,11 @@ export class RefreshTokenService implements IRefreshTokenService {
     }
 
     const refreshToken = mapRefreshTokenDocToPublicDTO(tokenDoc);
-
     return refreshToken;
   }
 
-  async invalidFamilyById(familyId: string): Promise<void> {
-    await this.refreshTokenRepository.invalidFamilyById(familyId);
+  async invalidateFamilyById(familyId: string): Promise<void> {
+    await this.refreshTokenRepository.invalidateFamilyById(familyId);
   }
 
   async refresh(token: string): Promise<RefreshTokenResponseDTO> {
@@ -49,11 +48,11 @@ export class RefreshTokenService implements IRefreshTokenService {
       const gracePeriod = refreshToken.replacedAt!.getTime() + 10_000;
       const now = new Date().getTime();
       if (now > gracePeriod) {
-        await this.invalidFamilyById(refreshToken.familyId);
+        await this.invalidateFamilyById(refreshToken.familyId);
 
         throw new AppServerError(
           'FORBIDDEN',
-          'Security breach detected. Family revoked.',
+          'Access denied. Tokens invalidated',
         );
       }
 

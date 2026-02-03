@@ -59,7 +59,7 @@ export class CategoryService implements ICategoryService {
 
   async findByFilter(
     filter: CategoryFilterDTO,
-    userId: string,
+    userId: EntityIdDTO,
   ): Promise<CategoryResponseDTO[]> {
     const categoryDocs = await this.categoryRepository.findByFilter(
       filter,
@@ -76,8 +76,8 @@ export class CategoryService implements ICategoryService {
     userId: EntityIdDTO,
   ): Promise<CategoryResponseDTO> {
     const categoryDoc = await this.categoryRepository.update(
-      newData,
       categoryId,
+      newData,
       userId,
     );
     if (!categoryDoc) {
