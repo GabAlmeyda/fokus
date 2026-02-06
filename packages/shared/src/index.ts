@@ -1,4 +1,4 @@
-export * from './config/api-config.js';
+export * from './config/api.config.js';
 
 export * from './types/http.types.js';
 

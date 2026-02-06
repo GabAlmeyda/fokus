@@ -5,6 +5,7 @@ import type { AuthRequest } from '../types/express.types.js';
 
 const categoryRoutes = Router({ mergeParams: true });
 
+// Create route
 categoryRoutes.post('/', authMiddleware, async (req, res) => {
   const { body: reqBody, user } = req as AuthRequest;
 
@@ -15,6 +16,7 @@ categoryRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Find by ID route
 categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 
@@ -25,6 +27,7 @@ categoryRoutes.get('/:categoryId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Find by filter route
 categoryRoutes.get('/', authMiddleware, async (req, res) => {
   const { query, user } = req as AuthRequest;
 
@@ -35,6 +38,7 @@ categoryRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Update route
 categoryRoutes.patch('/:categoryId', authMiddleware, async (req, res) => {
   const { params, body: reqBody, user } = req as AuthRequest;
 
@@ -46,6 +50,7 @@ categoryRoutes.patch('/:categoryId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Delete route
 categoryRoutes.delete('/:categoryId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 

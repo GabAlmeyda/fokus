@@ -1,3 +1,4 @@
+import type { EntityIdDTO } from 'packages/shared/dist/index.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import type { IRefreshTokenRepository } from '../interfaces/refresh-token.interfaces.js';
 import {
@@ -47,6 +48,24 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         { familyId },
         { $set: { isRevoked: true } },
       );
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async delete(token: string): Promise<RefreshTokenDocument | null> {
+    try {
+      const tokenDoc = await RefreshTokenModel.findOneAndDelete({ token });
+
+      return tokenDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async deleteTokensByUserId(userId: EntityIdDTO): Promise<void> {
+    try {
+      await RefreshTokenModel.deleteMany({ userId });
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

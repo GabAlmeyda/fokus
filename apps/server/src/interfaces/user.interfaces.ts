@@ -53,7 +53,7 @@ export interface IUserRepository {
   ): Promise<UserDocument | null>;
 
   /**
-   * Deletes a user, searching for its ID.
+   * Deletes a user , searching for its ID.
    * @param userId - The user ID to be searched for.
    * @returns The deleted user if found, or *`null`* otherwise.
    */
@@ -97,6 +97,12 @@ export interface IUserService {
   refreshToken(token: string): Promise<AuthResponseDTO>;
 
   /**
+   * Logouts a user, revoking their current refresh token.
+   * @param token - The refresh token to be revoked.
+   */
+  logout(token: string): Promise<void>;
+
+  /**
    * Returns a user by its ID.
    * @param userId - The user ID to be searched for.
    * @returns The sanitized user data.
@@ -116,7 +122,7 @@ export interface IUserService {
   update(userId: EntityIdDTO, newData: UserUpdateDTO): Promise<UserResponseDTO>;
 
   /**
-   * Removes a user, searching for its ID.
+   * Removes a user and deletes they refresh tokens, searching for its ID.
    * @param userId - The user ID to be searched for.
    * @throws *`AppServerError`* If the user is not found.
    */
@@ -155,7 +161,7 @@ export interface IUserController {
 
   /**
    * Refreshes the token, resending the sanitized user data and authentication tokens.
-   * @param req - The request object, containing the *`refresh-token`* in the cookies.
+   * @param req - The request object, containing the *`refresh_token`* in the cookies.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized user data and authentication
    * tokens.
@@ -164,6 +170,13 @@ export interface IUserController {
    * interval (10 seconds).
    */
   refreshToken(req: HTTPRequest<null>): Promise<HTTPResponse<AuthResponseDTO>>;
+
+  /**
+   * Logouts a user, revoking their current refresh token.
+   * @param req - The request object, containing the *`refresh_token`* in the cookies.
+   * - 204 (No Content): On success, returning *`null`*;
+   */
+  logout(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
 
   /**
    * Returns a user by its ID.
@@ -191,11 +204,11 @@ export interface IUserController {
   ): Promise<HTTPResponse<UserResponseDTO>>;
 
   /**
-   * Deletes a user, searching for its ID.
+   * Deletes a user and they refresh tokens, searching for its ID.
    * @param req - The request object, containing the authenticated *`userId`*
    * in the cookies.
    * @returns The HTTP response with:
-   * - 200 (Ok): On success, returning *`null`*.
+   * - 204 (No Content): On success, returning *`null`*.
    * - 404 (Not Found): On failure, if the user if not found.
    */
   delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;

@@ -98,13 +98,14 @@ export class UserService implements IUserService {
     return { user, accessToken, refreshToken: refToken.token };
   }
 
+  async logout(token: string): Promise<void> {
+    await this.refreshTokenService.delete(token);
+  }
+
   async findOneById(userId: EntityIdDTO): Promise<UserResponseDTO> {
     const userDoc = await this.userRepository.findOneById(userId);
     if (!userDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `User with ID '${userId}' not found.`,
-      );
+      throw new AppServerError('NOT_FOUND', `User not found.`);
     }
 
     const user = mapUserDocToPublicDTO(userDoc);
@@ -117,10 +118,7 @@ export class UserService implements IUserService {
   ): Promise<UserResponseDTO> {
     const userDoc = await this.userRepository.update(userId, newData);
     if (!userDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `User with ID '${userId}' not found.`,
-      );
+      throw new AppServerError('NOT_FOUND', `User not found.`);
     }
 
     const user = mapUserDocToPublicDTO(userDoc);
@@ -130,10 +128,9 @@ export class UserService implements IUserService {
   async delete(userId: EntityIdDTO): Promise<void> {
     const userDoc = await this.userRepository.delete(userId);
     if (!userDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `User with ID '${userId}' not found.`,
-      );
+      throw new AppServerError('NOT_FOUND', `User not found.`);
     }
+
+    await this.refreshTokenService.deleteTokensByUserId(userId);
   }
 }

@@ -79,6 +79,26 @@ export class UserController implements IUserController {
     }
   }
 
+  async logout(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
+    try {
+      const refreshToken = req.refreshToken;
+      if (!refreshToken) {
+        return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
+      }
+      if (typeof refreshToken !== 'string') {
+        throw new AppServerError(
+          'BAD_REQUEST',
+          'Invalid refresh token format.',
+        );
+      }
+
+      await this.userService.logout(refreshToken);
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
   async findOneById(
     req: HTTPRequest<null>,
   ): Promise<HTTPResponse<UserResponseDTO>> {

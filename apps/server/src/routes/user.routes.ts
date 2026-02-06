@@ -7,6 +7,7 @@ import { setTokens } from '../helpers/controller.helpers.js';
 
 const userRoutes = Router({ mergeParams: true });
 
+// Register route
 userRoutes.post('/auth/register', async (req, res) => {
   const { body: reqBody } = req;
 
@@ -21,12 +22,13 @@ userRoutes.post('/auth/register', async (req, res) => {
       refreshToken: validation.data.refreshToken,
     });
 
-    res.status(statusCode).json(validation.data.user);
+    return res.status(statusCode).json(validation.data.user);
   }
 
   return res.status(statusCode).json(body);
 });
 
+// Login route
 userRoutes.post('/auth/login', async (req, res) => {
   const { body: reqBody } = req;
 
@@ -41,12 +43,13 @@ userRoutes.post('/auth/login', async (req, res) => {
       refreshToken: validation.data.refreshToken,
     });
 
-    res.status(statusCode).json(validation.data.user);
+    return res.status(statusCode).json(validation.data.user);
   }
 
   return res.status(statusCode).json(body);
 });
 
+// Refresh route
 userRoutes.post('/auth/refresh', async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
 
@@ -61,12 +64,25 @@ userRoutes.post('/auth/refresh', async (req, res) => {
       refreshToken: validation.data.refreshToken,
     });
 
-    res.status(statusCode).json(validation.data.user);
+    return res.status(statusCode).json(validation.data.user);
   }
 
   return res.status(statusCode).json(body);
 });
 
+// Logout route
+userRoutes.post('/auth/logout', async (req, res) => {
+  const refreshToken = req.cookies.refresh_token;
+  const { statusCode, body } = await userController.logout({ refreshToken });
+  res.clearCookie('access_token');
+  res.clearCookie('refresh_token', {
+    path: '/users/auth',
+  });
+
+  return res.status(statusCode).json(body);
+});
+
+// Find by ID route
 userRoutes.get('/', authMiddleware, async (req, res) => {
   const { user } = req as AuthRequest;
 
@@ -76,6 +92,7 @@ userRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Update route
 userRoutes.patch('/', authMiddleware, async (req, res) => {
   const { body: reqBody, user } = req as AuthRequest;
 
@@ -86,13 +103,14 @@ userRoutes.patch('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Delete route
 userRoutes.delete('/', authMiddleware, async (req, res) => {
   const { user } = req as AuthRequest;
 
   const { statusCode, body } = await userController.delete({
     userId: user.id,
   });
-  if (statusCode === HTTPStatusCode.OK) {
+  if (statusCode === HTTPStatusCode.NO_CONTENT) {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
   }

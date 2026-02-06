@@ -5,6 +5,7 @@ import type { AuthRequest } from '../types/express.types.js';
 
 const goalRoutes = Router({ mergeParams: true });
 
+// Create route
 goalRoutes.post('/', authMiddleware, async (req, res) => {
   const { user, body: reqBody } = req as AuthRequest;
 
@@ -15,6 +16,7 @@ goalRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Find by ID route
 goalRoutes.get('/:goalId', authMiddleware, async (req, res) => {
   const { user, params } = req as AuthRequest;
 
@@ -25,6 +27,7 @@ goalRoutes.get('/:goalId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Find by filter route
 goalRoutes.get('/', authMiddleware, async (req, res) => {
   const { user, query } = req as AuthRequest;
 
@@ -35,6 +38,7 @@ goalRoutes.get('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Add progress entry route
 goalRoutes.patch('/:goalId/log', authMiddleware, async (req, res) => {
   const { body: reqBody, params, query, user } = req as AuthRequest;
 
@@ -47,6 +51,7 @@ goalRoutes.patch('/:goalId/log', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Update route
 goalRoutes.patch('/:goalId', authMiddleware, async (req, res) => {
   const { params, body: reqBody, user } = req as AuthRequest;
 
@@ -58,6 +63,7 @@ goalRoutes.patch('/:goalId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Delete route
 goalRoutes.delete('/:goalId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 

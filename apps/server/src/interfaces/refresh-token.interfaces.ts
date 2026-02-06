@@ -1,3 +1,4 @@
+import type { EntityIdDTO } from 'packages/shared/dist/index.js';
 import type { RefreshTokenDocument } from '../models/refresh-token.model.js';
 import type {
   RefreshTokenCreateDTO,
@@ -37,6 +38,19 @@ export interface IRefreshTokenRepository {
    * @returns The refresh token document if found, or *`null`* otherwise.
    */
   revoke(refreshTokenId: string): Promise<RefreshTokenDocument | null>;
+
+  /**
+   * Deletes a refresh token, searching for its raw token string.
+   * @param token - The token to be searched for.
+   * @return The refresh token document if found, or *`null`* otherwise.
+   */
+  delete(token: string): Promise<RefreshTokenDocument | null>;
+
+  /**
+   * Deletes all refresh tokens of an user.
+   * @param userId - The user ID to delete all refresh tokens.
+   */
+  deleteTokensByUserId(userId: EntityIdDTO): Promise<void>;
 }
 
 /**
@@ -76,4 +90,16 @@ export interface IRefreshTokenService {
    * is still valid.
    */
   refresh(token: string): Promise<RefreshTokenResponseDTO>;
+
+  /**
+   * Deletes all refresh tokens of an user.
+   * @param userId - The user ID to delete all refresh tokens.
+   */
+  deleteTokensByUserId(userId: EntityIdDTO): Promise<void>;
+
+  /**
+   * Deletes a refresh token.
+   * @param token - The raw token string to be searched for.
+   */
+  delete(token: string): Promise<void>;
 }

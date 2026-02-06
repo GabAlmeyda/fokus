@@ -1,3 +1,4 @@
+import type { EntityIdDTO } from 'packages/shared/dist/index.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { mapRefreshTokenDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import type {
@@ -27,11 +28,9 @@ export class RefreshTokenService implements IRefreshTokenService {
   async findOneByToken(token: string): Promise<RefreshTokenResponseDTO> {
     const tokenDoc = await this.refreshTokenRepository.findOneByToken(token);
     if (!tokenDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Refresh token with token '${token}' not found.`,
-        [{ field: 'token', message: 'Value not found.' }],
-      );
+      throw new AppServerError('NOT_FOUND', `Refresh token not found.`, [
+        { field: 'token', message: 'Value not found.' },
+      ]);
     }
 
     const refreshToken = mapRefreshTokenDocToPublicDTO(tokenDoc);
@@ -68,5 +67,13 @@ export class RefreshTokenService implements IRefreshTokenService {
       familyId: refreshToken.familyId,
     });
     return newRefreshToken;
+  }
+
+  async delete(token: string): Promise<void> {
+    await this.refreshTokenRepository.delete(token);
+  }
+
+  async deleteTokensByUserId(userId: EntityIdDTO): Promise<void> {
+    await this.refreshTokenRepository.deleteTokensByUserId(userId);
   }
 }

@@ -115,6 +115,8 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
     },
   });
 
+  // Logout route
+
   // Get by ID route
   registry.registerPath({
     tags: ['User'],
@@ -170,7 +172,8 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
     method: 'delete',
     path: '/users',
     security: [{ accessTokenCookie: [] }],
-    summary: 'Deletes a authenticated user, searching for its ID.',
+    summary:
+      'Deletes a authenticated user and they refresh tokens, searching for its ID.',
     request: {},
     responses: {
       ...DEFAULT_ERRORS_DOCS,

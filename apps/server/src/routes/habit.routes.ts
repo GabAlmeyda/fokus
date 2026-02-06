@@ -5,6 +5,7 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 
 const habitRoutes = Router({ mergeParams: true });
 
+// Create route
 habitRoutes.post('/', authMiddleware, async (req, res) => {
   const { body: reqBody, user } = req as AuthRequest;
 
@@ -15,16 +16,7 @@ habitRoutes.post('/', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-habitRoutes.get('/', authMiddleware, async (req, res) => {
-  const { query, user } = req as AuthRequest;
-
-  const { statusCode, body } = await habitController.findByFilter({
-    query,
-    userId: user.id,
-  });
-  return res.status(statusCode).json(body);
-});
-
+// Find by ID route
 habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 
@@ -35,6 +27,18 @@ habitRoutes.get('/:habitId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Find by filter route
+habitRoutes.get('/', authMiddleware, async (req, res) => {
+  const { query, user } = req as AuthRequest;
+
+  const { statusCode, body } = await habitController.findByFilter({
+    query,
+    userId: user.id,
+  });
+  return res.status(statusCode).json(body);
+});
+
+// Check route
 habitRoutes.patch('/:habitId/check', authMiddleware, async (req, res) => {
   const { params, query, user } = req as AuthRequest;
 
@@ -46,6 +50,7 @@ habitRoutes.patch('/:habitId/check', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Update route
 habitRoutes.patch('/:habitId', authMiddleware, async (req, res) => {
   const { params, body: reqBody, user } = req as AuthRequest;
 
@@ -57,6 +62,7 @@ habitRoutes.patch('/:habitId', authMiddleware, async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
+// Delete route
 habitRoutes.delete('/:habitId', authMiddleware, async (req, res) => {
   const { params, user } = req as AuthRequest;
 
