@@ -4,7 +4,6 @@ import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
 const ProgressLogBaseSchema = z.object({
   userId: EntityIdSchema,
-
   habitId: EntityIdSchema.nullable(),
 
   goalId: EntityIdSchema.nullable(),
@@ -74,62 +73,16 @@ export const ProgressLogFilterSchema = z
     }),
   })
   .partial()
-  .superRefine(
-    (data: z.infer<typeof ProgressLogFilterSchema>, ctx: z.RefinementCtx) => {
-      if (data.entityId && !data.entityType) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['entityType'],
-          message: "'EntityId' cannot be provided without 'entityType'.'",
-        });
-      }
-    },
-  );
+  .superRefine((data, ctx) => {
+    if (data.entityId && !data.entityType) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['entityType'],
+        message: "'EntityId' cannot be provided without 'entityType'.'",
+      });
+    }
+  });
 export type ProgressLogFilterDTO = z.infer<typeof ProgressLogFilterSchema>;
-
-export const ProgressLogFilterQuerySchema = z
-  .object({
-    entityId: EntityIdSchema,
-
-    entityType: z.enum(['habitId', 'goalId'], {
-      error: () => ({
-        message:
-          "Invalid value provided. Expected values are 'habitId' or 'goalId'.",
-      }),
-    }),
-
-    interval: ProgressLogFilterSchema.shape.period.unwrap().shape.interval,
-
-    date: ProgressLogFilterSchema.shape.period.unwrap().shape.date,
-  })
-  .partial()
-  .superRefine(
-    (
-      data: z.infer<typeof ProgressLogFilterQuerySchema>,
-      ctx: z.RefinementCtx,
-    ) => {
-      if (!data) return;
-
-      if ((!data.date && data.interval) || (data.date && !data.interval)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['date'],
-          message: "'date' and 'interval' must be provided together.",
-        });
-      }
-
-      if (data.entityId && !data.entityType) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['entityType'],
-          message: "'EntityType' is requried when 'entityId' is provided.",
-        });
-      }
-    },
-  );
-export type ProgressLogFilterQueryDTO = z.infer<
-  typeof ProgressLogFilterQuerySchema
->;
 
 export const ProgressLogCreateSchema = ProgressLogBaseSchema.extend({
   value: ProgressLogBaseSchema.shape.value.default(1),

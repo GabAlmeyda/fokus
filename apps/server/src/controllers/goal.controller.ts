@@ -80,21 +80,6 @@ export class GoalController implements IGoalController {
     }
   }
 
-  async update(
-    req: HTTPRequest<GoalUpdateDTO>,
-  ): Promise<HTTPResponse<GoalResponseDTO>> {
-    try {
-      const goalId = EntityIdSchema.parse(req.params?.goalId);
-      const newData = GoalUpdateSchema.parse(req.body);
-      const userId = EntityIdSchema.parse(req.userId);
-
-      const goal = await this.goalService.update(goalId, newData, userId);
-      return { statusCode: HTTPStatusCode.OK, body: goal };
-    } catch (err) {
-      return formatHTTPErrorResponse(err);
-    }
-  }
-
   async addProgressEntry(
     req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
   ): Promise<HTTPResponse<GoalResponseDTO>> {
@@ -107,6 +92,21 @@ export class GoalController implements IGoalController {
 
       const goal =
         await this.goalCompletionService.addProgressEntry(progressEntry);
+      return { statusCode: HTTPStatusCode.OK, body: goal };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async update(
+    req: HTTPRequest<GoalUpdateDTO>,
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
+    try {
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
+      const newData = GoalUpdateSchema.parse(req.body);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const goal = await this.goalService.update(goalId, newData, userId);
       return { statusCode: HTTPStatusCode.OK, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);

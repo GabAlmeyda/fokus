@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { HTTPStatusCode, AuthResponseSchema } from '@fokus/shared';
 import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
-import { userController } from '../config/factory.js';
+import { userController } from '../config/factory.config.js';
 import { setTokens } from '../helpers/controller.helpers.js';
 
 const userRoutes = Router({ mergeParams: true });

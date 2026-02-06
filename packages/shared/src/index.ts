@@ -8,5 +8,6 @@ export * from './schemas/habit.schemas.js';
 export * from './schemas/goal.schemas.js';
 export * from './schemas/id.schemas.js';
 export * from './schemas/progress-log.schemas.js';
+export * from './schemas/error-response.schemas.js';
 
 export * from './helpers/zod.helpers.js';

@@ -1,35 +1,63 @@
-import * as z from 'zod';
+import { z } from 'zod';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { EntityIdSchema } from './id.schemas.js';
 
-import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
+extendZodWithOpenApi(z);
 
 const GoalBaseSchema = z.object({
-  userId: EntityIdSchema,
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
 
-  categoryId: EntityIdSchema.nullable(),
+  categoryId: EntityIdSchema.nullable().openapi({
+    description: 'Optional category ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
 
   title: z
     .string("Expected type was 'string'.")
     .min(2, 'Title cannot be less than 2 characters.')
-    .trim(),
+    .trim()
+    .openapi({ description: 'Unique goal title.', example: 'Running' }),
 
-  type: z.enum(['qualitative', 'quantitative'], {
-    error: () => ({
-      message:
-        "Invalid goal type provided. Valid values are 'quantitative' or 'qualitative'.",
-    }),
-  }),
+  type: z
+    .enum(['qualitative', 'quantitative'], {
+      error: () => ({
+        message:
+          "Invalid goal type provided. Valid values are 'quantitative' or 'qualitative'.",
+      }),
+    })
+    .openapi({ description: 'Goal type.', example: 'quantitative' }),
 
   targetValue: z
     .number("Expected type was 'number'.")
-    .min(1, 'Minimun value is 1.'),
+    .min(1, 'Minimun value is 1.')
+    .openapi({
+      description:
+        "Target value of the goal. If 'type' property is\n " +
+        "set to 'qualitative', this must be 1.",
+      example: 50000,
+    }),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
     .min(1, 'Unit of measure cannot be less than 1 character.')
     .trim()
-    .nullable(),
+    .nullable()
+    .openapi({
+      description:
+        "Unit of measure for the 'targetValue' property. If \n" +
+        "'type' property is set to 'qualitative', this must be 'null'.",
+      example: 'Quilometers',
+    }),
 
-  habitId: EntityIdSchema.nullable(),
+  habitId: EntityIdSchema.nullable().openapi({
+    description:
+      'Optional habit ID of the goal. With a setted habit\n' +
+      ", the goal is updated automatic based on the 'progressImpactValue' \n" +
+      ' property of the setted habit.',
+  }),
 
   deadline: z.coerce
     .date('Invalid date format provided.')
@@ -41,6 +69,12 @@ const GoalBaseSchema = z.object({
       date.setUTCHours(0, 0, 0, 0);
 
       return date;
+    })
+    .openapi({
+      description:
+        "Optional deadline to complete the goal. A valid 'Date' \n" +
+        " object or a string in format 'YYYY-MM-DD'.",
+      example: '2026-11-02',
     }),
 
   color: z
@@ -51,11 +85,18 @@ const GoalBaseSchema = z.object({
     )
     .trim()
     .toLowerCase()
-    .default('#15E03B'),
+    .default('#15E03B')
+    .openapi({
+      description:
+        "Background color of the goal in format '#ABC' or '#ABCDEF'.",
+      example: '#a202f0',
+      default: '#15E03B',
+    }),
 
   icon: z
     .string("Expeted type was 'string'.")
-    .min(1, 'Icon name cannot be less than 1 character.'),
+    .min(1, 'Icon name cannot be less than 1 character.')
+    .openapi({ description: 'Visual icon of the goal.' }),
 });
 
 type GoalRefinementData = z.infer<ReturnType<typeof GoalBaseSchema.partial>>;
@@ -144,55 +185,90 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
 export const GoalFilterSchema = z
   .strictObject({
     title: GoalBaseSchema.shape.title,
-    categoryId: z.union([
-      z.literal('none', { error: "Expected value was 'none'." }),
-      EntityIdSchema,
-    ]),
-    habitId: GoalBaseSchema.shape.habitId,
-    deadlineType: z.enum(['not-defined', 'has-deadline', 'this-week'], {
-      error: () => ({
-        message:
-          "Invalid deadline type received. Valid value are 'not-defined', 'has-deadline' or 'this-week'.",
+
+    categoryId: z
+      .union([
+        z.literal('none', { error: "Expected value was 'none'." }),
+        EntityIdSchema,
+      ])
+      .openapi({
+        description: 'A category ID used to search for.',
+        example: '65f2a1b8c9d0e1f2a3b4c5d6',
       }),
+
+    habitId: GoalBaseSchema.shape.habitId.openapi({
+      description: 'A habit ID user to search for.',
+      example: '65f2a1b8c9d0e1f2a3b4c5d6',
     }),
+
+    deadlineType: z
+      .enum(['not-defined', 'has-deadline', 'this-week'], {
+        error: () => ({
+          message:
+            "Invalid deadline type received. Valid value are 'not-defined', 'has-deadline' or 'this-week'.",
+        }),
+      })
+      .openapi({
+        description:
+          'A deadline type used to search specific goals:\n\n' +
+          "- 'not-defined': searchs goals without a set deadline.\n" +
+          "- 'has-deadline': searchs goals with a set deadline.\n" +
+          "- 'this-week': searchs goals with a deadline expiring within the current week.",
+        example: 'this-week',
+      }),
   })
   .partial()
-  .superRefine(
-    (data: z.infer<typeof GoalFilterSchema>, ctx: z.RefinementCtx) => {
-      const filledKeys = Object.keys(data).filter(
-        (key) =>
-          typeof data[key as keyof z.infer<typeof GoalFilterSchema>] !==
-          'undefined',
-      );
-      if (filledKeys.length > 1) {
-        const properties = filledKeys.map((k) => `'${k}'`).join(', ');
+  .superRefine((data, ctx) => {
+    const filledKeys = Object.keys(data).filter(
+      (key) =>
+        typeof data[key as keyof z.infer<typeof GoalFilterSchema>] !==
+        'undefined',
+    );
+    if (filledKeys.length > 1) {
+      const properties = filledKeys.map((k) => `'${k}'`).join(', ');
 
-        ctx.addIssue({
-          code: 'custom',
-          path: [],
-          message: `Filter query can only filter by one property at a time, but multiple properties were provided: ${properties}.`,
-        });
-      }
-    },
-  );
+      ctx.addIssue({
+        code: 'custom',
+        path: [],
+        message: `Filter query can only filter by one property at a time, but multiple properties were provided: ${properties}.`,
+      });
+    }
+  })
+  .openapi('GoalFilter');
 export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 
 export const GoalCreateSchema = GoalBaseSchema.extend({
-  categoryId: GoalBaseSchema.shape.categoryId.default(null),
-  habitId: GoalBaseSchema.shape.habitId.default(null),
-  targetValue: GoalBaseSchema.shape.targetValue.default(1),
-  unitOfMeasure: GoalBaseSchema.shape.unitOfMeasure.default(null),
-  deadline: GoalBaseSchema.shape.deadline.default(null),
-}).superRefine(goalRefinement);
+  categoryId: GoalBaseSchema.shape.categoryId
+    .default(null)
+    .openapi({ default: 'null' }),
+  habitId: GoalBaseSchema.shape.habitId
+    .default(null)
+    .openapi({ default: 'null' }),
+  targetValue: GoalBaseSchema.shape.targetValue
+    .default(1)
+    .openapi({ default: 1 }),
+  unitOfMeasure: GoalBaseSchema.shape.unitOfMeasure
+    .default(null)
+    .openapi({ default: 'null' }),
+  deadline: GoalBaseSchema.shape.deadline
+    .default(null)
+    .openapi({ default: 'null' }),
+})
+  .superRefine(goalRefinement)
+  .openapi('GoalCreate');
 export type GoalCreateDTO = z.infer<typeof GoalCreateSchema>;
 
 export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .partial()
-  .superRefine(goalRefinement);
+  .superRefine(goalRefinement)
+  .openapi('GoalUpdate');
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
 export const GoalProgressEntrySchema = z.object({
-  goalId: EntityIdSchema,
+  goalId: EntityIdSchema.openapi({
+    description: 'Goal ID',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
 
   date: z.coerce
     .date('Invalid date format provided.')
@@ -211,19 +287,50 @@ export const GoalProgressEntrySchema = z.object({
         return true;
       },
       { message: 'Date cannot be in the future.' },
-    ),
+    )
+    .openapi({
+      description:
+        "Date of the progress entry, a valid 'Date' object \n " +
+        " or a string in format 'YYYY-MM-DD'.",
+      example: '2026-12-02',
+    }),
 
-  value: z.number("Expected type was 'number'.").min(1, 'Minimum value is 1.'),
+  value: z
+    .number("Expected type was 'number'.")
+    .min(1, 'Minimum value is 1.')
+    .openapi({ description: 'The value of the progress.', example: 100 }),
 
-  userId: GoalBaseSchema.shape.userId,
+  userId: GoalBaseSchema.shape.userId.openapi({
+    description: 'Owner ID',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
 });
 export type GoalProgressEntryDTO = z.infer<typeof GoalProgressEntrySchema>;
 
-export type GoalStatsDTO = {
-  currentValue: number;
-  isCompleted: boolean;
-};
-export type GoalResponseDTO = z.infer<typeof GoalBaseSchema> &
-  GoalStatsDTO & {
-    id: EntityIdDTO;
-  };
+export const GoalResponseSchema = GoalBaseSchema.extend({
+  id: EntityIdSchema.openapi({
+    description: 'Goal ID.',
+    readOnly: true,
+  }),
+
+  currentValue: z
+    .number("Expected type was 'number'")
+    .min(0, "'currentValue' must be greater or equal than 0.")
+    .openapi({
+      description: 'Current accumulated progress value.',
+      example: 5200,
+      readOnly: true,
+    }),
+
+  isCompleted: z.boolean("Expected type was 'boolean'").openapi({
+    description: 'Indicates if the goal target value has been reached.',
+    example: false,
+    readOnly: true,
+  }),
+}).openapi('GoalResponse');
+export type GoalResponseDTO = z.infer<typeof GoalResponseSchema>;
+
+export type GoalStatsDTO = Pick<
+  GoalResponseDTO,
+  'currentValue' | 'isCompleted'
+>;

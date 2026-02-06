@@ -1,39 +1,64 @@
-import * as z from 'zod';
+import { z } from 'zod';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
+extendZodWithOpenApi(z);
+
 const HabitBaseSchema = z.object({
-  userId: EntityIdSchema,
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
 
   title: z
     .string("Expected type was 'string'.")
     .min(2, 'Title cannot be less than 2 characters.')
-    .trim(),
+    .trim()
+    .openapi({ description: 'Unique habit title.', example: 'Read 15 pages' }),
 
-  type: z.enum(['quantitative', 'qualitative'], {
-    error: () => ({
-      message:
-        "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
-    }),
-  }),
+  type: z
+    .enum(['quantitative', 'qualitative'], {
+      error: () => ({
+        message:
+          "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
+      }),
+    })
+    .openapi({ description: 'Habit type.', example: 'quantitative' }),
 
   progressImpactValue: z
     .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.'),
+    .min(0, 'Minimum value is 0.')
+    .openapi({
+      description:
+        "Value of the goal progress. If 'type' property is setted to \n" +
+        "'qualitative', this must be setted to 0.",
+      example: 5,
+    }),
 
   unitOfMeasure: z
     .string("Expected type was 'string'.")
     .min(1, 'Unit of measure cannot be less than 1 character.')
     .trim()
-    .nullable(),
-
-  weekDays: z.array(
-    z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'], {
-      error: () => ({
-        message:
-          "Invalid week days provided. Valid values are 'seg', 'ter', 'qua', 'qui', 'sex', 'sab' or 'dom'.",
-      }),
+    .nullable()
+    .openapi({
+      description:
+        "Unit of measure of the habit progress. If 'type' property is setted \n" +
+        "to 'qualitative', this must be setted to 'null'.",
     }),
-  ),
+
+  weekDays: z
+    .array(
+      z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'], {
+        error: () => ({
+          message:
+            "Invalid week days provided. Valid values are 'seg', 'ter', 'qua', 'qui', 'sex', 'sab' or 'dom'.",
+        }),
+      }),
+    )
+    .openapi({
+      description: 'Week days to the habit active.',
+      example: ['ter', 'sab'],
+    }),
 
   reminder: z
     .string("Expected type was 'string'.")
@@ -41,7 +66,11 @@ const HabitBaseSchema = z.object({
       /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
       "Invalid reminder format provided. Expected format was 'HH:mm'.",
     )
-    .nullable(),
+    .nullable()
+    .openapi({
+      description: "Optional reminder of the habit, in format 'HH:mm'",
+      example: '09:30',
+    }),
 
   color: z
     .string("Expected type was 'string'.")
@@ -51,7 +80,13 @@ const HabitBaseSchema = z.object({
     )
     .trim()
     .toLowerCase()
-    .default('#15E03B'),
+    .default('#15E03B')
+    .openapi({
+      description:
+        "Background color of the habit, in format '#ABC' or '#ABCDEF'.",
+      example: '#a202f0',
+      default: '#15E03B',
+    }),
 
   icon: z
     .string("Expected type was 'string'.")
@@ -114,68 +149,87 @@ export const HabitFilterSchema = HabitBaseSchema.pick({
   title: true,
 })
   .extend({
-    weekDay: HabitBaseSchema.shape.weekDays.element,
+    weekDay: HabitBaseSchema.shape.weekDays.element.openapi({
+      description: 'Week day used to search for.',
+      example: 'ter',
+    }),
   })
   .partial()
   .strict()
-  .superRefine(
-    (data: z.infer<typeof HabitFilterSchema>, ctx: z.RefinementCtx) => {
-      const filledKeys = Object.keys(data).filter(
-        (key) =>
-          typeof data[key as keyof z.infer<typeof HabitFilterSchema>] !==
-          'undefined',
-      );
-      if (filledKeys.length > 1) {
-        const properties = filledKeys.map((k) => `'${k}'`).join(', ');
+  .superRefine((data, ctx) => {
+    const filledKeys = Object.keys(data).filter(
+      (key) =>
+        typeof data[key as keyof z.infer<typeof HabitFilterSchema>] !==
+        'undefined',
+    );
+    if (filledKeys.length > 1) {
+      const properties = filledKeys.map((k) => `'${k}'`).join(', ');
 
-        ctx.addIssue({
-          code: 'custom',
-          path: [],
-          message: `Filter query can only filter by one property at a time, but mulitple properties were provided: ${properties}`,
-        });
-      }
-    },
-  );
+      ctx.addIssue({
+        code: 'custom',
+        path: [],
+        message: `Filter query can only filter by one property at a time, but mulitple properties were provided: ${properties}`,
+      });
+    }
+  })
+  .openapi('HabitFilter');
 export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 
 export const HabitCreateSchema = HabitBaseSchema.extend({
-  progressImpactValue: HabitBaseSchema.shape.progressImpactValue.default(0),
-  unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure.default(null),
-  reminder: HabitBaseSchema.shape.reminder.default(null),
-}).superRefine(habitRefinement);
+  progressImpactValue: HabitBaseSchema.shape.progressImpactValue
+    .default(0)
+    .openapi({ default: 0 }),
+  unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure
+    .default(null)
+    .openapi({ default: 'null' }),
+  reminder: HabitBaseSchema.shape.reminder
+    .default(null)
+    .openapi({ default: 'null' }),
+})
+  .superRefine(habitRefinement)
+  .openapi('habitCreate');
 export type HabitCreateDTO = z.infer<typeof HabitCreateSchema>;
 
 export const HabitUpdateSchema = HabitBaseSchema.omit({
   userId: true,
 })
   .partial()
-  .superRefine(habitRefinement);
+  .superRefine(habitRefinement)
+  .openapi('HabitUpdate');
 export type HabitUpdateDTO = z.infer<typeof HabitUpdateSchema>;
 
-export const HabitCheckSchema = z.object({
-  userId: HabitBaseSchema.shape.userId,
+export const HabitCheckSchema = z
+  .object({
+    userId: HabitBaseSchema.shape.userId,
 
-  habitId: EntityIdSchema,
+    habitId: EntityIdSchema,
 
-  date: z.coerce
-    .date('Invalid date format provided.')
-    .transform((val) => {
-      const date = new Date(val);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    })
-    .refine(
-      (val) => {
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
+    date: z.coerce
+      .date('Invalid date format provided.')
+      .transform((val) => {
+        const date = new Date(val);
+        date.setUTCHours(0, 0, 0, 0);
+        return date;
+      })
+      .refine(
+        (val) => {
+          const today = new Date();
+          today.setUTCHours(0, 0, 0, 0);
 
-        if (val.getTime() > today.getTime()) return false;
+          if (val.getTime() > today.getTime()) return false;
 
-        return true;
-      },
-      { message: 'Date cannot be in the future.' },
-    ),
-});
+          return true;
+        },
+        { message: 'Date cannot be in the future.' },
+      )
+      .openapi({
+        description:
+          "Date of the check/uncheck. A valid 'Date' \n" +
+          " object or a string in format 'YYYY-MM-DD'.",
+        example: '2025-11-02',
+      }),
+  })
+  .openapi('HabitCheck');
 export type HabitCheckDTO = z.infer<typeof HabitCheckSchema>;
 
 export type HabitStatsDTO = {
@@ -185,3 +239,34 @@ export type HabitStatsDTO = {
 };
 export type HabitResponseDTO = z.infer<typeof HabitBaseSchema> &
   HabitStatsDTO & { id: EntityIdDTO };
+
+export const HabitResponseSchema = HabitBaseSchema.extend({
+  id: EntityIdSchema.openapi({
+    description: 'Goal ID.',
+    readOnly: true,
+  }),
+
+  streak: z
+    .number("Expected type was 'number'")
+    .min(0, "'streak' must be greater or equal to 0.")
+    .openapi({
+      description: 'Current streak days of the habit.',
+      example: 17,
+      readOnly: true,
+    }),
+
+  bestStreak: z
+    .number("Expected type was 'number'")
+    .min(0, "'bestStreak' must be greater or equal to 0.")
+    .openapi({
+      description: 'Best streak days of the habit.',
+      example: 32,
+      readOnly: true,
+    }),
+
+  isCompletedToday: z.boolean("Expected type was 'boolean'.").openapi({
+    description: 'Indicates if the habit was completed in the day.',
+    example: true,
+    readOnly: true,
+  }),
+});

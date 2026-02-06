@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { habitController } from '../config/factory.js';
+import { habitController } from '../config/factory.config.js';
 import type { AuthRequest } from '../types/express.types.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 

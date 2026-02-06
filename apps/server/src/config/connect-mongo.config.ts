@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { env } from './env-config.js';
+import { env } from './env.config.js';
 import { UserModel } from '../models/user.model.js';
 import { CategoryModel } from '../models/category.model.js';
 import { HabitModel } from '../models/habit.model.js';

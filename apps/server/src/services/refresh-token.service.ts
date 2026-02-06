@@ -1,5 +1,5 @@
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import { mapRefreshTokenDocToPublicDTO } from '../helpers/mappers.js';
+import { mapRefreshTokenDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import type {
   IRefreshTokenRepository,
   IRefreshTokenService,

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env-config.js';
+import { env } from '../config/env.config.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { type TokenPayloadDTO } from 'packages/shared/dist/index.js';

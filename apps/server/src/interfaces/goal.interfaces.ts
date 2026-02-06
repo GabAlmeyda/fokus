@@ -167,6 +167,7 @@ export interface IGoalController {
    * @returns The HTTP response with:
    * - 201 (Created): On success, containing the sanitized goal.
    * - 400 (Bad Request): On failure, if the goal data format is invalid.
+   * - 409 (Conflict): On failure, if a goal with the provided title is already registered.
    * - 422 (Unprocessable): On failure, if the goal data content is invalid.
    */
   create(
@@ -198,6 +199,20 @@ export interface IGoalController {
   ): Promise<HTTPResponse<GoalResponseDTO[]>>;
 
   /**
+   * Adds a progress entry (value increment) to a specific goal for a authenticated user.
+   * @param req - The request object containing the *`goalId`* in the params, the progress data in the body, and
+   * the *`userId`* in cookies.
+   * @returns The HTTP response with:
+   * 200 (Ok): On success, containing the sanitized updated goal.
+   * 400 (Bad Request): On failure, if the provided data format is invalid.
+   * 422 (Unprocessable): On failue, if the provided data content is invalid or the provided goal data is
+   * incompatible with the registered goal data.
+   */
+  addProgressEntry(
+    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
+  ): Promise<HTTPResponse<GoalResponseDTO>>;
+
+  /**
    * Updates a goal for the authenticated user.
    * @param req - The request object containing the *`goalId`* in the params, the updated data in the body, and t
    * he *`userId`* in the cookies.
@@ -210,20 +225,6 @@ export interface IGoalController {
    */
   update(
     req: HTTPRequest<GoalUpdateDTO>,
-  ): Promise<HTTPResponse<GoalResponseDTO>>;
-
-  /**
-   * Adds a progress entry (value increment) to a specific goal for a authenticated user.
-   * @param req - The request object containing the *`goalId`* in the params, the progress data in the body, and
-   * the *`userId`* in cookies.
-   * @returns The HTTP response with:
-   * 200 (Ok): On success, containing the sanitized updated goal.
-   * 400 (Bad Request): On failure, if the provided data format is invalid.
-   * 422 (Unprocessable): On failue, if the provided data content is invalid or the provided goal data is
-   * incompatible with the registered goal data.
-   */
-  addProgressEntry(
-    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
   ): Promise<HTTPResponse<GoalResponseDTO>>;
 
   /**

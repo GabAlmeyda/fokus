@@ -5,7 +5,7 @@ import {
   HTTPStatusCode,
   type HTTPErrorResponse,
 } from '@fokus/shared';
-import { env } from '../config/env-config.js';
+import { env } from '../config/env.config.js';
 import { AppServerError } from './errors/app-server.errors.js';
 
 export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {

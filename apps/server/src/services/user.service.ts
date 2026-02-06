@@ -10,13 +10,13 @@ import {
   type AuthResponseDTO,
   type UserResponseDTO,
 } from '@fokus/shared';
-import { env } from '../config/env-config.js';
+import { env } from '../config/env.config.js';
 import type {
   IUserRepository,
   IUserService,
 } from '../interfaces/user.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import { mapUserDocToPublicDTO } from '../helpers/mappers.js';
+import { mapUserDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import type { IRefreshTokenService } from '../interfaces/refresh-token.interfaces.js';
 
 export class UserService implements IUserService {

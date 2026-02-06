@@ -12,7 +12,7 @@ import type {
   IProgressLogService,
 } from '../interfaces/progress-log.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.js';
+import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 
 export class ProgressLogService implements IProgressLogService {

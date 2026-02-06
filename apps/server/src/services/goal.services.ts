@@ -13,7 +13,7 @@ import type {
 } from '../interfaces/goal.interfaces.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
-import { mapGoalDocToPublicDTO } from '../helpers/mappers.js';
+import { mapGoalDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import type { IProgressLogService } from '../interfaces/progress-log.interfaces.js';
 import type { IHabitService } from '../interfaces/habit.interfaces.js';
 

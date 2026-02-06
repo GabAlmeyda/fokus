@@ -159,7 +159,7 @@ export interface IUserController {
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized user data and authentication
    * tokens.
-   * - 401 (Unauthorized): On failure, if the provided token is still valid.
+   * - 401 (Unauthorized): On failure, if the token was refreshed within the period of 10 seconds.
    * - 403 (Forbidden): On failure, if the provided token is revoked and is not in the grace period
    * interval (10 seconds).
    */
@@ -173,6 +173,7 @@ export interface IUserController {
    * - 200 (Ok): On success, containing the sanitized user data.
    * - 401 (Unauthorized): On failure, if the token is not provided or the user is not found.
    * - 403 (Forbidden): On failure, if the provided token expired or invalid.
+   * - 404 (Not Found): On failure, if the user if not found.
    */
   findOneById(req: HTTPRequest<null>): Promise<HTTPResponse<UserResponseDTO>>;
 

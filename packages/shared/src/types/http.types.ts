@@ -1,4 +1,5 @@
 import type { ParsedQs } from 'qs';
+import type { ErrorResponse } from '../schemas/error-response.schemas.js';
 
 export type HTTPRequest<B> = {
   headers?: Record<string, string | undefined>;
@@ -18,7 +19,7 @@ export type HTTPSuccessResponse<B> = {
 
 export type HTTPErrorResponse = {
   statusCode: (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];
-  body: { message: string; invalidFields?: InvalidField[] };
+  body: ErrorResponse;
 };
 
 export const HTTPStatusCode = {
@@ -35,8 +36,3 @@ export const HTTPStatusCode = {
 
   INTERNAL_SERVER_ERROR: 500,
 } as const;
-
-export type InvalidField = {
-  field: string;
-  message?: string;
-};
