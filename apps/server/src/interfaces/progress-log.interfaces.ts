@@ -16,7 +16,7 @@ import type { ProgressLogDeleteDTO } from '../types/progress-log.types.js';
  */
 export interface IProgressLogRepository {
   /**
-   * Persists a new progress log in the database.
+   * Persists a new user progress log in the database.
    * @param newData - The new progress log data (habit or goal completion).
    * @returns The created progress log document.
    * @throws *`DatabaseError`* If, in case for a habit log, a progress log with the same *`habitId`*
@@ -25,7 +25,7 @@ export interface IProgressLogRepository {
   create(newData: ProgressLogCreateDTO): Promise<ProgressLogDocument>;
 
   /**
-   * Returns a user progress log by its ID.
+   * Returns an user progress log by its ID.
    * @param progressLogId - The log ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @returns The progress log document if found, or *`null`* otherwise.
@@ -36,7 +36,7 @@ export interface IProgressLogRepository {
   ): Promise<ProgressLogDocument | null>;
 
   /**
-   * Returns a user progress logs by a specific filter criteria.
+   * Returns an user progress logs by a specific filter criteria.
    * @param filter - The filter to be applied (period, entity type, entity ID, etc).
    * @param userId - The owner ID to ensure data authorization.
    * @returns An array of progress log documents.
@@ -47,7 +47,8 @@ export interface IProgressLogRepository {
   ): Promise<ProgressLogDocument[]>;
 
   /**
-   * Returns a list of dates where activities were recorded for habits or goals.
+   * Returns a list of dates where activities were recorded for habits or goals of an
+   * user.
    * @param entityType - The type of entity to fetch dates for.
    * @param userId - The owner ID to ensure data authorization.
    * @param entityId - Optional ID to filter dates for a specific habit or goal.
@@ -60,7 +61,7 @@ export interface IProgressLogRepository {
   ): Promise<{ entityId: EntityIdDTO; dates: Date[] }[]>;
 
   /**
-   * Aggregates the sum of values recorded for goals.
+   * Aggregates the sum of values recorded for goals of an user.
    * @param userId - The owner ID to ensure data authorization.
    * @param goalId - Optional ID to fetch the current value of a specific goal.
    * @returns An array of objects containing the goal ID and its current accumulated value.
@@ -71,7 +72,7 @@ export interface IProgressLogRepository {
   ): Promise<{ goalId: EntityIdDTO; currentValue: number }[]>;
 
   /**
-   * Deletes a progress log, searching for its ID.
+   * Deletes a user progress log, searching for its ID.
    * @param progressLogId - The log ID to be removed.
    * @param userId - The owner ID to ensure data authorization.
    * @returns The deleted progress log document if found, or *`null`* otherwise.
@@ -82,15 +83,15 @@ export interface IProgressLogRepository {
   ): Promise<ProgressLogDocument | null>;
 
   /**
-   * Deletes a progress log by a specific filter criteria.
+   * Deletes a user progress log by a specific filter criteria.
    * @param filter - The filter criteria.
    * @param userId - The owner ID to ensure data authorization.
-   * @returns The deleted progress log document if found, or *`null`* otherwise.
+   * @returns The number of deleted documents.
    */
   deleteByFilter(
     filter: ProgressLogDeleteDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument | null>;
+  ): Promise<number>;
 }
 
 /**
@@ -100,14 +101,14 @@ export interface IProgressLogRepository {
  */
 export interface IProgressLogService {
   /**
-   * Creates a new progress log entry.
+   * Creates a new authenticated user progress log entry.
    * @param newData - The progress log data.
    * @returns The sanitized progress log data.
    */
   create(newData: ProgressLogCreateDTO): Promise<ProgressLogResponseDTO>;
 
   /**
-   * Returns a user progress log by its ID.
+   * Returns an authenticated user progress log by its ID.
    * @param progressLogId - The log ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @returns The sanitized progress log data.
@@ -119,7 +120,7 @@ export interface IProgressLogService {
   ): Promise<ProgressLogResponseDTO>;
 
   /**
-   * Returns user progress logs based on specific filters.
+   * Returns authenticated user progress logs based on specific filters.
    * @param filter - The filter criteria.
    * @param userId - The owner ID to ensure data authorization.
    * @returns An array of sanitized progress log data.
@@ -130,7 +131,8 @@ export interface IProgressLogService {
   ): Promise<ProgressLogResponseDTO[]>;
 
   /**
-   * Calculates activity statistics for habits (streaks, best streak, etc).
+   * Calculates activity statistics for habits (streaks, best streak, etc) of an
+   * authenticated user.
    * @param userId - The owner ID to ensure data authorization.
    * @param habitId - Optional ID to get stats for a single habit.
    * @returns A record mapping habit IDs to their respective statistics.
@@ -141,7 +143,7 @@ export interface IProgressLogService {
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>>;
 
   /**
-   * Calculates the current progress values for goals.
+   * Calculates the current progress values for goals of an authenticated user.
    * @param userId - The owner ID to ensure data authorization.
    * @param goalId - Optional ID to get the current value for a single goal.
    * @returns A record mapping goal IDs to their current accumulated values.
@@ -152,7 +154,7 @@ export interface IProgressLogService {
   ): Promise<Record<EntityIdDTO, number>>;
 
   /**
-   * Removes a progress log entry, searching for its ID.
+   * Removes an authenticated user progress log entry, searching for its ID.
    * @param progressLogId - The log ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @throws *`AppServerError`* If the log is not found or unauthorized.
@@ -160,7 +162,9 @@ export interface IProgressLogService {
   delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 
   /**
-   * Deletes a progress log by a filter criteria.
+   * Deletes an authenticated user progress logs by a filter criteria. If the *`filter.date`*
+   * is provided, it deletes a single log, otherwise, all the logs related with the provided *`filter.entityId`*
+   * will be deleted.
    * @param filter - The filter criteria.
    * @param userId - The owner ID to ensure data authorization.
    * @throws *`AppServerError`* If the log is not found or unauthorized.

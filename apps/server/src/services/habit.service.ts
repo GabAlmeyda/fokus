@@ -136,6 +136,14 @@ export class HabitService implements IHabitService {
         `Habit with ID '${habitId}' not found.`,
       );
     }
+
+    await this.progressLogService.deleteByFilter(
+      {
+        entityType: 'habitId',
+        entityId: doc._id.toString(),
+      },
+      userId,
+    );
   }
 
   private async getHabitStats(

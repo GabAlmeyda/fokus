@@ -198,15 +198,19 @@ export class ProgressLogRepository implements IProgressLogRepository {
   async deleteByFilter(
     filter: ProgressLogDeleteDTO,
     userId: EntityIdDTO,
-  ): Promise<ProgressLogDocument | null> {
+  ): Promise<number> {
     try {
-      const progressLogDoc = await ProgressLogModel.findOneAndDelete({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const deleteFilter: Record<string, any> = {
         [filter.entityType]: filter.entityId,
-        date: filter.date,
         userId,
-      });
+      };
+      if (filter.date) {
+        deleteFilter.date = filter.date;
+      }
 
-      return progressLogDoc;
+      const result = await ProgressLogModel.deleteMany(deleteFilter);
+      return result.deletedCount;
     } catch (err) {
       throw DatabaseError.fromMongoose(err);
     }

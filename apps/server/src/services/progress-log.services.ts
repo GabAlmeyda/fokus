@@ -175,17 +175,18 @@ export class ProgressLogService implements IProgressLogService {
     filter: ProgressLogDeleteDTO,
     userId: EntityIdDTO,
   ): Promise<void> {
-    const date = new Date(filter.date);
-    date.setUTCHours(0, 0, 0, 0);
+    const deleteFilter = filter;
+    if (deleteFilter.date) {
+      deleteFilter.date.setUTCHours(0, 0, 0, 0);
+    } else {
+      delete deleteFilter.date;
+    }
 
-    const progressLogDoc = await this.progressLogRepository.deleteByFilter(
-      {
-        ...filter,
-        date,
-      },
+    const deletedDocs = await this.progressLogRepository.deleteByFilter(
+      deleteFilter,
       userId,
     );
-    if (!progressLogDoc) {
+    if (!deleteFilter.date && deletedDocs === 0) {
       throw new AppServerError(
         'NOT_FOUND',
         `Log of '${filter.entityType.replace('Id', '')}' with ID '${filter.entityId}' and date '${filter.date}' not found.`,
