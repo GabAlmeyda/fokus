@@ -29,6 +29,13 @@ export class GoalCompletionService implements IGoalCompletionService {
       progressLog.goalId,
       progressLog.userId,
     );
+    if (goal.type === 'qualitative' && goal.isCompleted) {
+      throw new AppServerError(
+        'CONFLICT',
+        "Cannot have more than one goal progress log for a goal with type 'qualitative'.",
+      );
+    }
+
     if (goal.type === 'qualitative' && progressLog.value !== 1) {
       throw new AppServerError(
         'UNPROCESSABLE',

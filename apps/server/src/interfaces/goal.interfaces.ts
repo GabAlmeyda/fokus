@@ -152,6 +152,7 @@ export interface IGoalCompletionService {
    * @throws *`AppServerError`* If:
    * - The goal is not found.
    * - The provided data is incompatible with the registered data.
+   * - In case of a qualitative goal, a progress log for it is already registered.
    */
   addProgressLog(
     progressLog: GoalProgressLogDTO,

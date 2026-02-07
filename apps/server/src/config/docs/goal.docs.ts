@@ -21,6 +21,44 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
   registry.register('GoalUpdate', GoalUpdateSchema);
   registry.register('GoalResponse', GoalResponseSchema);
 
+  // Add progress log route
+  registry.registerPath({
+    tags: ['Goal'],
+    method: 'post',
+    path: '/goals/{goalId}/log',
+    security: [{ accessTokenCookie: [] }],
+    summary: 'Adds a goal progress log for an authenticated user.',
+    request: {
+      params: z.object({
+        goalId: EntityIdSchema,
+      }),
+      body: {
+        content: {
+          'application/json': {
+            schema: GoalProgressLogSchema.pick({ date: true, value: true }),
+          },
+        },
+      },
+    },
+    responses: {
+      ...DEFAULT_ERRORS_DOCS,
+      ...INVALID_INPUT_ERRORS_DOCS,
+      201: {
+        description: 'Progress log added successfully.',
+        content: { 'application/json': { schema: GoalResponseSchema } },
+      },
+      404: {
+        description: 'Goal not found.',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+      409: {
+        description:
+          'In case of a qualitative goal, a progress log for it is already registered.',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+    },
+  });
+
   // Create route
   registry.registerPath({
     tags: ['Goal'],
@@ -93,30 +131,24 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
     },
   });
 
-  // Add progress log route
+  // Update route
   registry.registerPath({
     tags: ['Goal'],
-    method: 'post',
-    path: '/goals/{goalId}/log',
+    method: 'patch',
+    path: '/goals/{goalId}',
     security: [{ accessTokenCookie: [] }],
-    summary: 'Adds a goal progress log for an authenticated user.',
+    summary: 'Updates an authenticated user goal.',
     request: {
       params: z.object({
         goalId: EntityIdSchema,
       }),
-      body: {
-        content: {
-          'application/json': {
-            schema: GoalProgressLogSchema.pick({ date: true, value: true }),
-          },
-        },
-      },
+      body: { content: { 'application/json': { schema: GoalUpdateSchema } } },
     },
     responses: {
       ...DEFAULT_ERRORS_DOCS,
       ...INVALID_INPUT_ERRORS_DOCS,
-      201: {
-        description: 'Progress log added successfully.',
+      200: {
+        description: 'Goal updated successfully.',
         content: { 'application/json': { schema: GoalResponseSchema } },
       },
       404: {
@@ -147,33 +179,6 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
       },
       404: {
         description: 'Goal progress log not found.',
-        content: { 'application/json': { schema: ErrorResponseSchema } },
-      },
-    },
-  });
-
-  // Update route
-  registry.registerPath({
-    tags: ['Goal'],
-    method: 'patch',
-    path: '/goals/{goalId}',
-    security: [{ accessTokenCookie: [] }],
-    summary: 'Updates an authenticated user goal.',
-    request: {
-      params: z.object({
-        goalId: EntityIdSchema,
-      }),
-      body: { content: { 'application/json': { schema: GoalUpdateSchema } } },
-    },
-    responses: {
-      ...DEFAULT_ERRORS_DOCS,
-      ...INVALID_INPUT_ERRORS_DOCS,
-      200: {
-        description: 'Goal updated successfully.',
-        content: { 'application/json': { schema: GoalResponseSchema } },
-      },
-      404: {
-        description: 'Goal not found.',
         content: { 'application/json': { schema: ErrorResponseSchema } },
       },
     },
