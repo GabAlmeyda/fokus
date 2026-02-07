@@ -1,5 +1,6 @@
 import type {
-  HabitCheckDTO,
+  EntityIdDTO,
+  HabitCompletionLogDTO,
   HabitResponseDTO,
   ProgressLogCreateDTO,
 } from '@fokus/shared';
@@ -24,17 +25,19 @@ export class HabitCompletionService implements IhabitCompletionService {
     this.progressLogService = progressLogService;
   }
 
-  async check({
-    habitId,
-    userId,
-    date,
-  }: HabitCheckDTO): Promise<HabitResponseDTO> {
-    const habit = await this.habitService.findOneById(habitId, userId);
+  async check(
+    checkData: HabitCompletionLogDTO,
+    userId: EntityIdDTO,
+  ): Promise<HabitResponseDTO> {
+    const habit = await this.habitService.findOneById(
+      checkData.habitId,
+      userId,
+    );
     const log: ProgressLogCreateDTO = {
       userId,
-      habitId,
+      habitId: habit.id,
       goalId: null,
-      date,
+      date: checkData.date,
       value: habit.progressImpactValue,
     };
     const goal = (
@@ -44,6 +47,28 @@ export class HabitCompletionService implements IhabitCompletionService {
       log.goalId = goal.id;
     }
     await this.progressLogService.create(log);
+
+    const updatedHabit = await this.habitService.findOneById(habit.id, userId);
+    return updatedHabit;
+  }
+
+  async uncheck(
+    uncheckData: HabitCompletionLogDTO,
+    userId: EntityIdDTO,
+  ): Promise<HabitResponseDTO> {
+    await this.progressLogService.deleteByFilter(
+      {
+        entityType: 'habitId',
+        entityId: uncheckData.habitId,
+        date: uncheckData.date,
+      },
+      userId,
+    );
+
+    const habit = await this.habitService.findOneById(
+      uncheckData.habitId,
+      userId,
+    );
     return habit;
   }
 }

@@ -9,7 +9,7 @@ import {
   HabitUpdateSchema,
   type HabitUpdateDTO,
   HabitFilterSchema,
-  HabitCheckSchema,
+  HabitCompletionLogSchema,
 } from '@fokus/shared';
 import type {
   IhabitCompletionService,
@@ -93,13 +93,33 @@ export class HabitController implements IHabitController {
 
   async check(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
-      const checkData = HabitCheckSchema.parse({
+      const checkData = HabitCompletionLogSchema.parse({
         habitId: req.params?.habitId,
         date: req.query?.date,
-        userId: req.userId,
       });
+      const userId = EntityIdSchema.parse(req.userId);
 
-      const habit = await this.habitCompletionService.check(checkData);
+      const habit = await this.habitCompletionService.check(checkData, userId);
+      return { statusCode: HTTPStatusCode.OK, body: habit };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async uncheck(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<HabitResponseDTO>> {
+    try {
+      const uncheckData = HabitCompletionLogSchema.parse({
+        habitId: req.params?.habitId,
+        date: req.query?.date,
+      });
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const habit = await this.habitCompletionService.uncheck(
+        uncheckData,
+        userId,
+      );
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);

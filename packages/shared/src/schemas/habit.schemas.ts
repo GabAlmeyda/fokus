@@ -27,11 +27,11 @@ const HabitBaseSchema = z.object({
 
   progressImpactValue: z
     .number("Expected type was 'number'.")
-    .min(0, 'Minimum value is 0.')
+    .min(1, 'Minimum value is 1.')
     .openapi({
       description:
         "Value of the goal progress. If 'type' property is setted to \n" +
-        "'qualitative', this must be setted to 0.",
+        "'qualitative', this must be setted to 1.",
       example: 5,
     }),
 
@@ -99,11 +99,11 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
 
   switch (data.type) {
     case 'qualitative':
-      if (data.progressImpactValue && data.progressImpactValue != 0) {
+      if (data.progressImpactValue && data.progressImpactValue !== 1) {
         ctx.addIssue({
           code: 'custom',
           path: ['progressImpactValue'],
-          message: "In qualitative habits, 'progressImpactValue' must be 0.",
+          message: "In qualitative habits, 'progressImpactValue' must be 1.",
         });
       }
       if (data.unitOfMeasure != null) {
@@ -121,7 +121,7 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
           code: 'custom',
           path: ['progressImpactValue'],
           message:
-            "In quantitative habits, 'progressImpactValue' must be greater than 1.",
+            "In quantitative habits, 'progressImpactValue' must be greater than 0.",
         });
       }
       if (!data.unitOfMeasure) {
@@ -198,10 +198,8 @@ export const HabitUpdateSchema = HabitBaseSchema.omit({
   .openapi('HabitUpdate');
 export type HabitUpdateDTO = z.infer<typeof HabitUpdateSchema>;
 
-export const HabitCheckSchema = z
+export const HabitCompletionLogSchema = z
   .object({
-    userId: HabitBaseSchema.shape.userId,
-
     habitId: EntityIdSchema,
 
     date: z.coerce
@@ -230,7 +228,7 @@ export const HabitCheckSchema = z
       }),
   })
   .openapi('HabitCheck');
-export type HabitCheckDTO = z.infer<typeof HabitCheckSchema>;
+export type HabitCompletionLogDTO = z.infer<typeof HabitCompletionLogSchema>;
 
 export type HabitStatsDTO = {
   streak: number;

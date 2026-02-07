@@ -35,7 +35,7 @@ const habitSchema = new Schema<IHabit>(
     progressImpactValue: {
       type: Number,
       min: 1,
-      default: 0,
+      default: 1,
     },
     unitOfMeasure: {
       type: String,

@@ -18,6 +18,7 @@ import {
   startOfWeek,
 } from 'date-fns';
 import { Types } from 'mongoose';
+import type { ProgressLogDeleteDTO } from '../types/progress-log.types.js';
 
 export class ProgressLogRepository implements IProgressLogRepository {
   async create(newData: ProgressLogCreateDTO): Promise<ProgressLogDocument> {
@@ -185,6 +186,23 @@ export class ProgressLogRepository implements IProgressLogRepository {
     try {
       const progressLogDoc = await ProgressLogModel.findOneAndDelete({
         _id: progressLogId,
+        userId,
+      });
+
+      return progressLogDoc;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
+
+  async deleteByFilter(
+    filter: ProgressLogDeleteDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument | null> {
+    try {
+      const progressLogDoc = await ProgressLogModel.findOneAndDelete({
+        [filter.entityType]: filter.entityId,
+        date: filter.date,
         userId,
       });
 

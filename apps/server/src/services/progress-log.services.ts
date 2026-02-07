@@ -14,6 +14,7 @@ import type {
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { mapProgressLogDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
+import type { ProgressLogDeleteDTO } from '../types/progress-log.types.js';
 
 export class ProgressLogService implements IProgressLogService {
   private readonly progressLogRepository;
@@ -166,6 +167,28 @@ export class ProgressLogService implements IProgressLogService {
       throw new AppServerError(
         'NOT_FOUND',
         `Progress log with ID '${progressLogId}' not found.`,
+      );
+    }
+  }
+
+  async deleteByFilter(
+    filter: ProgressLogDeleteDTO,
+    userId: EntityIdDTO,
+  ): Promise<void> {
+    const date = new Date(filter.date);
+    date.setUTCHours(0, 0, 0, 0);
+
+    const progressLogDoc = await this.progressLogRepository.deleteByFilter(
+      {
+        ...filter,
+        date,
+      },
+      userId,
+    );
+    if (!progressLogDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Log of '${filter.entityType.replace('Id', '')}' with ID '${filter.entityId}' and date '${filter.date}' not found.`,
       );
     }
   }

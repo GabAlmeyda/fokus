@@ -6,6 +6,7 @@ import type {
   ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type { ProgressLogDocument } from '../models/progress-log.model.js';
+import type { ProgressLogDeleteDTO } from '../types/progress-log.types.js';
 
 /**
  * Repository interface for managing progress log data persistence.
@@ -79,6 +80,17 @@ export interface IProgressLogRepository {
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<ProgressLogDocument | null>;
+
+  /**
+   * Deletes a progress log by a specific filter criteria.
+   * @param filter - The filter criteria.
+   * @param userId - The owner ID to ensure data authorization.
+   * @returns The deleted progress log document if found, or *`null`* otherwise.
+   */
+  deleteByFilter(
+    filter: ProgressLogDeleteDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogDocument | null>;
 }
 
 /**
@@ -140,10 +152,21 @@ export interface IProgressLogService {
   ): Promise<Record<EntityIdDTO, number>>;
 
   /**
-   * Removes a progress log entry.
+   * Removes a progress log entry, searching for its ID.
    * @param progressLogId - The log ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @throws *`AppServerError`* If the log is not found or unauthorized.
    */
   delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
+
+  /**
+   * Deletes a progress log by a filter criteria.
+   * @param filter - The filter criteria.
+   * @param userId - The owner ID to ensure data authorization.
+   * @throws *`AppServerError`* If the log is not found or unauthorized.
+   */
+  deleteByFilter(
+    filter: ProgressLogDeleteDTO,
+    userId: EntityIdDTO,
+  ): Promise<void>;
 }

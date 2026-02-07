@@ -9,7 +9,7 @@ import {
   ErrorResponseSchema,
   HabitCreateSchema,
   HabitFilterSchema,
-  HabitCheckSchema,
+  HabitCompletionLogSchema,
   HabitResponseSchema,
   HabitUpdateSchema,
 } from '@fokus/shared';
@@ -18,7 +18,7 @@ export function registerHabitDocs(registry: OpenAPIRegistry) {
   // Schemas
   registry.register('HabitCreate', HabitCreateSchema);
   registry.register('HabitFilter', HabitFilterSchema);
-  registry.register('HabitCheck', HabitCheckSchema);
+  registry.register('HabitCompletionLogSchema', HabitCompletionLogSchema);
   registry.register('HabitUpdate', HabitUpdateSchema);
   registry.register('HabitResponse', HabitResponseSchema);
 
@@ -134,10 +134,10 @@ export function registerHabitDocs(registry: OpenAPIRegistry) {
     summary: 'Marks an authenticated user habit as completed.',
     request: {
       params: z.object({
-        habitId: HabitCheckSchema.shape.habitId,
+        habitId: HabitCompletionLogSchema.shape.habitId,
       }),
       query: z.object({
-        date: HabitCheckSchema.shape.date,
+        date: HabitCompletionLogSchema.shape.date,
       }),
     },
     responses: {
@@ -159,6 +159,33 @@ export function registerHabitDocs(registry: OpenAPIRegistry) {
   });
 
   // Uncheck route
+  registry.registerPath({
+    tags: ['Habit'],
+    method: 'patch',
+    path: '/habits/{habitId}/uncheck',
+    security: [{ accessTokenCookie: [] }],
+    summary: 'Removes the completion log of an authenticated user habit.',
+    request: {
+      params: z.object({
+        habitId: EntityIdSchema,
+      }),
+      query: z.object({
+        date: HabitCompletionLogSchema.shape.date,
+      }),
+    },
+    responses: {
+      ...DEFAULT_ERRORS_DOCS,
+      ...INVALID_INPUT_ERRORS_DOCS,
+      200: {
+        description: 'Habit completion log deleted successfully.',
+        content: { 'application/json': { schema: HabitResponseSchema } },
+      },
+      404: {
+        description: 'Habit completion log not found',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+    },
+  });
 
   // Delete route
   registry.registerPath({

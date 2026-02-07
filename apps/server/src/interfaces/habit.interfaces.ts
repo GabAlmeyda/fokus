@@ -6,7 +6,7 @@ import type {
   EntityIdDTO,
   HabitResponseDTO,
   HabitUpdateDTO,
-  HabitCheckDTO,
+  HabitCompletionLogDTO,
 } from '@fokus/shared';
 import type { HabitDocument } from '../models/habit.model.js';
 
@@ -143,14 +143,30 @@ export interface IHabitService {
 export interface IhabitCompletionService {
   /**
    * Marks a habit as completed and adds a progress log to register the action.
-   * @param checkData - The habit ID and completion data.
+   * @param checkData - The data to add a completion log.
    * @returns The updated sanitized habit data.
    * @throws *`AppServerError`* If:
    * - The habit is not found.
    * - The provided date is already registered for the habit.
    * - The provided data is invalid.
    */
-  check(checkData: HabitCheckDTO): Promise<HabitResponseDTO>;
+  check(
+    checkData: HabitCompletionLogDTO,
+    userId: EntityIdDTO,
+  ): Promise<HabitResponseDTO>;
+
+  /**
+   * Removes the completion log of a habit.
+   * @param uncheckData - The data to remove the completion log.
+   * @returns The updated sanitized habit data.
+   * @throws *`AppServerError`* If:
+   * - The completion log or the habit is not found.
+   * - The provided data is invalid.
+   */
+  uncheck(
+    uncheckData: HabitCompletionLogDTO,
+    userId: EntityIdDTO,
+  ): Promise<HabitResponseDTO>;
 }
 
 /**
@@ -212,15 +228,28 @@ export interface IHabitController {
   ): Promise<HTTPResponse<HabitResponseDTO>>;
 
   /**
-   * Marks a habit as completed.
+   * Marks an authenticated user habit as completed.
    * @param req - The request object containing the *`habitId`* in params, the *`date`* in the query
    * and the authorized *`userId`* in the cookies.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated habit.
    * - 400 (Bad Request): On failure, if the check data format is invalid.
+   * - 404 (Not found): On failure, if the hatit is not found.
    * - 422 (Unprocessable): On failue, if the check data content is invalid.
    */
   check(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>>;
+
+  /**
+   * Removes a completion log of an authenticated user habit.
+   * @param req - The request object containing the *`habitId`* in params, the *`date`* in the query
+   * and the authorized *`userId`* in the cookies.
+   * @returns The HTTP response with:
+   * - 200 (Ok): On success, containing the sanitized updated habit.
+   * - 400 (Bad Request): On failure, if the check data format is invalid.
+   * - 404 (Not found): On failure, if the completed habit log is not found.
+   * - 422 (Unprocessable): On failue, if the check data content is invalid.
+   */
+  uncheck(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>>;
 
   /**
    * Deletes a habit for the authenticated user.

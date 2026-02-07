@@ -1,9 +1,9 @@
-export interface RefreshTokenCreateDTO {
+export type RefreshTokenCreateDTO = {
   userId: string;
   familyId: string;
-}
+};
 
-export interface RefreshTokenResponseDTO {
+export type RefreshTokenResponseDTO = {
   id: string;
   userId: string;
   token: string;
@@ -11,4 +11,4 @@ export interface RefreshTokenResponseDTO {
   isRevoked: boolean;
   replacedAt: Date | undefined;
   expiresAt: Date;
-}
+};
