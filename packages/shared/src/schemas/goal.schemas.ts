@@ -264,7 +264,7 @@ export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
   .openapi('GoalUpdate');
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
 
-export const GoalProgressEntrySchema = z.object({
+export const GoalProgressLogSchema = z.object({
   goalId: EntityIdSchema.openapi({
     description: 'Goal ID',
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
@@ -290,7 +290,7 @@ export const GoalProgressEntrySchema = z.object({
     )
     .openapi({
       description:
-        "Date of the progress entry, a valid 'Date' object \n " +
+        "Date of the progress log, a valid 'Date' object \n " +
         " or a string in format 'YYYY-MM-DD'.",
       example: '2026-12-02',
     }),
@@ -305,7 +305,7 @@ export const GoalProgressEntrySchema = z.object({
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
 });
-export type GoalProgressEntryDTO = z.infer<typeof GoalProgressEntrySchema>;
+export type GoalProgressLogDTO = z.infer<typeof GoalProgressLogSchema>;
 
 export const GoalResponseSchema = GoalBaseSchema.extend({
   id: EntityIdSchema.openapi({

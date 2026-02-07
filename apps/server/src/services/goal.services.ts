@@ -169,6 +169,16 @@ export class GoalService implements IGoalService {
     }
   }
 
+  async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
+    const goalDoc = await this.goalRepository.delete(goalId, userId);
+    if (!goalDoc) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with ID '${goalId}' not found.`,
+      );
+    }
+  }
+
   private async getGoalStats(
     userId: EntityIdDTO,
     goalId?: EntityIdDTO,
@@ -194,15 +204,5 @@ export class GoalService implements IGoalService {
     }
 
     return stats;
-  }
-
-  async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
-    const goalDoc = await this.goalRepository.delete(goalId, userId);
-    if (!goalDoc) {
-      throw new AppServerError(
-        'NOT_FOUND',
-        `Goal with ID '${goalId}' not found.`,
-      );
-    }
   }
 }

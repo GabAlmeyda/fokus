@@ -157,9 +157,13 @@ export interface IProgressLogService {
    * Removes an authenticated user progress log entry, searching for its ID.
    * @param progressLogId - The log ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
+   * @returns The sanitized progress log data that was deleted.
    * @throws *`AppServerError`* If the log is not found or unauthorized.
    */
-  delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
+  delete(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogResponseDTO>;
 
   /**
    * Deletes an authenticated user progress logs by a filter criteria. If the *`filter.date`*
@@ -167,10 +171,11 @@ export interface IProgressLogService {
    * will be deleted.
    * @param filter - The filter criteria.
    * @param userId - The owner ID to ensure data authorization.
+   * @returns The number of deleted documents.
    * @throws *`AppServerError`* If the log is not found or unauthorized.
    */
   deleteByFilter(
     filter: ProgressLogDeleteDTO,
     userId: EntityIdDTO,
-  ): Promise<void>;
+  ): Promise<number>;
 }

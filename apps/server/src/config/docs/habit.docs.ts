@@ -161,7 +161,7 @@ export function registerHabitDocs(registry: OpenAPIRegistry) {
   // Uncheck route
   registry.registerPath({
     tags: ['Habit'],
-    method: 'patch',
+    method: 'delete',
     path: '/habits/{habitId}/uncheck',
     security: [{ accessTokenCookie: [] }],
     summary: 'Removes the completion log of an authenticated user habit.',

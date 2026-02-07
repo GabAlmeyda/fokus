@@ -1,8 +1,9 @@
 import type {
-  GoalProgressEntryDTO,
+  EntityIdDTO,
+  GoalProgressLogDTO,
   GoalResponseDTO,
   ProgressLogCreateDTO,
-} from 'packages/shared/dist/index.js';
+} from '@fokus/shared';
 import type {
   IGoalCompletionService,
   IGoalService,
@@ -21,17 +22,17 @@ export class GoalCompletionService implements IGoalCompletionService {
     this.progressLogService = progressLogService;
   }
 
-  async addProgressEntry(
-    progressEntry: GoalProgressEntryDTO,
-  ): Promise<GoalResponseDTO> {
+  async addProgressLog(
+    progressLog: GoalProgressLogDTO,
+  ): Promise<{ updatedGoal: GoalResponseDTO; progressLogId: EntityIdDTO }> {
     const goal = await this.goalService.findOneById(
-      progressEntry.goalId,
-      progressEntry.userId,
+      progressLog.goalId,
+      progressLog.userId,
     );
-    if (goal.type === 'qualitative' && progressEntry.value !== 1) {
+    if (goal.type === 'qualitative' && progressLog.value !== 1) {
       throw new AppServerError(
         'UNPROCESSABLE',
-        "In progress entries for qualitative goals, 'value' must be 1.",
+        "In progress logs for qualitative goals, 'value' must be 1.",
         [
           {
             field: 'value',
@@ -41,22 +42,19 @@ export class GoalCompletionService implements IGoalCompletionService {
       );
     }
 
-    const log: ProgressLogCreateDTO = {
-      userId: progressEntry.userId,
+    const logData: ProgressLogCreateDTO = {
+      userId: goal.userId,
+      goalId: goal.id,
       habitId: null,
-      goalId: progressEntry.goalId,
-      date: progressEntry.date,
-      value: progressEntry.value,
+      date: progressLog.date,
+      value: progressLog.value,
     };
-    await this.progressLogService.create(log);
+    const log = await this.progressLogService.create(logData);
 
     const currValue =
       (
-        await this.progressLogService.getGoalActivityStats(
-          progressEntry.userId,
-          progressEntry.goalId,
-        )
-      )[progressEntry.goalId] || 0;
+        await this.progressLogService.getGoalActivityStats(goal.userId, goal.id)
+      )[goal.id] || 0;
 
     const updatedGoal: GoalResponseDTO = {
       ...goal,
@@ -64,6 +62,25 @@ export class GoalCompletionService implements IGoalCompletionService {
       isCompleted: currValue >= goal.targetValue,
     };
 
-    return updatedGoal;
+    return { updatedGoal, progressLogId: log.id };
+  }
+
+  async removeProgressEntry(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<GoalResponseDTO> {
+    const log = await this.progressLogService.delete(progressLogId, userId);
+    if (!log || !log.goalId) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal progress log with ID '${progressLogId}' not found.`,
+      );
+    }
+
+    const goal = await this.goalService.findOneById(
+      log.goalId.toString(),
+      userId,
+    );
+    return goal;
   }
 }

@@ -144,7 +144,7 @@ export interface ICategoryController {
   /**
    * Registers a new category for the authenticated user.
    * @param req - The request object containing the category data in the body and the
-   * authenticated *`userId`* in the cookies.
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 201 (Created): On success, containing the sanitized category data.
    * - 400 (Bad Request): On failure, if the category data format, or the category ID format, is invalid.
@@ -158,7 +158,7 @@ export interface ICategoryController {
   /**
    * Returns a category by its ID for the authenticated user.
    * @param req - The request object containing the *`categoryId`* in the params
-   * and the authenticated *`userId`* in the cookies.
+   * and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized category data.
    * - 400 (Bad Request): On failure, if the category ID format is invalid.
@@ -171,7 +171,7 @@ export interface ICategoryController {
   /**
    * Returns categories of the authenticated user based on filters.
    * @param req - The request object containing the *`CategoryFilterDTO`* in the query params
-   * and the authenticated *`userId`* in the cookies.
+   * and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the list of categories.
    * - 400 (Bad Request): On failure, if the filter data format is invalid.
@@ -183,8 +183,8 @@ export interface ICategoryController {
 
   /**
    * Updates a category for the authenticated user.
-   * @param req - The request object containing the *`categoryId`* in the params
-   * and the new category data in the body.
+   * @param req - The request object containing the *`categoryId`* in the params,
+   * the new category data in the body and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated category.
    * - 400 (Bad Request): On failure, if the new category data format, or the category ID format, is
@@ -199,7 +199,7 @@ export interface ICategoryController {
   /**
    * Deletes a category for the authenticated user.
    * @param req - The request object containing the *`categoryId`* in the params
-   * and the authenticated *`userId`* in the cookies.
+   * and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, returning *`null`*.
    * - 400 (Bad Request): On failure, if the category ID format is invalid.

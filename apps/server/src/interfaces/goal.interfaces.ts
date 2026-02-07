@@ -6,7 +6,7 @@ import type {
   EntityIdDTO,
   GoalResponseDTO,
   GoalUpdateDTO,
-  GoalProgressEntryDTO,
+  GoalProgressLogDTO,
 } from '@fokus/shared';
 import type { GoalDocument } from '../models/goal.model.js';
 
@@ -21,7 +21,8 @@ export interface IGoalRepository {
    * Persists a new goal in the database.
    * @param newData - The new goal data to be stored.
    * @returns The created goal document.
-   * @throws *`DatabaseError`* If the user already has a goal with the provided title.
+   * @throws *`DatabaseError`* If:
+   * - The user already has a goal with the provided title.
    */
   create(newData: GoalCreateDTO): Promise<GoalDocument>;
 
@@ -92,7 +93,8 @@ export interface IGoalService {
    * @param goalId - The goal ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @returns The sanitized goal data.
-   * @throws *`AppServerError`* If the goal is not found or unauthorized.
+   * @throws *`AppServerError`* If:
+   * - The goal is not found or unauthorized.
    */
   findOneById(
     goalId: EntityIdDTO,
@@ -116,8 +118,9 @@ export interface IGoalService {
    * @param newData - The data to be updated.
    * @param userId - The owner ID to ensure authorization.
    * @returns The updated sanitized goal data.
-   * @throws *`AppServerError`* If the goal is not found or the provided data
-   * is not compatible with the registered data.
+   * @throws *`AppServerError`* If:
+   * - The goal is not found or unauthorized.
+   * - The provided data is not compatible with the registered data.
    */
   update(
     goalId: EntityIdDTO,
@@ -129,7 +132,8 @@ export interface IGoalService {
    * Removes a user goal.
    * @param goalId - The goal ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
-   * @throws *`AppServerError`* If the goal is not found or unauthorized.
+   * @throws *`AppServerError`* If:
+   * - The goal is not found or unauthorized.
    */
   delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }
@@ -142,15 +146,28 @@ export interface IGoalService {
  */
 export interface IGoalCompletionService {
   /**
-   * Adds a progress entry to a goal and registers the action in progress logs.
-   * @param progressEntry - The log entry data.
+   * Adds an user progress log to a goal and registers the action in progress logs.
+   * @param progressEntry - The log data.
    * @returns The updated sanitized goal data.
    * @throws *`AppServerError`* If:
    * - The goal is not found.
    * - The provided data is incompatible with the registered data.
    */
-  addProgressEntry(
-    progressEntry: GoalProgressEntryDTO,
+  addProgressLog(
+    progressLog: GoalProgressLogDTO,
+  ): Promise<{ updatedGoal: GoalResponseDTO; progressLogId: EntityIdDTO }>;
+
+  /**
+   * Removes an user progress entry of a goal, searching for its ID.
+   * @param progressLogId - The progress log ID to be searched for.
+   * @param userId - The owner ID to ensure authorization.
+   * @returns The updated sanitized goal data.
+   * @throws *`AppServerError`* If:
+   * - The progress entry is not found or unauthorized.
+   */
+  removeProgressEntry(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
   ): Promise<GoalResponseDTO>;
 }
 
@@ -162,8 +179,8 @@ export interface IGoalCompletionService {
 export interface IGoalController {
   /**
    * Registers a new goal for the authenticated user.
-   * @param req - The request object containing the goal data in the body and the *`userId`*
-   * in the cookies.
+   * @param req - The request object containing the goal data in the body and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 201 (Created): On success, containing the sanitized goal.
    * - 400 (Bad Request): On failure, if the goal data format is invalid.
@@ -176,8 +193,8 @@ export interface IGoalController {
 
   /**
    * Returns a goal by its ID for the authenticated user.
-   * @param req - The request object containing the *`goalId`* in the params and the *`userId`* in the
-   * cookies.
+   * @param req - The request object containing the *`goalId`* in the params and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized habit.
    * - 400 (Bad Request): On failure, if the goal ID format is invalid.
@@ -187,8 +204,8 @@ export interface IGoalController {
 
   /**
    * Returns goals based on filters for the authenticated user.
-   * @param req - The request object containing the *`GoalFilterDTO`* in the query and the *`userId`* in the
-   * cookies.
+   * @param req - The request object containing the *`GoalFilterDTO`* in the query and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing an array of sanitized goals.
    * - 400 (Bad Request): On failure, if the filter data format is invalid.
@@ -199,23 +216,39 @@ export interface IGoalController {
   ): Promise<HTTPResponse<GoalResponseDTO[]>>;
 
   /**
-   * Adds a progress entry (value increment) to a specific goal for a authenticated user.
-   * @param req - The request object containing the *`goalId`* in the params, the progress data in the body, and
-   * the *`userId`* in cookies.
+   * Adds a progress log (value increment) to a specific goal for a authenticated user.
+   * @param req - The request object containing the *`goalId`* in the params, the progress
+   * data in the body, and the authenticated *`userId`*.
+   * @returns The HTTP response with:
+   * 200 (Ok): On success, containing the sanitized updated goal and the progress log ID.
+   * 400 (Bad Request): On failure, if the provided data format is invalid.
+   * 422 (Unprocessable): On failue, if the provided data content is invalid or the provided
+   * goal data is incompatible with the registered goal data.
+   */
+  addProgressLog(
+    req: HTTPRequest<Pick<GoalProgressLogDTO, 'date' | 'value'>>,
+  ): Promise<
+    HTTPResponse<{ updatedGoal: GoalResponseDTO; progressLogId: EntityIdDTO }>
+  >;
+
+  /**
+   * Removes a progress log of a specific goal for a authenticated user.
+   * @param req - The request object containing the *`progressLogId`* in the params, and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * 200 (Ok): On success, containing the sanitized updated goal.
    * 400 (Bad Request): On failure, if the provided data format is invalid.
-   * 422 (Unprocessable): On failue, if the provided data content is invalid or the provided goal data is
-   * incompatible with the registered goal data.
+   * 422 (Unprocessable): On failue, if the provided data content is invalid or the provided
+   * goal data is incompatible with the registered goal data.
    */
-  addProgressEntry(
-    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
+  removeProgressLog(
+    req: HTTPRequest<null>,
   ): Promise<HTTPResponse<GoalResponseDTO>>;
 
   /**
    * Updates a goal for the authenticated user.
-   * @param req - The request object containing the *`goalId`* in the params, the updated data in the body, and t
-   * he *`userId`* in the cookies.
+   * @param req - The request object containing the *`goalId`* in the params, the updated data in
+   * the body, and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated goal.
    * - 400 (Bad Request): On failure, if the new goal data format, or the goal ID, is invalid.
@@ -229,7 +262,8 @@ export interface IGoalController {
 
   /**
    * Deletes a goal for the authenticated user.
-   * @param req - The request object containing the *`goalId`* in the params and the *`userId`* in the cookies.
+   * @param req - The request object containing the *`goalId`* in the params and the
+   * authenticated *`userId`* in the cookies.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing *`null`*.
    * - 400 (Bad Request): On failure, if the goal ID format is invalid.

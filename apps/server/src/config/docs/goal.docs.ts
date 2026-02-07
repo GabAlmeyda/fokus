@@ -5,7 +5,7 @@ import {
   ErrorResponseSchema,
   GoalCreateSchema,
   GoalFilterSchema,
-  GoalProgressEntrySchema,
+  GoalProgressLogSchema,
   GoalResponseSchema,
   GoalUpdateSchema,
 } from '@fokus/shared';
@@ -93,13 +93,13 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
     },
   });
 
-  // Add progress entry route
+  // Add progress log route
   registry.registerPath({
     tags: ['Goal'],
     method: 'post',
     path: '/goals/{goalId}/log',
     security: [{ accessTokenCookie: [] }],
-    summary: 'Adds a goal progress entry for an authenticated user.',
+    summary: 'Adds a goal progress log for an authenticated user.',
     request: {
       params: z.object({
         goalId: EntityIdSchema,
@@ -107,7 +107,7 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
       body: {
         content: {
           'application/json': {
-            schema: GoalProgressEntrySchema.pick({ date: true, value: true }),
+            schema: GoalProgressLogSchema.pick({ date: true, value: true }),
           },
         },
       },
@@ -115,8 +115,8 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
     responses: {
       ...DEFAULT_ERRORS_DOCS,
       ...INVALID_INPUT_ERRORS_DOCS,
-      200: {
-        description: 'Progress entry added successfully.',
+      201: {
+        description: 'Progress log added successfully.',
         content: { 'application/json': { schema: GoalResponseSchema } },
       },
       404: {
@@ -126,7 +126,31 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
     },
   });
 
-  // Remove progress entry route
+  // Remove progress log route
+  registry.registerPath({
+    tags: ['Goal'],
+    method: 'delete',
+    path: '/goals/logs/{progressLogId}',
+    security: [{ accessTokenCookie: [] }],
+    summary: 'Removes a goal progress log of an authenticated user.',
+    request: {
+      params: z.object({
+        progressLogId: EntityIdSchema,
+      }),
+    },
+    responses: {
+      ...DEFAULT_ERRORS_DOCS,
+      ...INVALID_INPUT_ERRORS_DOCS,
+      200: {
+        description: 'Progress log removed successfully.',
+        content: { 'application/json': { schema: GoalResponseSchema } },
+      },
+      404: {
+        description: 'Goal progress log not found.',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+    },
+  });
 
   // Update route
   registry.registerPath({

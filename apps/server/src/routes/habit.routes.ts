@@ -39,7 +39,7 @@ habitRoutes.get('/', authMiddleware, async (req, res) => {
 });
 
 // Check route
-habitRoutes.patch('/:habitId/check', authMiddleware, async (req, res) => {
+habitRoutes.post('/:habitId/check', authMiddleware, async (req, res) => {
   const { params, query, user } = req as AuthRequest;
 
   const { statusCode, body } = await habitController.check({
@@ -51,7 +51,7 @@ habitRoutes.patch('/:habitId/check', authMiddleware, async (req, res) => {
 });
 
 // Uncheck route
-habitRoutes.patch('/:habitId/uncheck', authMiddleware, async (req, res) => {
+habitRoutes.delete('/:habitId/uncheck', authMiddleware, async (req, res) => {
   const { params, query, user } = req as AuthRequest;
 
   const { statusCode, body } = await habitController.uncheck({

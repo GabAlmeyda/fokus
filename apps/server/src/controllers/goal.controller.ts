@@ -9,8 +9,9 @@ import {
   GoalFilterSchema,
   type GoalUpdateDTO,
   GoalUpdateSchema,
-  GoalProgressEntrySchema,
-  type GoalProgressEntryDTO,
+  GoalProgressLogSchema,
+  type GoalProgressLogDTO,
+  type EntityIdDTO,
 } from '@fokus/shared';
 import type {
   IGoalCompletionService,
@@ -80,18 +81,37 @@ export class GoalController implements IGoalController {
     }
   }
 
-  async addProgressEntry(
-    req: HTTPRequest<Pick<GoalProgressEntryDTO, 'date' | 'value'>>,
-  ): Promise<HTTPResponse<GoalResponseDTO>> {
+  async addProgressLog(
+    req: HTTPRequest<Pick<GoalProgressLogDTO, 'date' | 'value'>>,
+  ): Promise<
+    HTTPResponse<{ updatedGoal: GoalResponseDTO; progressLogId: EntityIdDTO }>
+  > {
     try {
-      const progressEntry = GoalProgressEntrySchema.parse({
+      const progressLog = GoalProgressLogSchema.parse({
         goalId: req.params?.goalId,
         ...req.body,
         userId: req.userId,
       });
 
-      const goal =
-        await this.goalCompletionService.addProgressEntry(progressEntry);
+      const goalLog =
+        await this.goalCompletionService.addProgressLog(progressLog);
+      return { statusCode: HTTPStatusCode.CREATED, body: goalLog };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async removeProgressLog(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<GoalResponseDTO>> {
+    try {
+      const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const goal = await this.goalCompletionService.removeProgressEntry(
+        progressLogId,
+        userId,
+      );
       return { statusCode: HTTPStatusCode.OK, body: goal };
     } catch (err) {
       return formatHTTPErrorResponse(err);

@@ -158,7 +158,10 @@ export class ProgressLogService implements IProgressLogService {
     return stats;
   }
 
-  async delete(progressLogId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
+  async delete(
+    progressLogId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogResponseDTO> {
     const progressLogDoc = await this.progressLogRepository.delete(
       progressLogId,
       userId,
@@ -169,12 +172,15 @@ export class ProgressLogService implements IProgressLogService {
         `Progress log with ID '${progressLogId}' not found.`,
       );
     }
+
+    const progressLog = mapProgressLogDocToPublicDTO(progressLogDoc);
+    return progressLog;
   }
 
   async deleteByFilter(
     filter: ProgressLogDeleteDTO,
     userId: EntityIdDTO,
-  ): Promise<void> {
+  ): Promise<number> {
     const deleteFilter = filter;
     if (deleteFilter.date) {
       deleteFilter.date.setUTCHours(0, 0, 0, 0);
@@ -192,5 +198,7 @@ export class ProgressLogService implements IProgressLogService {
         `Log of '${filter.entityType.replace('Id', '')}' with ID '${filter.entityId}' and date '${filter.date}' not found.`,
       );
     }
+
+    return deletedDocs;
   }
 }

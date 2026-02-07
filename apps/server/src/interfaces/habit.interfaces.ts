@@ -177,8 +177,8 @@ export interface IhabitCompletionService {
 export interface IHabitController {
   /**
    * Registers a new habit for the authenticated user.
-   * @param req - The request object containing habit data in the body and *`userId`*
-   * in the cookies.
+   * @param req - The request object containing habit data in the body and  the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 201 (Created): On success, containing the sanitized habit.
    * - 400 (Bad Request): On failure, if the habit data format is invalid.
@@ -190,7 +190,8 @@ export interface IHabitController {
 
   /**
    * Returns a habit by its ID for the authenticated user.
-   * @param req - The request object containing *`habitId`* in the params and *`userId`*
+   * @param req - The request object containing the *`habitId`* in the params and the
+   * authenticated *`userId`*.
    * in the cookies.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized habit.
@@ -201,8 +202,8 @@ export interface IHabitController {
 
   /**
    * Returns habits based on filters for the authenticated user.
-   * @param req - The request object containing the *`HabitFilterDTO`* in the query and *`userId`*
-   * in the cookies.
+   * @param req - The request object containing the *`HabitFilterDTO`* in the query and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing an array of sanitized habits.
    * - 400 (Bad Request): On failure, if the filter data format is invalid.
@@ -215,7 +216,7 @@ export interface IHabitController {
   /**
    * Updates a habit for the authenticated user.
    * @param req - The request object containing the *`habitId`* in the params, updated data in the
-   * body, and *`userId`* in the cookies.
+   * body, and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated habit.
    * - 400 (Bad Request): On failure, if the new habit data format, or the habit ID, is invalid.
@@ -230,7 +231,7 @@ export interface IHabitController {
   /**
    * Marks an authenticated user habit as completed.
    * @param req - The request object containing the *`habitId`* in params, the *`date`* in the query
-   * and the authorized *`userId`* in the cookies.
+   * and the authenticated *`userId`*
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated habit.
    * - 400 (Bad Request): On failure, if the check data format is invalid.
@@ -242,7 +243,7 @@ export interface IHabitController {
   /**
    * Removes a completion log of an authenticated user habit.
    * @param req - The request object containing the *`habitId`* in params, the *`date`* in the query
-   * and the authorized *`userId`* in the cookies.
+   * and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated habit.
    * - 400 (Bad Request): On failure, if the check data format is invalid.
@@ -253,7 +254,8 @@ export interface IHabitController {
 
   /**
    * Deletes a habit for the authenticated user.
-   * @param req - Request containing *`habitId`* in params and *`userId`* in cookies.
+   * @param req - The request object containing the *`habitId`* in the params and the
+   * authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing *`null`*.
    * - 400 (Bad Request): On failure, if the habit ID format is invalid.
