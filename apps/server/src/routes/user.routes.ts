@@ -4,6 +4,8 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { userController } from '../config/factory.config.js';
 import { setTokens } from '../helpers/controller.helpers.js';
+import { authUserRateLimiter } from '../config/rate-limit.config.js';
+import { REQUESTS_RATE_LIMITER } from '../config/rate-limit.config.js';
 
 const userRoutes = Router({ mergeParams: true });
 
@@ -83,39 +85,54 @@ userRoutes.post('/auth/logout', async (req, res) => {
 });
 
 // Find by ID route
-userRoutes.get('/', authMiddleware, async (req, res) => {
-  const { user } = req as AuthRequest;
+userRoutes.get(
+  '/',
+  authMiddleware,
+  authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
+  async (req, res) => {
+    const { user } = req as AuthRequest;
 
-  const { statusCode, body } = await userController.findOneById({
-    userId: user.id,
-  });
-  return res.status(statusCode).json(body);
-});
+    const { statusCode, body } = await userController.findOneById({
+      userId: user.id,
+    });
+    return res.status(statusCode).json(body);
+  },
+);
 
 // Update route
-userRoutes.patch('/', authMiddleware, async (req, res) => {
-  const { body: reqBody, user } = req as AuthRequest;
+userRoutes.patch(
+  '/',
+  authMiddleware,
+  authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
+  async (req, res) => {
+    const { body: reqBody, user } = req as AuthRequest;
 
-  const { statusCode, body } = await userController.update({
-    body: reqBody,
-    userId: user.id,
-  });
-  return res.status(statusCode).json(body);
-});
+    const { statusCode, body } = await userController.update({
+      body: reqBody,
+      userId: user.id,
+    });
+    return res.status(statusCode).json(body);
+  },
+);
 
 // Delete route
-userRoutes.delete('/', authMiddleware, async (req, res) => {
-  const { user } = req as AuthRequest;
+userRoutes.delete(
+  '/',
+  authMiddleware,
+  authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
+  async (req, res) => {
+    const { user } = req as AuthRequest;
 
-  const { statusCode, body } = await userController.delete({
-    userId: user.id,
-  });
-  if (statusCode === HTTPStatusCode.NO_CONTENT) {
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-  }
+    const { statusCode, body } = await userController.delete({
+      userId: user.id,
+    });
+    if (statusCode === HTTPStatusCode.NO_CONTENT) {
+      res.clearCookie('access_token');
+      res.clearCookie('refresh_token');
+    }
 
-  return res.status(statusCode).json(body);
-});
+    return res.status(statusCode).json(body);
+  },
+);
 
 export default userRoutes;

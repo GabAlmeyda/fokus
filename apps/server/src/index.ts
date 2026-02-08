@@ -14,11 +14,14 @@ import userRoutes from './routes/user.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import habitRoutes from './routes/habit.routes.js';
 import goalRoutes from './routes/goal.routes.js';
+import { defaultRateLimiter } from './config/rate-limit.config.js';
 
 async function main() {
   await connectToMongoDB();
 
   const app = express();
+  app.set('trust proxy', 1);
+  app.use(defaultRateLimiter);
   app.use(express.json());
   app.use(
     cors({
@@ -27,8 +30,8 @@ async function main() {
     }),
   );
   app.use(cookieParser());
-  app.use('/api-docs', ...swaggerDocs);
 
+  app.use('/api-docs', ...swaggerDocs);
   app.use('/users', userRoutes);
   app.use('/categories', categoryRoutes);
   app.use('/habits', habitRoutes);
