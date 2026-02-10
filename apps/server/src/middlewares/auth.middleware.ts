@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.config.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
-import { type TokenPayloadDTO } from 'packages/shared/dist/index.js';
+import { type TokenPayloadDTO } from '../types/auth.types.js';
 import { UserRepository } from '../repositories/user.repository.js';
 
 const userRepository = new UserRepository();

@@ -11,10 +11,10 @@ const CategoryBaseSchema = z.object({
   }),
 
   name: z
-    .string("Expected type was 'string'.")
+    .string()
     .trim()
     .toLowerCase()
-    .min(2, 'Name cannot be less than 2 characters.')
+    .min(2, 'Nome deve ter no mínimo 2 caracteres.')
     .openapi({ description: 'Unique category name.', example: 'Wellbeing' }),
 });
 
@@ -33,7 +33,7 @@ export const CategoryFilterSchema = CategoryBaseSchema.pick({
       ctx.addIssue({
         code: 'custom',
         path: [],
-        message: `Filter query can only filter by one property at a time, but multiple properties were provided: ${properties}.`,
+        message: `Requisição por filtro pode filtrar por apenas um critério, mas múltiplos foram fornecidos: ${properties}`,
       });
     }
   })

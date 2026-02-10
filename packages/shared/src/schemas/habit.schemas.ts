@@ -11,23 +11,18 @@ const HabitBaseSchema = z.object({
   }),
 
   title: z
-    .string("Expected type was 'string'.")
-    .min(2, 'Title cannot be less than 2 characters.')
+    .string()
+    .min(2, 'Título deve ter no mínimo 2 caracteres.')
     .trim()
     .openapi({ description: 'Unique habit title.', example: 'Read 15 pages' }),
 
   type: z
-    .enum(['quantitative', 'qualitative'], {
-      error: () => ({
-        message:
-          "Invalid habit type provided. Valid values are 'quantitative' or 'qualitative'.",
-      }),
-    })
+    .enum(['quantitative', 'qualitative'])
     .openapi({ description: 'Habit type.', example: 'quantitative' }),
 
   progressImpactValue: z
-    .number("Expected type was 'number'.")
-    .min(1, 'Minimum value is 1.')
+    .number()
+    .min(1, 'Valor mínimo é 1.')
     .openapi({
       description:
         "Value of the goal progress. If 'type' property is setted to \n" +
@@ -36,8 +31,8 @@ const HabitBaseSchema = z.object({
     }),
 
   unitOfMeasure: z
-    .string("Expected type was 'string'.")
-    .min(1, 'Unit of measure cannot be less than 1 character.')
+    .string()
+    .min(1, 'Unidade de medida deve ter no mínimo 1 caractere.')
     .trim()
     .nullable()
     .openapi({
@@ -47,24 +42,17 @@ const HabitBaseSchema = z.object({
     }),
 
   weekDays: z
-    .array(
-      z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'], {
-        error: () => ({
-          message:
-            "Invalid week days provided. Valid values are 'seg', 'ter', 'qua', 'qui', 'sex', 'sab' or 'dom'.",
-        }),
-      }),
-    )
+    .array(z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom']))
     .openapi({
       description: 'Week days to the habit active.',
       example: ['ter', 'sab'],
     }),
 
   reminder: z
-    .string("Expected type was 'string'.")
+    .string()
     .regex(
       /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
-      "Invalid reminder format provided. Expected format was 'HH:mm'.",
+      "Formato de lembrete inválido. Formato esperado era 'HH:mm'.",
     )
     .nullable()
     .openapi({
@@ -73,13 +61,13 @@ const HabitBaseSchema = z.object({
     }),
 
   color: z
-    .string("Expected type was 'string'.")
-    .regex(
-      /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
-      "Invalid hexadecimal format provided. Expected format was '#ABC' or '#ABCDEF'.",
-    )
+    .string()
     .trim()
     .toLowerCase()
+    .regex(
+      /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
+      "Formato hexadecimal inválido. Formatos permitidos são '#ABC' ou '#ABCDEF'.",
+    )
     .default('#15E03B')
     .openapi({
       description:
@@ -88,9 +76,7 @@ const HabitBaseSchema = z.object({
       default: '#15E03B',
     }),
 
-  icon: z
-    .string("Expected type was 'string'.")
-    .min(1, 'Icon name cannot be less than 1 character.'),
+  icon: z.string().min(1, 'Nome do ícone deve ter no mínimo 1 caractere.'),
 });
 
 type HabitRefinementData = z.infer<ReturnType<typeof HabitBaseSchema.partial>>;
@@ -103,14 +89,15 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
         ctx.addIssue({
           code: 'custom',
           path: ['progressImpactValue'],
-          message: "In qualitative habits, 'progressImpactValue' must be 1.",
+          message:
+            'Hábitos qualitativos devem ter o valor do progresso sendo 1.',
         });
       }
       if (data.unitOfMeasure != null) {
         ctx.addIssue({
           code: 'custom',
           path: ['unitOfMeasure'],
-          message: "In qualitative habits, 'unitOfMeasure' must be 'null'.",
+          message: 'Hábitos qualitativos não podem ter unidade de medida.',
         });
       }
       break;
@@ -121,14 +108,14 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
           code: 'custom',
           path: ['progressImpactValue'],
           message:
-            "In quantitative habits, 'progressImpactValue' must be greater than 0.",
+            'Hábitos quantitativos devem ter valor de progresso maior que 0.',
         });
       }
       if (!data.unitOfMeasure) {
         ctx.addIssue({
           code: 'custom',
           path: ['unitOfMeasure'],
-          message: "In quantitative habits, 'unitOfMeasure' must be provided.",
+          message: 'Hábitos quantitativos precisam de uma unidade de medida.',
         });
       }
       break;
@@ -168,7 +155,7 @@ export const HabitFilterSchema = HabitBaseSchema.pick({
       ctx.addIssue({
         code: 'custom',
         path: [],
-        message: `Filter query can only filter by one property at a time, but mulitple properties were provided: ${properties}`,
+        message: `Requisição por filtro pode filtrar por apenas um critério, mas múltiplos foram fornecidos: ${properties}`,
       });
     }
   })
@@ -203,7 +190,7 @@ export const HabitCompletionLogSchema = z
     habitId: EntityIdSchema,
 
     date: z.coerce
-      .date('Invalid date format provided.')
+      .date()
       .transform((val) => {
         const date = new Date(val);
         date.setUTCHours(0, 0, 0, 0);
@@ -218,7 +205,7 @@ export const HabitCompletionLogSchema = z
 
           return true;
         },
-        { message: 'Date cannot be in the future.' },
+        { message: 'Data não pode ser no futuro.' },
       )
       .openapi({
         description:
@@ -244,25 +231,22 @@ export const HabitResponseSchema = HabitBaseSchema.extend({
     readOnly: true,
   }),
 
-  streak: z
-    .number("Expected type was 'number'")
-    .min(0, "'streak' must be greater or equal to 0.")
-    .openapi({
-      description: 'Current streak days of the habit.',
-      example: 17,
-      readOnly: true,
-    }),
+  streak: z.number().min(0, 'Sequência deve ser maior ou igual a 0.').openapi({
+    description: 'Current streak days of the habit.',
+    example: 17,
+    readOnly: true,
+  }),
 
   bestStreak: z
-    .number("Expected type was 'number'")
-    .min(0, "'bestStreak' must be greater or equal to 0.")
+    .number()
+    .min(0, 'Melhor sequência deve ser maior ou igual a 0.')
     .openapi({
       description: 'Best streak days of the habit.',
       example: 32,
       readOnly: true,
     }),
 
-  isCompletedToday: z.boolean("Expected type was 'boolean'.").openapi({
+  isCompletedToday: z.boolean().openapi({
     description: 'Indicates if the habit was completed in the day.',
     example: true,
     readOnly: true,

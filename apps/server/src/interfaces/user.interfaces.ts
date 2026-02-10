@@ -1,13 +1,13 @@
 import type {
   UserRegisterDTO,
   HTTPRequest,
-  AuthResponseDTO,
   UserLoginDTO,
   UserResponseDTO,
   UserUpdateDTO,
   HTTPResponse,
   EntityIdDTO,
 } from '@fokus/shared';
+import type { AuthResponseDTO } from '../types/auth.types.js';
 import type { UserDocument } from '../models/user.model.js';
 
 /**

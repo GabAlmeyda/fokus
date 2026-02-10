@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { HTTPStatusCode, AuthResponseSchema } from '@fokus/shared';
 import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
+import { AuthResponseSchema } from '../types/auth.types.js';
 import { userController } from '../config/factory.config.js';
 import { setTokens } from '../helpers/controller.helpers.js';
 import { authUserRateLimiter } from '../config/rate-limit.config.js';
 import { REQUESTS_RATE_LIMITER } from '../config/rate-limit.config.js';
+import { HTTPStatusCode } from '@fokus/shared';
 
 const userRoutes = Router({ mergeParams: true });
 
@@ -52,7 +53,7 @@ userRoutes.post('/auth/login', async (req, res) => {
 });
 
 // Refresh route
-userRoutes.post('/auth/refresh', async (req, res) => {
+userRoutes.post('/auth/refresh/me', async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
 
   const { statusCode, body } = await userController.refreshToken({
@@ -73,7 +74,7 @@ userRoutes.post('/auth/refresh', async (req, res) => {
 });
 
 // Logout route
-userRoutes.post('/auth/logout', async (req, res) => {
+userRoutes.post('/auth/logout/me', async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
   const { statusCode, body } = await userController.logout({ refreshToken });
   res.clearCookie('access_token');
@@ -86,7 +87,7 @@ userRoutes.post('/auth/logout', async (req, res) => {
 
 // Find by ID route
 userRoutes.get(
-  '/',
+  '/me',
   authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
@@ -101,7 +102,7 @@ userRoutes.get(
 
 // Update route
 userRoutes.patch(
-  '/',
+  '/me',
   authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
@@ -117,7 +118,7 @@ userRoutes.patch(
 
 // Delete route
 userRoutes.delete(
-  '/',
+  '/me',
   authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {

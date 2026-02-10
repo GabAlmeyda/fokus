@@ -2,7 +2,6 @@ import {
   type HTTPRequest,
   type UserRegisterDTO,
   HTTPStatusCode,
-  type AuthResponseDTO,
   type UserLoginDTO,
   type UserResponseDTO,
   type UserUpdateDTO,
@@ -18,6 +17,7 @@ import type {
 } from '../interfaces/user.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
+import type { AuthResponseDTO } from '../types/auth.types.js';
 
 export class UserController implements IUserController {
   private readonly userService;

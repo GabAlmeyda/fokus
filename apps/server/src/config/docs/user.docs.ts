@@ -1,6 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import {
-  AuthResponseSchema,
   ErrorResponseSchema,
   UserLoginSchema,
   UserRegisterSchema,
@@ -37,7 +36,7 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
       201: {
         description: 'User registered successfully.',
         content: {
-          'application/json': { schema: AuthResponseSchema },
+          'application/json': { schema: UserResponseSchema },
         },
       },
       409: {
@@ -71,7 +70,7 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
       200: {
         description: 'User logged successfully.',
         content: {
-          'application/json': { schema: AuthResponseSchema },
+          'application/json': { schema: UserResponseSchema },
         },
       },
       500: {
@@ -85,14 +84,14 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['User'],
     method: 'post',
-    path: '/users/auth/refresh',
+    path: '/users/auth/refresh/me',
     security: [{ refreshTokenCookie: [] }],
     summary: 'Refreshes the access token.',
     request: {},
     responses: {
       200: {
         description: 'Token refreshed successfully.',
-        content: { 'application/json': { schema: AuthResponseSchema } },
+        content: { 'application/json': { schema: UserResponseSchema } },
       },
       401: {
         description:
@@ -116,12 +115,29 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
   });
 
   // Logout route
+  registry.registerPath({
+    tags: ['User'],
+    method: 'post',
+    path: '/users/me',
+    security: [{ refreshTokenCookie: [] }],
+    summary: 'Logs out a user, removing their tokens.',
+    request: {},
+    responses: {
+      200: {
+        description: 'User disconnected successfully.',
+      },
+      500: {
+        description: 'Internal server error.',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+    },
+  });
 
   // Get by ID route
   registry.registerPath({
     tags: ['User'],
     method: 'get',
-    path: '/users',
+    path: '/users/me',
     security: [{ accessTokenCookie: [] }],
     summary: 'Returns a authenticated user by its ID.',
     request: {},
@@ -144,7 +160,7 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['User'],
     method: 'patch',
-    path: '/users',
+    path: '/users/me',
     security: [{ accessTokenCookie: [] }],
     summary: 'Updates a authenticated user, searching for its ID.',
     request: {
@@ -170,7 +186,7 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['User'],
     method: 'delete',
-    path: '/users',
+    path: '/users/me',
     security: [{ accessTokenCookie: [] }],
     summary:
       'Deletes a authenticated user and they refresh tokens, searching for its ID.',

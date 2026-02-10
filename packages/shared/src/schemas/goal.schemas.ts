@@ -16,8 +16,8 @@ const GoalBaseSchema = z.object({
   }),
 
   title: z
-    .string("Expected type was 'string'.")
-    .min(2, 'Title cannot be less than 2 characters.')
+    .string()
+    .min(2, 'Título deve ter no mínimo 2 caracteres.')
     .trim()
     .openapi({ description: 'Unique goal title.', example: 'Running' }),
 
@@ -25,14 +25,14 @@ const GoalBaseSchema = z.object({
     .enum(['qualitative', 'quantitative'], {
       error: () => ({
         message:
-          "Invalid goal type provided. Valid values are 'quantitative' or 'qualitative'.",
+          "Tipo de meta inválido. Valores permitidos são 'qualitative' ou 'quantitative'.",
       }),
     })
     .openapi({ description: 'Goal type.', example: 'quantitative' }),
 
   targetValue: z
-    .number("Expected type was 'number'.")
-    .min(1, 'Minimun value is 1.')
+    .number()
+    .min(1, 'Valor mínimo para o campo é 1.')
     .openapi({
       description:
         "Target value of the goal. If 'type' property is\n " +
@@ -41,8 +41,8 @@ const GoalBaseSchema = z.object({
     }),
 
   unitOfMeasure: z
-    .string("Expected type was 'string'.")
-    .min(1, 'Unit of measure cannot be less than 1 character.')
+    .string()
+    .min(1, 'Unidade de medida deve ter no mínimo 1 caractere.')
     .trim()
     .nullable()
     .openapi({
@@ -60,7 +60,7 @@ const GoalBaseSchema = z.object({
   }),
 
   deadline: z.coerce
-    .date('Invalid date format provided.')
+    .date()
     .nullable()
     .transform((val) => {
       if (!val) return val;
@@ -78,10 +78,10 @@ const GoalBaseSchema = z.object({
     }),
 
   color: z
-    .string("Expected type was 'string'.")
+    .string()
     .regex(
       /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
-      "Invalid hexadecimal format provided. Expected format was '#ABC' or '#ABCDEF'.",
+      "Formato hexadecimal inválido. Formatos permitidos são '#ABC' ou '#ABCDEF'.",
     )
     .trim()
     .toLowerCase()
@@ -94,8 +94,8 @@ const GoalBaseSchema = z.object({
     }),
 
   icon: z
-    .string("Expeted type was 'string'.")
-    .min(1, 'Icon name cannot be less than 1 character.')
+    .string()
+    .min(1, 'Nome do ícone deve ter no mínimo 1 caractere.')
     .openapi({ description: 'Visual icon of the goal.' }),
 });
 
@@ -103,7 +103,7 @@ type GoalRefinementData = z.infer<ReturnType<typeof GoalBaseSchema.partial>>;
 function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
-  // Validation of the relation between 'type', 'targetValue
+  // Validation of the relation between 'type', 'targetValue'
   // and 'unitOfMeasure'
   switch (data.type) {
     case 'qualitative':
@@ -111,14 +111,14 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
         ctx.addIssue({
           code: 'custom',
           path: ['targetValue'],
-          message: "In qualitatite goals, 'targetValue' must be 'null'.",
+          message: 'Metas qualitativas não podem ter um valor final.',
         });
       }
       if (data.unitOfMeasure != null) {
         ctx.addIssue({
           code: 'custom',
           path: ['unitOfMeasure'],
-          message: "In qualitatite goals, 'unitOfMeasure' must be 'null'.",
+          message: 'Metas qualitativas não podem ter unidades de medidas.',
         });
       }
       break;
@@ -128,14 +128,14 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
         ctx.addIssue({
           code: 'custom',
           path: ['targetValue'],
-          message: "In quantitative goals, 'targetValue' must be provided.",
+          message: 'Metas quantitativas precisam de um valor final.',
         });
       }
       if (!data.unitOfMeasure) {
         ctx.addIssue({
           code: 'custom',
           path: ['unitOfMeasure'],
-          message: "In quantitative goals, 'unitOfMeasure' must be provided.",
+          message: 'Metas quantitativas precisam de uma unidade de medida.',
         });
       }
       break;
@@ -160,7 +160,7 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
       ctx.addIssue({
         code: 'custom',
         path: ['deadline'],
-        message: 'Deadline cannot be earlier than the current time.',
+        message: 'Prazo final não pode ser antes do horário atual.',
       });
     }
   }
@@ -169,7 +169,7 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
     ctx.addIssue({
       code: 'custom',
       path: ['habitId'],
-      message: "In qualitative goals, 'habitId' must be 'null'.",
+      message: 'Metas qualitativas não podem ter um hábito relacionado.',
     });
   }
 
@@ -177,7 +177,7 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
     ctx.addIssue({
       code: 'custom',
       path: ['targetValue'],
-      message: "In qualitative goals, 'targetValue' mut be 1",
+      message: 'Metas qualitativas devem ter o valor final sendo 1.',
     });
   }
 }
@@ -186,36 +186,24 @@ export const GoalFilterSchema = z
   .strictObject({
     title: GoalBaseSchema.shape.title,
 
-    categoryId: z
-      .union([
-        z.literal('none', { error: "Expected value was 'none'." }),
-        EntityIdSchema,
-      ])
-      .openapi({
-        description: 'A category ID used to search for.',
-        example: '65f2a1b8c9d0e1f2a3b4c5d6',
-      }),
+    categoryId: z.union([z.literal('none'), EntityIdSchema]).openapi({
+      description: 'A category ID used to search for.',
+      example: '65f2a1b8c9d0e1f2a3b4c5d6',
+    }),
 
     habitId: GoalBaseSchema.shape.habitId.openapi({
       description: 'A habit ID user to search for.',
       example: '65f2a1b8c9d0e1f2a3b4c5d6',
     }),
 
-    deadlineType: z
-      .enum(['not-defined', 'has-deadline', 'this-week'], {
-        error: () => ({
-          message:
-            "Invalid deadline type received. Valid value are 'not-defined', 'has-deadline' or 'this-week'.",
-        }),
-      })
-      .openapi({
-        description:
-          'A deadline type used to search specific goals:\n\n' +
-          "- 'not-defined': searchs goals without a set deadline.\n" +
-          "- 'has-deadline': searchs goals with a set deadline.\n" +
-          "- 'this-week': searchs goals with a deadline expiring within the current week.",
-        example: 'this-week',
-      }),
+    deadlineType: z.enum(['not-defined', 'has-deadline', 'this-week']).openapi({
+      description:
+        'A deadline type used to search specific goals:\n\n' +
+        "- 'not-defined': searchs goals without a set deadline.\n" +
+        "- 'has-deadline': searchs goals with a set deadline.\n" +
+        "- 'this-week': searchs goals with a deadline expiring within the current week.",
+      example: 'this-week',
+    }),
   })
   .partial()
   .superRefine((data, ctx) => {
@@ -230,7 +218,7 @@ export const GoalFilterSchema = z
       ctx.addIssue({
         code: 'custom',
         path: [],
-        message: `Filter query can only filter by one property at a time, but multiple properties were provided: ${properties}.`,
+        message: `Requisição por filtro pode filtrar por apenas um critério, mas múltiplos foram fornecidos: ${properties}`,
       });
     }
   })
@@ -271,7 +259,7 @@ export const GoalProgressLogSchema = z.object({
   }),
 
   date: z.coerce
-    .date('Invalid date format provided.')
+    .date()
     .transform((val) => {
       const date = new Date(val);
       date.setUTCHours(0, 0, 0, 0);
@@ -286,7 +274,7 @@ export const GoalProgressLogSchema = z.object({
 
         return true;
       },
-      { message: 'Date cannot be in the future.' },
+      { message: 'Data não pode ser no futuro.' },
     )
     .openapi({
       description:
@@ -296,8 +284,8 @@ export const GoalProgressLogSchema = z.object({
     }),
 
   value: z
-    .number("Expected type was 'number'.")
-    .min(1, 'Minimum value is 1.')
+    .number()
+    .min(1, 'Valor mínimo é 1.')
     .openapi({ description: 'The value of the progress.', example: 100 }),
 
   userId: GoalBaseSchema.shape.userId.openapi({
@@ -314,15 +302,15 @@ export const GoalResponseSchema = GoalBaseSchema.extend({
   }),
 
   currentValue: z
-    .number("Expected type was 'number'")
-    .min(0, "'currentValue' must be greater or equal than 0.")
+    .number()
+    .min(0, 'Valor deve ser maior ou igual a 0.')
     .openapi({
       description: 'Current accumulated progress value.',
       example: 5200,
       readOnly: true,
     }),
 
-  isCompleted: z.boolean("Expected type was 'boolean'").openapi({
+  isCompleted: z.boolean().openapi({
     description: 'Indicates if the goal target value has been reached.',
     example: false,
     readOnly: true,
