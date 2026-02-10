@@ -1,17 +1,21 @@
 import type { JSX } from 'react';
+import { useNavigate } from 'react-router-dom';
 import notificationImage from '../../assets/notification-img.png';
 import organizationImage from '../../assets/organization-img.png';
 import routineImage from '../../assets/routine-img.png';
 import ctaImage from '../../assets/cta.svg';
-import PageView from '../../components/layouts/PageView/PageView';
 import Main from '../../components/layouts/Main/Main';
 import Button from '../../components/common/Button/Button';
 import styles from './LandingPage.module.css';
-import FeatureCard from '../../components/ui/FeatureCard/FeatureCard';
-import Navbar from '../../components/ui/Navbar/Navbar';
-import Testimonial from '../../components/ui/Testimonial/Testimonial';
+import FeatureCard from '../../components/ui/LandingPage/FeatureCard/FeatureCard';
+import Navbar from '../../components/ui/LandingPage//Navbar/Navbar';
+import Testimonial from '../../components/ui/LandingPage/Testimonial/Testimonial';
+import { APP_URLS } from '../../helpers/app.helpers';
+import PageView from '../../components/layouts/PageView/PageView';
 
 export default function LandingPage(): JSX.Element {
+  const navigate = useNavigate();
+
   return (
     <PageView>
       <Navbar />
@@ -25,8 +29,18 @@ export default function LandingPage(): JSX.Element {
             </h2>
 
             <div className={styles.hero__btns}>
-              <Button variant="primary">Crie agora sua conta</Button>
-              <Button variant="ghost-inverse">Conecte-se agora</Button>
+              <Button
+                variant="primary"
+                onClick={() => navigate(APP_URLS.register)}
+              >
+                Crie agora sua conta
+              </Button>
+              <Button
+                variant="ghost-inverse"
+                onClick={() => navigate(APP_URLS.login)}
+              >
+                Conecte-se agora
+              </Button>
             </div>
 
             <div className={styles.hero__imgs}>
@@ -95,7 +109,9 @@ export default function LandingPage(): JSX.Element {
             </div>
 
             <div className={styles.cta__btn}>
-              <Button>Crie agora sua conta</Button>
+              <Button onClick={() => navigate(APP_URLS.register)}>
+                Crie agora sua conta
+              </Button>
             </div>
           </div>
 

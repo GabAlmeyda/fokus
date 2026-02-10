@@ -11,11 +11,16 @@
     "client:preview": "vite preview"
   },
   "dependencies": {
+    "@fokus/shared": "*",
+    "@hookform/resolvers": "^5.2.2",
+    "axios": "^1.13.5",
     "clsx": "^2.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hook-form": "^7.71.1",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.13.0"
+    "react-router-dom": "^7.13.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

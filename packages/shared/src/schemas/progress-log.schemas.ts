@@ -8,11 +8,9 @@ const ProgressLogBaseSchema = z.object({
 
   goalId: EntityIdSchema.nullable(),
 
-  value: z
-    .number("Expected type was 'number'.")
-    .min(1, "'value' cannot be less than 1."),
+  value: z.number().min(1, 'Valor mínimo deve ser 1.'),
 
-  date: z.coerce.date('Invalid date format provided.').transform((val) => {
+  date: z.coerce.date().transform((val) => {
     const date = new Date(val);
     date.setUTCHours(0, 0, 0, 0);
     return date;
@@ -32,7 +30,7 @@ function progressLogRefinement(
     ctx.addIssue({
       code: 'custom',
       path: ['habitId'],
-      message: "Either 'habitId' or 'goalId' must be provided.",
+      message: 'Um hábito ou uma meta devem ser relacionadas ao registro.',
     });
   }
 
@@ -44,7 +42,7 @@ function progressLogRefinement(
       ctx.addIssue({
         code: 'custom',
         path: ['date'],
-        message: 'Date cannot be in the future.',
+        message: 'Data não pode ser no futuro.',
       });
     }
   }
@@ -54,21 +52,10 @@ export const ProgressLogFilterSchema = z
   .object({
     entityId: EntityIdSchema,
 
-    entityType: z.enum(['habitId', 'goalId'], {
-      error: () => ({
-        message:
-          "Invalid value provided. Expected values are 'habitId' or 'goalId'.",
-      }),
-    }),
+    entityType: z.enum(['habitId', 'goalId']),
 
     period: z.object({
-      interval: z.enum(['daily', 'weekly', 'monthly'], {
-        error: () => ({
-          message:
-            "Invalid date interval type provided. Expected values were 'daily', 'weekly' or 'monthly'.",
-        }),
-      }),
-
+      interval: z.enum(['daily', 'weekly', 'monthly']),
       date: ProgressLogBaseSchema.shape.date,
     }),
   })
@@ -78,7 +65,8 @@ export const ProgressLogFilterSchema = z
       ctx.addIssue({
         code: 'custom',
         path: ['entityType'],
-        message: "'EntityId' cannot be provided without 'entityType'.'",
+        message:
+          'ID da entidade não pode ser fornecida sem o tipo da entidade.',
       });
     }
   });

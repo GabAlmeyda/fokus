@@ -1,7 +1,22 @@
 .pageView {
+  position: relative;
+
   display: flex;
   flex-direction: column;
 
   min-height: 100dvh;
   width: 100%;
+}
+
+.primary {
+  background-color: var(--bg-primary);
+}
+.secondary {
+  background-color: var(--bg-secondary);
+}
+.muted {
+  background-color: var(--bg-muted);
+}
+.inverse {
+  background-color: var(--bg-inverse);
 }
