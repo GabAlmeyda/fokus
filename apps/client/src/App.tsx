@@ -5,6 +5,7 @@ import {
 import LandingPage from './pages/LandingPage/LandingPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import ProtectedRoute from './components/auth/ProtectedRoute/ProtectedRoute';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,8 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: '/',
+        path: '/login',
+        element: <LoginPage></LoginPage>
       }
     ]
   },

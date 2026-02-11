@@ -14,7 +14,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (success) => success,
   async (err) => {
-    const clearUser = useUserStore((state) => state.clearUser);
+    const { clearUser } = useUserStore.getState();
     const originalRequest = err.config;
 
     if (
@@ -30,7 +30,7 @@ api.interceptors.response.use(
           { withCredentials: true },
         );
 
-        return api.post(originalRequest);
+        return api(originalRequest);
       } catch (refreshErr) {
         clearUser();
         window.location.href = APP_URLS.login;

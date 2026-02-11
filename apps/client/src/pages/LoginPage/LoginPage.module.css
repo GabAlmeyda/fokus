@@ -1,9 +1,9 @@
-.register {
+.login {
   margin-bottom: 100px;
   text-align: center;
 }
 
-.register__top {
+.login__top {
   position: absolute;
   height: 200px;
   width: 100%;
@@ -15,7 +15,7 @@
   background-color: var(--bg-primary);
 }
 
-.register__mainContent {
+.login__mainContent {
   position: relative;
   top: 120px;
 
@@ -26,7 +26,7 @@
   background-color: var(--bg-inverse);
 }
 
-.register__formError {
+.login__formError {
   position: relative;
   top: 10px;
 
@@ -45,7 +45,7 @@
   line-height: 1.1rem;
 }
 
-.register__form {
+.login__form {
   padding-top: 1rem;
 }
 
@@ -59,22 +59,24 @@
   margin-top: 3rem;
 }
 
-.register__login {
+.login__register {
   margin-top: 5rem;
-  padding-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
-.register__login p {
+.login__register p {
   color: var(--text-inverse);
   font-size: .9rem;
 }
 
-.login__btn {
+.register__btn {
   margin-top: .5rem;
 }
 
 @media screen and (min-width: 750px) {
-  .register__form {
+
+  .login__top,
+  .login__form {
     margin-inline: -2rem;
   }
 }
