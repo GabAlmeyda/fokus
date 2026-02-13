@@ -4,13 +4,3 @@
 
   height: 100%;
 }
-
-.main > section {
-  padding-inline: 1rem;
-}
-
-@media screen and (min-width: 750px) {
-  .main > section {
-    padding-inline: 2rem;
-  }
-}

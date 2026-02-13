@@ -82,14 +82,14 @@ export default function RegisterPage(): JSX.Element {
   };
 
   return (
-    <PageView bgType='inverse'>
+    <PageView bgType="inverse">
       <Main>
         <section className={styles.register}>
           <div className={styles.register__top}>
             <h2>Cadastre-se</h2>
           </div>
 
-          <div className={styles.register__mainContent}>
+          <div className={styles.register__formContainer}>
             {errors.root && (
               <span className={styles.register__formError}>
                 <FormErrorMessage message={errors.root.message} />
@@ -161,17 +161,17 @@ export default function RegisterPage(): JSX.Element {
                 <Button>Crie sua conta</Button>
               </div>
             </form>
+          </div>
 
-            <div className={styles.register__login}>
-              <p>Já possui uma conta?</p>
-              <div className={styles.login__btn}>
-                <Button
-                  variant="ghost-inverse"
-                  onClick={() => navigate(APP_URLS.login)}
-                >
-                  Conecte-se agora
-                </Button>
-              </div>
+          <div className={styles.register__login}>
+            <p>Já possui uma conta?</p>
+            <div className={styles.login__btn}>
+              <Button
+                variant="ghost-inverse"
+                onClick={() => navigate(APP_URLS.login)}
+              >
+                Conecte-se agora
+              </Button>
             </div>
           </div>
         </section>

@@ -76,7 +76,7 @@ export default function LoginPage(): JSX.Element {
             <h2>Conecte-se</h2>
           </div>
 
-          <div className={styles.login__mainContent}>
+          <div className={styles.login__formContainer}>
             {errors.root && (
               <span className={styles.login__formError}>
                 <FormErrorMessage message={errors.root.message} />
@@ -120,17 +120,17 @@ export default function LoginPage(): JSX.Element {
                 <Button>Conecte-se</Button>
               </div>
             </form>
+          </div>
 
-            <div className={styles.login__register}>
-              <p>Ainda não possui uma conta?</p>
-              <div className={styles.register__btn}>
-                <Button
-                  variant="ghost-inverse"
-                  onClick={() => navigate(APP_URLS.register)}
-                >
-                  Crie sua conta agora
-                </Button>
-              </div>
+          <div className={styles.login__register}>
+            <p>Ainda não possui uma conta?</p>
+            <div className={styles.register__btn}>
+              <Button
+                variant="ghost-inverse"
+                onClick={() => navigate(APP_URLS.register)}
+              >
+                Crie sua conta agora
+              </Button>
             </div>
           </div>
         </section>
