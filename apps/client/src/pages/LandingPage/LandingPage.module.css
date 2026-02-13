@@ -5,6 +5,7 @@
   max-width: 1200px;
 
   padding-top: 5rem;
+  padding-inline: 1rem;
   margin-inline: auto;
 
   text-align: center;
@@ -82,6 +83,8 @@
 @media screen and (min-width: 750px) {
   .hero {
     min-height: 450px;
+
+    padding-inline: 2rem;
 
     text-align: left;
   }
@@ -209,6 +212,14 @@
 
   margin-top: 10rem;
   margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media screen and (min-width: 750px) {
+  .features {
+    padding-inline: 2rem;
+
+  }
 }
 
 /* CTA SECTION */
@@ -264,7 +275,7 @@
 
     min-height: 700px;
 
-    padding-block: 4rem;
+    padding: 4rem 2rem;
   }
 
   .cta__content {
