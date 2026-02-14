@@ -54,3 +54,8 @@
   pointer-events: none;
   filter: brightness(.7);
 }
+
+.btn_small {
+  padding: .2rem .4rem;
+  min-width: 100px;
+}

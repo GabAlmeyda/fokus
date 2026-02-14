@@ -1,4 +1,4 @@
-import { type JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import {
   HTTPStatusCode,
   UserRegisterSchema,
@@ -49,6 +49,11 @@ export default function RegisterPage(): JSX.Element {
       themeMode: 'light',
     },
   });
+
+  // Changes the page title
+  useEffect(() => {
+    document.title = 'Fokus - Cadastre-se';
+  }, []);
 
   const onSubmit = async (data: RegisterFormData) => {
     try {

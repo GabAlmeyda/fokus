@@ -51,21 +51,30 @@ export class UserService implements IUserService {
   }
 
   async login(loginData: UserLoginDTO): Promise<AuthResponseDTO> {
+    console.log(loginData);
     const userDoc = await this.userRepository.findOneByEmail(loginData.email);
     if (!userDoc) {
-      throw new AppServerError('UNAUTHORIZED', 'Incorret email or password.', [
-        { field: 'email', message: 'Email may be incorrect.' },
-        { field: 'password', message: 'Password may be incorrect.' },
-      ]);
+      throw new AppServerError(
+        'NOT_FOUND',
+        'The provided data does not match any user.',
+        [
+          { field: 'email', message: 'Email may be incorrect.' },
+          { field: 'password', message: 'Password may be incorrect.' },
+        ],
+      );
     }
     const user = mapUserDocToPublicDTO(userDoc);
 
     const verify = await argon2.verify(userDoc.password, loginData.password);
     if (!verify) {
-      throw new AppServerError('UNAUTHORIZED', 'Incorret email or password.', [
-        { field: 'email', message: 'Email may be incorrect.' },
-        { field: 'password', message: 'Password may be incorrect.' },
-      ]);
+      throw new AppServerError(
+        'NOT_FOUND',
+        'The provided data does not match any user.',
+        [
+          { field: 'email', message: 'Email may be incorrect.' },
+          { field: 'password', message: 'Password may be incorrect.' },
+        ],
+      );
     }
 
     const accessTokenPayload: TokenPayloadDTO = {

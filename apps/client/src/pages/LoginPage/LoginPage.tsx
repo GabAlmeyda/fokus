@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import PageView from '../../components/layouts/PageView/PageView';
 import Main from '../../components/layouts/Main/Main';
 
@@ -36,10 +36,15 @@ export default function LoginPage(): JSX.Element {
     },
   });
 
+  // Changes the page title
+  useEffect(() => {
+    document.title = 'Fokus - Conecte-se';
+  }, []);
+
   const onSubmit = async (data: UserLoginDTO) => {
     try {
       const response = await api.post<UserResponseDTO>(
-        `${API_URL}/auth/login`,
+        `${API_URL}/users/auth/login`,
         data,
       );
       setUser({
@@ -50,7 +55,6 @@ export default function LoginPage(): JSX.Element {
 
       navigate(APP_URLS.home);
     } catch (err: any) {
-      console.error(err);
       if (err.response) {
         const statusCode = err.response
           .status as (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];

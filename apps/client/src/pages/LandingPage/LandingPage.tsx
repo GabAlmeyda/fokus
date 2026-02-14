@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import notificationImage from '../../assets/notification-img.png';
 import organizationImage from '../../assets/organization-img.png';
@@ -15,6 +15,10 @@ import PageView from '../../components/layouts/PageView/PageView';
 
 export default function LandingPage(): JSX.Element {
   const navigate = useNavigate();
+  // Changes the page title
+  useEffect(() => {
+    document.title = 'Fokus - Landing Page';
+  }, []);
 
   return (
     <PageView>
