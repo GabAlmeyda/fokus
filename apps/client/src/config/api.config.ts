@@ -34,7 +34,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshErr) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
-        if (window.location.href !== APP_URLS.login) {
+        if (window.location.href !== `${APP_URLS.base}${APP_URLS.login}`) {
           window.location.href = APP_URLS.login;
         }
       }

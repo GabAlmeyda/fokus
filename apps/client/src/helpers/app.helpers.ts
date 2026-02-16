@@ -6,5 +6,6 @@ export const APP_URLS = {
   habits: '/habits',
   createHabit: '/habits/create',
   goals: '/goals',
-  createGoal: '/goals/create'
+  createGoal: '/goals/create',
+  base: 'http://localhost:5173'
 }
