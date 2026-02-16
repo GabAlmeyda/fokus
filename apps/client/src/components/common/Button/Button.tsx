@@ -29,6 +29,7 @@ export default function Button({
         isSmall && styles['btn_small']
       )}
       style={customColor ? { backgroundColor: customColor } : undefined}
+      disabled={isDisabled}
     >
       {children}
     </button>

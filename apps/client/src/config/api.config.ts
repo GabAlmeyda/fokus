@@ -1,7 +1,7 @@
 import { API_URL, HTTPStatusCode } from '@fokus/shared';
 import axios from 'axios';
-import { useUserStore } from './zustand.config';
 import { APP_URLS } from '../helpers/app.helpers';
+import { queryClient } from '../providers/ReactQueryProvider';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -14,7 +14,6 @@ const api = axios.create({
 api.interceptors.response.use(
   (success) => success,
   async (err) => {
-    const { clearUser } = useUserStore.getState();
     const originalRequest = err.config;
 
     if (
@@ -32,12 +31,18 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (refreshErr) {
-        clearUser();
+        queryClient.invalidateQueries({ queryKey: ['user'] });
         window.location.href = APP_URLS.login;
       }
     }
 
-    return Promise.reject(err);
+    const errResponse = err.response?.data
+      ? {
+          statusCode: err.response?.status,
+          body: err.response?.data,
+        }
+      : err;
+    return Promise.reject(errResponse);
   },
 );
 

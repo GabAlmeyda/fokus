@@ -2,7 +2,7 @@ import { useEffect, type JSX } from 'react';
 import {
   HTTPStatusCode,
   UserRegisterSchema,
-  type UserResponseDTO,
+  type UserRegisterDTO,
 } from '@fokus/shared';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,9 +14,8 @@ import Button from '../../components/common/Button/Button';
 import PageView from '../../components/layouts/PageView/PageView';
 import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../helpers/app.helpers';
-import api from '../../config/api.config';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
-import { useUserStore } from '../../config/zustand.config';
+import { useUserMutations } from '../../helpers/hooks/user-user.hook';
 
 const RegisterFormSchema = UserRegisterSchema.extend({
   confirmPassword: z.string(),
@@ -33,7 +32,6 @@ type RegisterFormData = z.input<typeof RegisterFormSchema>;
 
 export default function RegisterPage(): JSX.Element {
   const navigate = useNavigate();
-  const setUser = useUserStore((state) => state.setUser);
   const {
     register,
     handleSubmit,
@@ -49,6 +47,7 @@ export default function RegisterPage(): JSX.Element {
       themeMode: 'light',
     },
   });
+  const registerMutation = useUserMutations().registerMutation;
 
   // Changes the page title
   useEffect(() => {
@@ -56,34 +55,24 @@ export default function RegisterPage(): JSX.Element {
   }, []);
 
   const onSubmit = async (data: RegisterFormData) => {
-    try {
-      const response = await api.post<UserResponseDTO>(
-        `/users/auth/register`,
-        data,
-      );
-      setUser({
-        name: response.data.name,
-        email: response.data.email,
-        themeMode: response.data.themeMode,
-      });
-
-      navigate(APP_URLS.home);
-    } catch (err: any) {
-      if (err.response) {
-        const statusCode = err.response
-          .status as (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];
-
-        if (statusCode === HTTPStatusCode.CONFLICT) {
-          setError('root', {
-            message: 'Email já cadastrado.',
-          });
-
+    const user: UserRegisterDTO = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      themeMode: data.themeMode || 'light',
+    };
+    registerMutation.mutate(user, {
+      onError: (error) => {
+        if (error.statusCode === HTTPStatusCode.CONFLICT) {
+          setError('root', { message: 'Email já cadastrado.' });
           return;
         }
-      }
 
-      setError('root', { message: 'Erro ao cadastrar. Tente novamente.' });
-    }
+        setError('root', {
+          message: 'Erro ao tentar cadastrar. Tente novamente.',
+        });
+      },
+    });
   };
 
   return (
@@ -163,7 +152,11 @@ export default function RegisterPage(): JSX.Element {
               </div>
 
               <div className={styles.form__btn}>
-                <Button>Crie sua conta</Button>
+                <Button isDisabled={registerMutation.isPending}>
+                  {registerMutation.isPending
+                    ? 'Crianto conta...'
+                    : 'Crie sua conta agora'}
+                </Button>
               </div>
             </form>
           </div>

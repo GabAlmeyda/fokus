@@ -1,28 +1,23 @@
 import { useEffect, type JSX } from 'react';
 import PageView from '../../components/layouts/PageView/PageView';
 import Main from '../../components/layouts/Main/Main';
-
 import styles from './LoginPage.module.css';
 import { useForm } from 'react-hook-form';
 import {
-  API_URL,
   HTTPStatusCode,
   UserLoginSchema,
   type UserLoginDTO,
-  type UserResponseDTO,
 } from '@fokus/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import api from '../../config/api.config';
-import { useUserStore } from '../../config/zustand.config';
 import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../helpers/app.helpers';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
+import { useUserMutations } from '../../helpers/hooks/user-user.hook';
 
 export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
-  const setUser = useUserStore((state) => state.setUser);
   const {
     register,
     handleSubmit,
@@ -35,41 +30,25 @@ export default function LoginPage(): JSX.Element {
       password: '',
     },
   });
+  const loginMutation = useUserMutations().loginMutation;
 
   // Changes the page title
   useEffect(() => {
     document.title = 'Fokus - Conecte-se';
   }, []);
 
-  const onSubmit = async (data: UserLoginDTO) => {
-    try {
-      const response = await api.post<UserResponseDTO>(
-        `${API_URL}/users/auth/login`,
-        data,
-      );
-      setUser({
-        name: response.data.name,
-        email: response.data.email,
-        themeMode: response.data.themeMode,
-      });
-
-      navigate(APP_URLS.home);
-    } catch (err: any) {
-      if (err.response) {
-        const statusCode = err.response
-          .status as (typeof HTTPStatusCode)[keyof typeof HTTPStatusCode];
-
-        if (statusCode === HTTPStatusCode.NOT_FOUND) {
+  const onSubmit = (data: UserLoginDTO) => {
+    loginMutation.mutate(data, {
+      onError: (error) => {
+        if (error.statusCode === HTTPStatusCode.NOT_FOUND) {
           setError('root', { message: 'Email ou senha incorretos.' });
-
-          return;
+        } else {
+          setError('root', {
+            message: 'Erro ao tentar conectar. Tente novamente.',
+          });
         }
-      }
-
-      setError('root', {
-        message: 'Erro ao tentar conectar. Tente novamente.',
-      });
-    }
+      },
+    });
   };
 
   return (
@@ -121,7 +100,11 @@ export default function LoginPage(): JSX.Element {
               </div>
 
               <div className={styles.form__btn}>
-                <Button>Conecte-se</Button>
+                <Button isDisabled={loginMutation.isPending}>
+                  {loginMutation.isPending
+                    ? 'Conectando sua conta...'
+                    : 'Conecte-se'}
+                </Button>
               </div>
             </form>
           </div>

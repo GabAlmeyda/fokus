@@ -8,31 +8,39 @@ import Button from '../../../common/Button/Button';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
-import { useUserStore } from '../../../../config/zustand.config';
 import api from '../../../../config/api.config';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UserResponseDTO, UserUpdateDTO } from '@fokus/shared';
 
 export default function MenuBar(): JSX.Element {
-  const user = useUserStore((state) => state.user) || {
-    name: 'Usuário',
-    email: 'usuario@gmail.com',
-    themeMode: 'light',
-  };
-  const setUser = useUserStore((state) => state.setUser);
+  const queryClient = useQueryClient();
+  const { data: user } = useQuery<NonNullable<UserResponseDTO>>({
+    queryKey: ['user'],
+    enabled: false,
+  });
+  const mutation = useMutation({
+    mutationFn: async (updatedUser: UserUpdateDTO) => {
+      const response = await api.patch('/users/me', updatedUser);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+    onError: () => {}
+  });
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const onNavigationClick = () => setIsNavigationOpen((oldState) => !oldState);
   const onProfileClick = () => setIsProfileOpen((oldState) => !oldState);
   const onToggleThemeClick = () => {
-    const theme = user.themeMode === 'light' ? 'dark' : 'light';
-    try {
-      const updatedUser = { ...user, themeMode: theme as (typeof user)['themeMode'] };
+    const theme = user!.themeMode === 'light' ? 'dark' : 'light';
+    const updatedUser: UserUpdateDTO = {
+      ...user,
+      themeMode: theme,
+    };
 
-      api.patch('/users/me', updatedUser);
-      setUser(updatedUser);
-    } catch (err) {
-      return;
-    }
+    mutation.mutate(updatedUser);
   };
 
   return (
@@ -106,8 +114,8 @@ export default function MenuBar(): JSX.Element {
         <div className={styles.profile__user}>
           <MdAccountCircle className={styles.user__img} />
           <div>
-            <p className={styles.user__name}>{user.name}</p>
-            <p className={styles.user__email}>{user.email}</p>
+            <p className={styles.user__name}>{user!.name}</p>
+            <p className={styles.user__email}>{user!.email}</p>
           </div>
         </div>
 
@@ -116,14 +124,14 @@ export default function MenuBar(): JSX.Element {
           <div className={styles.theme__toggle} onClick={onToggleThemeClick}>
             <span
               className={clsx(
-                user.themeMode === 'light' && styles.theme_selected,
+                user!.themeMode === 'light' && styles.theme_selected,
               )}
             >
               <MdLightMode />
             </span>
             <span
               className={clsx(
-                user.themeMode === 'dark' && styles.theme_selected,
+                user!.themeMode === 'dark' && styles.theme_selected,
               )}
             >
               <MdDarkMode />
