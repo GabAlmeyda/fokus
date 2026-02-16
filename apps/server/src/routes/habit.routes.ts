@@ -8,11 +8,11 @@ import {
 } from '../config/rate-limit.config.js';
 
 const habitRoutes = Router({ mergeParams: true });
+habitRoutes.use(authMiddleware);
 
 // Create route
 habitRoutes.post(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { body: reqBody, user } = req as AuthRequest;
@@ -28,7 +28,6 @@ habitRoutes.post(
 // Find by ID route
 habitRoutes.get(
   '/:habitId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { params, user } = req as AuthRequest;
@@ -44,7 +43,6 @@ habitRoutes.get(
 // Find by filter route
 habitRoutes.get(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { query, user } = req as AuthRequest;
@@ -60,7 +58,6 @@ habitRoutes.get(
 // Check route
 habitRoutes.post(
   '/:habitId/check',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { params, query, user } = req as AuthRequest;
@@ -77,7 +74,6 @@ habitRoutes.post(
 // Uncheck route
 habitRoutes.delete(
   '/:habitId/uncheck',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, query, user } = req as AuthRequest;
@@ -94,7 +90,6 @@ habitRoutes.delete(
 // Update route
 habitRoutes.patch(
   '/:habitId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
     const { params, body: reqBody, user } = req as AuthRequest;
@@ -111,7 +106,6 @@ habitRoutes.patch(
 // Delete route
 habitRoutes.delete(
   '/:habitId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, user } = req as AuthRequest;

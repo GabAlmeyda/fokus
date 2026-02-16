@@ -8,11 +8,11 @@ import {
 } from '../config/rate-limit.config.js';
 
 const goalRoutes = Router({ mergeParams: true });
+goalRoutes.use(authMiddleware);
 
 // Add progress log route
 goalRoutes.post(
   '/:goalId/log',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { body: reqBody, params, query, user } = req as AuthRequest;
@@ -30,7 +30,6 @@ goalRoutes.post(
 // Create route
 goalRoutes.post(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { user, body: reqBody } = req as AuthRequest;
@@ -46,7 +45,6 @@ goalRoutes.post(
 // Find by ID route
 goalRoutes.get(
   '/:goalId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { user, params } = req as AuthRequest;
@@ -62,7 +60,6 @@ goalRoutes.get(
 // Find by filter route
 goalRoutes.get(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { user, query } = req as AuthRequest;
@@ -78,7 +75,6 @@ goalRoutes.get(
 // Update route
 goalRoutes.patch(
   '/:goalId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
     const { params, body: reqBody, user } = req as AuthRequest;
@@ -95,7 +91,6 @@ goalRoutes.patch(
 // Remove progress log route
 goalRoutes.delete(
   '/logs/:progressLogId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, user } = req as AuthRequest;
@@ -111,7 +106,6 @@ goalRoutes.delete(
 // Delete route
 goalRoutes.delete(
   '/:goalId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, user } = req as AuthRequest;

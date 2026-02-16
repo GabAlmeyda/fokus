@@ -61,7 +61,7 @@ export default function RegisterPage(): JSX.Element {
       password: data.password,
       themeMode: data.themeMode || 'light',
     };
-    registerMutation.mutate(user, {
+    await registerMutation.mutateAsync(user, {
       onError: (error) => {
         if (error.statusCode === HTTPStatusCode.CONFLICT) {
           setError('root', { message: 'Email já cadastrado.' });
@@ -73,6 +73,7 @@ export default function RegisterPage(): JSX.Element {
         });
       },
     });
+    navigate(APP_URLS.home);
   };
 
   return (

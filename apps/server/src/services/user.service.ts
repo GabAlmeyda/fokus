@@ -51,7 +51,6 @@ export class UserService implements IUserService {
   }
 
   async login(loginData: UserLoginDTO): Promise<AuthResponseDTO> {
-    console.log(loginData);
     const userDoc = await this.userRepository.findOneByEmail(loginData.email);
     if (!userDoc) {
       throw new AppServerError(

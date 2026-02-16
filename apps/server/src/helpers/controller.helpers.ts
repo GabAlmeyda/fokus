@@ -1,5 +1,6 @@
 import { ZodError } from 'zod';
 import type { Response } from 'express';
+import { randomUUID } from 'crypto';
 import {
   formatZodError,
   HTTPStatusCode,
@@ -52,4 +53,15 @@ export function setTokens(
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
+  res.cookie('XSRF-TOKEN', randomUUID(), {
+    httpOnly: false,
+    secure: true,
+    sameSite: isProduction ? 'none' : 'lax',
+  });
+}
+
+export function removeCookies(res: Response) {
+  res.clearCookie('access_token');
+  res.clearCookie('refresh_token');
+  res.clearCookie('XSRF-TOKEN');
 }

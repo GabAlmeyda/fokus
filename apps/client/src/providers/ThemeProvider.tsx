@@ -1,12 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import type { UserResponseDTO } from "@fokus/shared";
+import { useUserQueries } from "../helpers/hooks/user-user.hook";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const { data: user } = useQuery<UserResponseDTO>({
-    queryKey: ['user'],
-    enabled: false,
-  });
+  const { data: user } = useUserQueries().meQuery;
 
   useEffect(() => {
     document.body.classList.toggle('dark', user?.themeMode === 'dark');

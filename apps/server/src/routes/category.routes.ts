@@ -8,11 +8,11 @@ import {
 } from '../config/rate-limit.config.js';
 
 const categoryRoutes = Router({ mergeParams: true });
+categoryRoutes.use(authMiddleware);
 
 // Create route
 categoryRoutes.post(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { body: reqBody, user } = req as AuthRequest;
@@ -28,7 +28,6 @@ categoryRoutes.post(
 // Find by ID route
 categoryRoutes.get(
   '/:categoryId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { params, user } = req as AuthRequest;
@@ -44,7 +43,6 @@ categoryRoutes.get(
 // Find by filter route
 categoryRoutes.get(
   '/',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { query, user } = req as AuthRequest;
@@ -60,7 +58,6 @@ categoryRoutes.get(
 // Update route
 categoryRoutes.patch(
   '/:categoryId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
     const { params, body: reqBody, user } = req as AuthRequest;
@@ -77,7 +74,6 @@ categoryRoutes.patch(
 // Delete route
 categoryRoutes.delete(
   '/:categoryId',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, user } = req as AuthRequest;

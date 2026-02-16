@@ -8,26 +8,14 @@ import Button from '../../../common/Button/Button';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
-import api from '../../../../config/api.config';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { UserResponseDTO, UserUpdateDTO } from '@fokus/shared';
+import {
+  useUserMutations,
+  useUserQueries,
+} from '../../../../helpers/hooks/user-user.hook';
 
 export default function MenuBar(): JSX.Element {
-  const queryClient = useQueryClient();
-  const { data: user } = useQuery<NonNullable<UserResponseDTO>>({
-    queryKey: ['user'],
-    enabled: false,
-  });
-  const mutation = useMutation({
-    mutationFn: async (updatedUser: UserUpdateDTO) => {
-      const response = await api.patch('/users/me', updatedUser);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-    },
-    onError: () => {}
-  });
+  const { data: user } = useUserQueries().meQuery;
+  const updateMutation = useUserMutations().updateMutation;
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -35,12 +23,7 @@ export default function MenuBar(): JSX.Element {
   const onProfileClick = () => setIsProfileOpen((oldState) => !oldState);
   const onToggleThemeClick = () => {
     const theme = user!.themeMode === 'light' ? 'dark' : 'light';
-    const updatedUser: UserUpdateDTO = {
-      ...user,
-      themeMode: theme,
-    };
-
-    mutation.mutate(updatedUser);
+    updateMutation.mutate({ themeMode: theme });
   };
 
   return (

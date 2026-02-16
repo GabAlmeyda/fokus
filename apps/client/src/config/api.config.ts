@@ -9,6 +9,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
 api.interceptors.response.use(
@@ -32,7 +34,9 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshErr) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
-        window.location.href = APP_URLS.login;
+        if (window.location.href !== APP_URLS.login) {
+          window.location.href = APP_URLS.login;
+        }
       }
     }
 
@@ -45,5 +49,18 @@ api.interceptors.response.use(
     return Promise.reject(errResponse);
   },
 );
+
+api.interceptors.request.use((config) => {
+  const cookies = document.cookie.split(';');
+  for (const c of cookies) {
+    const [name, value] = c.trim().split('=');
+    if (name === 'XSRF-TOKEN') {
+      config.headers['X-XSRF-Token'] = value;
+      break;
+    }
+  }
+
+  return config;
+});
 
 export default api;

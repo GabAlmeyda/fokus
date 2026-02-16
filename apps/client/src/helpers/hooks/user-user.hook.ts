@@ -1,8 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../config/api.config';
-import { useNavigate } from 'react-router-dom';
-import { APP_URLS } from '../app.helpers';
-import type { HTTPErrorResponse, UserLoginDTO, UserRegisterDTO, UserResponseDTO, UserUpdateDTO } from '@fokus/shared';
+import type {
+  HTTPErrorResponse,
+  UserLoginDTO,
+  UserRegisterDTO,
+  UserResponseDTO,
+  UserUpdateDTO,
+} from '@fokus/shared';
 
 export function useUserQueries() {
   const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse, any>({
@@ -15,6 +19,7 @@ export function useUserQueries() {
     },
     staleTime: Infinity,
     gcTime: Infinity,
+    retry: false, 
   });
 
   return {
@@ -24,7 +29,6 @@ export function useUserQueries() {
 
 export function useUserMutations() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const loginMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
     mutationFn: async (data: UserLoginDTO) => {
@@ -32,27 +36,30 @@ export function useUserMutations() {
         '/users/auth/login',
         data,
       );
+
       return response.data;
     },
-    onSuccess: async () => {
+    onSuccess: async (newUser) => {
+      queryClient.setQueryData(['user'], newUser);
       await queryClient.invalidateQueries({ queryKey: ['user'] });
-      navigate(APP_URLS.home);
     },
   });
 
-  const registerMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
-    mutationFn: async (data: UserRegisterDTO) => {
-      const response = await api.post<UserResponseDTO>(
-        '/users/auth/register',
-        data,
-      );
-      return response.data;
+  const registerMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>(
+    {
+      mutationFn: async (data: UserRegisterDTO) => {
+        const response = await api.post<UserResponseDTO>(
+          '/users/auth/register',
+          data,
+        );
+        return response.data;
+      },
+      onSuccess: async (newUser) => {
+        queryClient.setQueryData(['user'], newUser);
+        await queryClient.invalidateQueries({ queryKey: ['user'] });
+      },
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['user'] });
-      navigate(APP_URLS.home);
-    },
-  });
+  );
 
   const refreshMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
     mutationFn: async () => {
@@ -63,21 +70,21 @@ export function useUserMutations() {
       );
       return response.data;
     },
-    onSuccess: async () => {
+    onSuccess: async (newUser) => {
+      queryClient.setQueryData(['user'], newUser);
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
   const updateMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
     mutationFn: async (data: UserUpdateDTO) => {
-      const response = await api.patch(
-        '/users/me',
-        data,
-        { withCredentials: true },
-      );
+      const response = await api.patch('/users/me', data, {
+        withCredentials: true,
+      });
       return response.data;
     },
-    onSuccess: async () => {
+    onSuccess: async (newUser) => {
+      queryClient.setQueryData(['user'], newUser);
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
@@ -91,7 +98,6 @@ export function useUserMutations() {
     },
     onSuccess: async () => {
       queryClient.removeQueries({ queryKey: ['user'] });
-      navigate(APP_URLS.login);
     },
   });
 

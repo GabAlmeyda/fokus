@@ -3,7 +3,7 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 import type { AuthRequest } from '../types/express.types.js';
 import { AuthResponseSchema } from '../types/auth.types.js';
 import { userController } from '../config/factory.config.js';
-import { setTokens } from '../helpers/controller.helpers.js';
+import { removeCookies, setTokens } from '../helpers/controller.helpers.js';
 import { authUserRateLimiter } from '../config/rate-limit.config.js';
 import { REQUESTS_RATE_LIMITER } from '../config/rate-limit.config.js';
 import { HTTPStatusCode } from '@fokus/shared';
@@ -77,18 +77,16 @@ userRoutes.post('/auth/refresh/me', async (req, res) => {
 userRoutes.post('/auth/logout/me', async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
   const { statusCode, body } = await userController.logout({ refreshToken });
-  res.clearCookie('access_token');
-  res.clearCookie('refresh_token', {
-    path: '/users/auth',
-  });
+  removeCookies(res);
 
   return res.status(statusCode).json(body);
 });
 
+userRoutes.use(authMiddleware);
+
 // Find by ID route
 userRoutes.get(
   '/me',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { user } = req as AuthRequest;
@@ -103,7 +101,6 @@ userRoutes.get(
 // Update route
 userRoutes.patch(
   '/me',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
     const { body: reqBody, user } = req as AuthRequest;
@@ -119,7 +116,6 @@ userRoutes.patch(
 // Delete route
 userRoutes.delete(
   '/me',
-  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { user } = req as AuthRequest;
@@ -127,10 +123,7 @@ userRoutes.delete(
     const { statusCode, body } = await userController.delete({
       userId: user.id,
     });
-    if (statusCode === HTTPStatusCode.NO_CONTENT) {
-      res.clearCookie('access_token');
-      res.clearCookie('refresh_token');
-    }
+    if (statusCode === HTTPStatusCode.NO_CONTENT) removeCookies(res);
 
     return res.status(statusCode).json(body);
   },

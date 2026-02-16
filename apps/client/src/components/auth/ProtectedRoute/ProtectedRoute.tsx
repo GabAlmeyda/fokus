@@ -5,11 +5,13 @@ import { useUserQueries } from '../../../helpers/hooks/user-user.hook';
 
 export default function ProtectedRoute(): JSX.Element {
   const navigate = useNavigate();
-  const { isLoading, isError } = useUserQueries().meQuery;
+  const { data, isFetched, isLoading } = useUserQueries().meQuery;
 
   useEffect(() => {
-    if (isError) navigate(APP_URLS.login);
-  }, [isError]);
-  
-  return isLoading ? <div></div> : <Outlet />;
+    if (isFetched && !data) navigate(APP_URLS.login);
+  }, [data, isFetched]);
+
+  if (isLoading || !data) return <div></div>;
+
+  return <Outlet />;
 }

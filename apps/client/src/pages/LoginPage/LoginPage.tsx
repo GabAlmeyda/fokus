@@ -18,6 +18,7 @@ import { useUserMutations } from '../../helpers/hooks/user-user.hook';
 
 export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
+  const loginMutation = useUserMutations().loginMutation;
   const {
     register,
     handleSubmit,
@@ -30,15 +31,14 @@ export default function LoginPage(): JSX.Element {
       password: '',
     },
   });
-  const loginMutation = useUserMutations().loginMutation;
 
   // Changes the page title
   useEffect(() => {
     document.title = 'Fokus - Conecte-se';
   }, []);
 
-  const onSubmit = (data: UserLoginDTO) => {
-    loginMutation.mutate(data, {
+  const onSubmit = async (data: UserLoginDTO) => {
+    await loginMutation.mutateAsync(data, {
       onError: (error) => {
         if (error.statusCode === HTTPStatusCode.NOT_FOUND) {
           setError('root', { message: 'Email ou senha incorretos.' });
@@ -48,7 +48,11 @@ export default function LoginPage(): JSX.Element {
           });
         }
       },
+      onSuccess: () => {
+        navigate(APP_URLS.home);
+      }
     });
+    
   };
 
   return (
