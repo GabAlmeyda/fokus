@@ -72,6 +72,9 @@ export default function RegisterPage(): JSX.Element {
           message: 'Erro ao tentar cadastrar. Tente novamente.',
         });
       },
+      onSuccess: () => {
+        navigate(APP_URLS.home);
+      }
     });
     navigate(APP_URLS.home);
   };

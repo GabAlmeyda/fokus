@@ -56,7 +56,7 @@ export default function LandingPage(): JSX.Element {
 
           <div className={styles.hero__testimonials}>
             <div className={styles.testimonials__msg}>
-              +500 pessoas focadas todos os dias
+              <p>+500 pessoas focadas todos os dias</p>
             </div>
             <div className={styles.testimonials__items}>
               <Testimonial

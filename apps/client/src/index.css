@@ -21,16 +21,26 @@
   --font-body: "Poppins";
 }
 
-body.dark {
-  --bg-primary: #121814;
+::selection,
+::-moz-selection {
+  background-color: #15e03b;
+  color: #060806;
+}
+
+
+html.dark {
+  --bg-primary: #111815;
   --bg-secondary: #1e2621;
   --bg-muted: #2d3a31;
-  --bg-inverse: #3f830e;
+  --bg-inverse: #3c9932;
 
   --text-primary: #ececec;
-  --text-secondary: #b0c4b5;
-  --text-muted: #6b8272;
+  --text-secondary: #6b8272;
+  --text-muted: #1c221d;
   --text-inverse: #060806;
+
+  --accent-primary: #00ff2f;
+  --accent-inverse: #056117;
 }
 
 html,

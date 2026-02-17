@@ -18,7 +18,7 @@
 
   border-bottom-color: var(--accent-primary);
 
-  background-color: var(--white-clr);
+  background-color: var(--bg-primary);
 }
 .input:focus:hover,
 .input:focus-within:hover {

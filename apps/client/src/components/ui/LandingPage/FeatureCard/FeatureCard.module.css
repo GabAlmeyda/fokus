@@ -38,7 +38,7 @@
   height: 90%;
   width: 2px;
 
-  background-color: var(--black-clr);
+  background-color: var(--text-primary);
 }
 
 .card__content {

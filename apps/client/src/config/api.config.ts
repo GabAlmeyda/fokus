@@ -17,6 +17,9 @@ api.interceptors.response.use(
   (success) => success,
   async (err) => {
     const originalRequest = err.config;
+    if (originalRequest.url === `${API_URL}/users/auth/refresh/me`) {
+      return Promise.reject(err);
+    }
 
     if (
       err.response?.status === HTTPStatusCode.UNAUTHORIZED &&
@@ -25,18 +28,20 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.post(
+        await api.post(
           `${API_URL}/users/auth/refresh/me`,
           {},
           { withCredentials: true },
         );
 
         return api(originalRequest);
-      } catch (refreshErr) {
-        queryClient.invalidateQueries({ queryKey: ['user'] });
-        if (window.location.href !== `${APP_URLS.base}${APP_URLS.login}`) {
+      } catch (refreshErr: any) {
+        queryClient.clear();
+        if (window.location.href.includes(`/app`)) {
           window.location.href = APP_URLS.login;
         }
+
+        return Promise.reject(refreshErr);
       }
     }
 

@@ -69,7 +69,6 @@ userRoutes.post('/auth/refresh/me', async (req, res) => {
 
     return res.status(statusCode).json(validation.data.user);
   }
-
   return res.status(statusCode).json(body);
 });
 

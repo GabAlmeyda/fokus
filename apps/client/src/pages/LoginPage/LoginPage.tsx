@@ -52,7 +52,6 @@ export default function LoginPage(): JSX.Element {
         navigate(APP_URLS.home);
       }
     });
-    
   };
 
   return (

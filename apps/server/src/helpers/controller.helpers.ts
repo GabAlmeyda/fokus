@@ -41,17 +41,16 @@ export function setTokens(
   const isProduction = env.NODE_ENV === 'production';
 
   res.cookie('access_token', tokens.accessToken, {
-    httpOnly: true,
+    httpOnly: false,
     sameSite: isProduction ? 'none' : 'lax',
     secure: isProduction,
-    maxAge: 1000 * 60 * 15, // 15 minutes
+    maxAge: 1000 * 5, // 15 minutes
   });
   res.cookie('refresh_token', tokens.refreshToken, {
-    httpOnly: true,
+    httpOnly: false,
     sameSite: isProduction ? 'none' : 'lax',
     secure: isProduction,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    path: '/users/auth',
   });
   res.cookie('XSRF-TOKEN', randomUUID(), {
     httpOnly: false,
