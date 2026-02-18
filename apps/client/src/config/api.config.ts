@@ -35,12 +35,18 @@ api.interceptors.response.use(
         );
 
         return api(originalRequest);
-      } catch (refreshErr: any) {
+      } catch (authErr: any) {
         queryClient.clear();
+        const refreshErr = authErr.response?.data
+          ? {
+              statusCode: authErr.response?.status,
+              body: authErr.response?.data,
+            }
+          : authErr;
+
         if (window.location.href.includes(`/app`)) {
           window.location.href = APP_URLS.login;
         }
-
         return Promise.reject(refreshErr);
       }
     }

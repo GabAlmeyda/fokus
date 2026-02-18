@@ -41,26 +41,29 @@ export function setTokens(
   const isProduction = env.NODE_ENV === 'production';
 
   res.cookie('access_token', tokens.accessToken, {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: isProduction ? 'none' : 'lax',
     secure: isProduction,
-    maxAge: 1000 * 5, // 15 minutes
+    maxAge: 1000 * 60 * 15, // 15 minutes
+    path: '/',
   });
   res.cookie('refresh_token', tokens.refreshToken, {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: isProduction ? 'none' : 'lax',
     secure: isProduction,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    path: '/users/auth',
   });
   res.cookie('XSRF-TOKEN', randomUUID(), {
     httpOnly: false,
     secure: true,
     sameSite: isProduction ? 'none' : 'lax',
+    path: '/',
   });
 }
 
 export function removeCookies(res: Response) {
-  res.clearCookie('access_token');
-  res.clearCookie('refresh_token');
-  res.clearCookie('XSRF-TOKEN');
+  res.clearCookie('access_token', { path: '/' });
+  res.clearCookie('refresh_token', { path: '/users/auth' });
+  res.clearCookie('XSRF-TOKEN', { path: '/' });
 }
