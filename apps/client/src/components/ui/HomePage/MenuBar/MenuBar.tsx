@@ -16,38 +16,36 @@ import {
 export default function MenuBar(): JSX.Element {
   const { data: user } = useUserQueries().meQuery;
   const updateMutation = useUserMutations().updateMutation;
-  const [isNavigationOpen, setIsNavigationOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [activeSidebar, setActiveSidebar] = useState<
+    'navigation' | 'profile' | 'none'
+  >('none');
 
-  const onNavigationClick = () => {
-    setIsNavigationOpen((oldState) => !oldState);
-    setIsProfileOpen(false);
-  };
-  const onProfileClick = () => {
-    setIsProfileOpen((oldState) => !oldState);
-    setIsNavigationOpen(false);
-  };
   const onToggleThemeClick = () => {
-    const theme = user!.themeMode === 'light' ? 'dark' : 'light';
+    const theme = user?.themeMode === 'light' ? 'dark' : 'light';
     updateMutation.mutate({ themeMode: theme });
   };
 
   return (
     <>
       <nav className={styles.menubar}>
-        <button onClick={onNavigationClick}>
+        <button onClick={() => setActiveSidebar('navigation')} data-sidebar="navigation">
           <IoMenu />
         </button>
 
         <nav
-          onClick={() => setIsNavigationOpen(false)}
           className={clsx(
             styles.navigation,
-            isNavigationOpen && styles.navigation_open,
+            activeSidebar === 'navigation' && styles.navigation_open,
           )}
+          data-sidebar="profile"
         >
           <div className={styles.shared__goBack}>
-            <Button onClick={onNavigationClick} variant="ghost-inverse" isSmall>
+            <Button
+              onClick={() => setActiveSidebar('none')}
+              variant="ghost-inverse"
+              isSmall
+              data-sidebar={null}
+            >
               Voltar
             </Button>
           </div>
@@ -86,18 +84,23 @@ export default function MenuBar(): JSX.Element {
           </section>
         </nav>
 
-        <button onClick={onProfileClick}>
+        <button onClick={() => setActiveSidebar('profile')} data-sidebar="profile">
           <MdAccountCircle />
         </button>
 
         <div
           className={clsx(
             styles.profile,
-            isProfileOpen && styles['profile_open'],
+            activeSidebar === 'profile' && styles['profile_open'],
           )}
         >
           <div className={styles.shared__goBack}>
-            <Button onClick={onProfileClick} variant="ghost-inverse" isSmall>
+            <Button
+              onClick={() => setActiveSidebar('none')}
+              variant="ghost-inverse"
+              isSmall
+              data-sidebar={null}
+            >
               Voltar
             </Button>
           </div>
@@ -105,8 +108,8 @@ export default function MenuBar(): JSX.Element {
           <div className={styles.profile__user}>
             <MdAccountCircle className={styles.user__img} />
             <div>
-              <p className={styles.user__name}>{user!.name}</p>
-              <p className={styles.user__email}>{user!.email}</p>
+              <p className={styles.user__name}>{user?.name}</p>
+              <p className={styles.user__email}>{user?.email}</p>
             </div>
           </div>
 
@@ -115,14 +118,14 @@ export default function MenuBar(): JSX.Element {
             <div className={styles.theme__toggle} onClick={onToggleThemeClick}>
               <span
                 className={clsx(
-                  user!.themeMode === 'light' && styles.theme_selected,
+                  user?.themeMode === 'light' && styles.theme_selected,
                 )}
               >
                 <MdLightMode />
               </span>
               <span
                 className={clsx(
-                  user!.themeMode === 'dark' && styles.theme_selected,
+                  user?.themeMode === 'dark' && styles.theme_selected,
                 )}
               >
                 <MdDarkMode />
@@ -131,7 +134,7 @@ export default function MenuBar(): JSX.Element {
           </div>
         </div>
       </nav>
-      {(isNavigationOpen || isProfileOpen) && <div className={styles._menubar__shadow}></div>}
+      {activeSidebar !== 'none' && <div className={styles._menubar__shadow}></div>}
     </>
   );
 }

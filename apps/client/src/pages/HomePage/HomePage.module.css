@@ -1,0 +1,35 @@
+.home__viewSwitcher {
+  display: flex;
+  width: 100%;
+
+  border-bottom: 2px solid var(--text-secondary);
+
+  background-color: var(--bg-primary);
+}
+
+.home__viewSwitcher button {
+  flex: 1;
+
+  border: none;
+  padding: .3rem;
+
+  background-color: var(--bg-primary);
+}
+
+.home__viewSwitcher button:hover {
+  filter: brightness(.8);
+}
+
+.home__viewSwitcher button:active,
+.home__viewSwitcher button._selected {
+  filter: none;
+  background-color: var(--bg-muted);
+}
+
+.home__viewSwitcher span {
+  display: inline-block;
+
+  width: 2px;
+
+  background-color: var(--text-secondary);
+}

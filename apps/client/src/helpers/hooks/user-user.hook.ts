@@ -19,7 +19,7 @@ export function useUserQueries() {
     },
     staleTime: Infinity,
     gcTime: Infinity,
-    retry: false, 
+    retry: false,
   });
 
   return {
