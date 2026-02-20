@@ -9,7 +9,7 @@ import type {
 } from '@fokus/shared';
 
 export function useUserQueries() {
-  const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse, any>({
+  const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse, void>({
     queryKey: ['user'],
     queryFn: async () => {
       const response = await api.get<UserResponseDTO>('/users/me', {
@@ -30,8 +30,12 @@ export function useUserQueries() {
 export function useUserMutations() {
   const queryClient = useQueryClient();
 
-  const loginMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
-    mutationFn: async (data: UserLoginDTO) => {
+  const loginMutation = useMutation<
+    UserResponseDTO,
+    HTTPErrorResponse,
+    UserLoginDTO
+  >({
+    mutationFn: async (data) => {
       const response = await api.post<UserResponseDTO>(
         '/users/auth/login',
         data,
@@ -41,55 +45,73 @@ export function useUserMutations() {
     },
     onSuccess: async (newUser) => {
       queryClient.setQueryData(['user'], newUser);
-      await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
-  const registerMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>(
-    {
-      mutationFn: async (data: UserRegisterDTO) => {
-        const response = await api.post<UserResponseDTO>(
-          '/users/auth/register',
-          data,
-        );
-        return response.data;
-      },
-      onSuccess: async (newUser) => {
-        queryClient.setQueryData(['user'], newUser);
-        await queryClient.invalidateQueries({ queryKey: ['user'] });
-      },
-    },
-  );
-
-  const refreshMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
-    mutationFn: async () => {
+  const registerMutation = useMutation<
+    UserResponseDTO,
+    HTTPErrorResponse,
+    UserRegisterDTO
+  >({
+    mutationFn: async (data) => {
       const response = await api.post<UserResponseDTO>(
-        '/users/auth/refresh/me',
-        {},
-        { withCredentials: true },
+        '/users/auth/register',
+        data,
       );
       return response.data;
     },
     onSuccess: async (newUser) => {
       queryClient.setQueryData(['user'], newUser);
-      await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
-  const updateMutation = useMutation<UserResponseDTO, HTTPErrorResponse, any>({
-    mutationFn: async (data: UserUpdateDTO) => {
+  const refreshMutation = useMutation<UserResponseDTO, HTTPErrorResponse, void>(
+    {
+      mutationFn: async () => {
+        const response = await api.post<UserResponseDTO>(
+          '/users/auth/refresh/me',
+          {},
+          { withCredentials: true },
+        );
+        return response.data;
+      },
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['user'] });
+      },
+    },
+  );
+
+  const logoutMutation = useMutation<void, HTTPErrorResponse, void>({
+    mutationFn: async () => {
+      const response = await api.post(
+        '/users/auth/logout/me',
+        {},
+        { withCredentials: true },
+      );
+      return response.data;
+    },
+    onSuccess: async () => {
+      queryClient.clear();
+    }
+  });
+
+  const updateMutation = useMutation<
+    UserResponseDTO,
+    HTTPErrorResponse,
+    UserUpdateDTO
+  >({
+    mutationFn: async (data) => {
       const response = await api.patch('/users/me', data, {
         withCredentials: true,
       });
       return response.data;
     },
-    onSuccess: async (newUser) => {
-      queryClient.setQueryData(['user'], newUser);
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
-  const deleteMutation = useMutation<null, HTTPErrorResponse, any>({
+  const deleteMutation = useMutation<null, HTTPErrorResponse, null>({
     mutationFn: async () => {
       const response = await api.delete<null>('/users/me', {
         withCredentials: true,
@@ -97,7 +119,7 @@ export function useUserMutations() {
       return response.data;
     },
     onSuccess: async () => {
-      queryClient.removeQueries({ queryKey: ['user'] });
+      queryClient.clear();
     },
   });
 
@@ -105,6 +127,7 @@ export function useUserMutations() {
     loginMutation,
     registerMutation,
     refreshMutation,
+    logoutMutation,
     updateMutation,
     deleteMutation,
   };

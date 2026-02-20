@@ -14,7 +14,7 @@ import { APP_URLS } from '../../helpers/app.helpers';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
-import { useUserMutations } from '../../helpers/hooks/user-user.hook';
+import { useUserMutations } from '../../helpers/hooks/use-user.hook';
 
 export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export default function LoginPage(): JSX.Element {
       },
       onSuccess: () => {
         navigate(APP_URLS.home);
-      }
+      },
     });
   };
 

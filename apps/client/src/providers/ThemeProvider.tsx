@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useUserQueries } from '../helpers/hooks/user-user.hook';
+import { useUserQueries } from '../helpers/hooks/use-user.hook';
 
 export default function ThemeProvider({
   children,

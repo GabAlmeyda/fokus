@@ -15,7 +15,7 @@ import PageView from '../../components/layouts/PageView/PageView';
 import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../helpers/app.helpers';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
-import { useUserMutations } from '../../helpers/hooks/user-user.hook';
+import { useUserMutations } from '../../helpers/hooks/use-user.hook';
 
 const RegisterFormSchema = UserRegisterSchema.extend({
   confirmPassword: z.string(),
@@ -74,7 +74,7 @@ export default function RegisterPage(): JSX.Element {
       },
       onSuccess: () => {
         navigate(APP_URLS.home);
-      }
+      },
     });
     navigate(APP_URLS.home);
   };

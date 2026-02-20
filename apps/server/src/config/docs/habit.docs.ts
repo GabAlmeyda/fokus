@@ -129,7 +129,7 @@ export function registerHabitDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['Habit'],
     method: 'post',
-    path: 'habits/{habitId}',
+    path: 'habits/{habitId}/check',
     security: [{ accessTokenCookie: [] }],
     summary: 'Marks an authenticated user habit as completed.',
     request: {

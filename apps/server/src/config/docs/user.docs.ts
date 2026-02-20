@@ -118,7 +118,7 @@ export function registerUserDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['User'],
     method: 'post',
-    path: '/users/me',
+    path: '/users/auth/logout/me',
     security: [{ refreshTokenCookie: [] }],
     summary: 'Logs out a user, removing their tokens.',
     request: {},

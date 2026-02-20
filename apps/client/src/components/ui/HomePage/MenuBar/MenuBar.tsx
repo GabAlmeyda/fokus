@@ -11,7 +11,7 @@ import { APP_URLS } from '../../../../helpers/app.helpers';
 import {
   useUserMutations,
   useUserQueries,
-} from '../../../../helpers/hooks/user-user.hook';
+} from '../../../../helpers/hooks/use-user.hook';
 
 export default function MenuBar(): JSX.Element {
   const { data: user } = useUserQueries().meQuery;
@@ -28,7 +28,10 @@ export default function MenuBar(): JSX.Element {
   return (
     <>
       <nav className={styles.menubar}>
-        <button onClick={() => setActiveSidebar('navigation')} data-sidebar="navigation">
+        <button
+          onClick={() => setActiveSidebar('navigation')}
+          data-sidebar="navigation"
+        >
           <IoMenu />
         </button>
 
@@ -84,7 +87,10 @@ export default function MenuBar(): JSX.Element {
           </section>
         </nav>
 
-        <button onClick={() => setActiveSidebar('profile')} data-sidebar="profile">
+        <button
+          onClick={() => setActiveSidebar('profile')}
+          data-sidebar="profile"
+        >
           <MdAccountCircle />
         </button>
 
@@ -134,7 +140,9 @@ export default function MenuBar(): JSX.Element {
           </div>
         </div>
       </nav>
-      {activeSidebar !== 'none' && <div className={styles._menubar__shadow}></div>}
+      {activeSidebar !== 'none' && (
+        <div className={styles._menubar__shadow}></div>
+      )}
     </>
   );
 }

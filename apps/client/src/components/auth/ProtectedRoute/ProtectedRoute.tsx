@@ -1,7 +1,7 @@
 import { useEffect, type JSX } from 'react';
 import { APP_URLS } from '../../../helpers/app.helpers';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useUserQueries } from '../../../helpers/hooks/user-user.hook';
+import { useUserQueries } from '../../../helpers/hooks/use-user.hook';
 
 export default function ProtectedRoute(): JSX.Element {
   const navigate = useNavigate();
