@@ -87,6 +87,10 @@
 }
 
 .navigation>section>ul>li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   position: relative;
 
   padding: .4rem;
@@ -95,15 +99,8 @@
   cursor: pointer;
 }
 
-.navigation>section>ul>li::after {
-  content: '▸';
-
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0;
-
-  font-size: 1.8rem;
+.navigation>section>ul>li svg {
+  font-size: 1.3rem;
 }
 
 .navigation>section>ul>li:last-child {

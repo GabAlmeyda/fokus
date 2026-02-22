@@ -1,8 +1,4 @@
 import { useState, type JSX } from 'react';
-import { IoMenu } from 'react-icons/io5';
-import { MdAccountCircle } from 'react-icons/md';
-import { MdLightMode } from 'react-icons/md';
-import { MdDarkMode } from 'react-icons/md';
 import styles from './MenuBar.module.css';
 import Button from '../../../common/Button/Button';
 import clsx from 'clsx';
@@ -12,6 +8,7 @@ import {
   useUserMutations,
   useUserQueries,
 } from '../../../../helpers/hooks/use-user.hook';
+import FokusIcon from '../../../common/Icon/Icon';
 
 export default function MenuBar(): JSX.Element {
   const { data: user } = useUserQueries().meQuery;
@@ -32,7 +29,7 @@ export default function MenuBar(): JSX.Element {
           onClick={() => setActiveSidebar('navigation')}
           data-sidebar="navigation"
         >
-          <IoMenu />
+          <FokusIcon iconKey='menu' />
         </button>
 
         <nav
@@ -58,6 +55,7 @@ export default function MenuBar(): JSX.Element {
             <ul>
               <li>
                 <Link to={APP_URLS.home}>Voltar para o início</Link>
+                <FokusIcon iconKey='big-right' />
               </li>
             </ul>
           </section>
@@ -67,9 +65,11 @@ export default function MenuBar(): JSX.Element {
             <ul>
               <li>
                 <Link to={APP_URLS.habits}>Ver hábitos registrados</Link>
+                <FokusIcon iconKey='big-right' />
               </li>
               <li>
                 <Link to={APP_URLS.createHabit}>Criar novo hábito</Link>
+                <FokusIcon iconKey='big-right' />
               </li>
             </ul>
           </section>
@@ -79,9 +79,11 @@ export default function MenuBar(): JSX.Element {
             <ul>
               <li>
                 <Link to={APP_URLS.goals}>Ver metas registradas</Link>
+                <FokusIcon iconKey='big-right' />
               </li>
               <li>
                 <Link to={APP_URLS.createGoal}>Criar nova meta</Link>
+                <FokusIcon iconKey='big-right' />
               </li>
             </ul>
           </section>
@@ -91,7 +93,7 @@ export default function MenuBar(): JSX.Element {
           onClick={() => setActiveSidebar('profile')}
           data-sidebar="profile"
         >
-          <MdAccountCircle />
+          <FokusIcon iconKey='user' />
         </button>
 
         <div
@@ -112,7 +114,7 @@ export default function MenuBar(): JSX.Element {
           </div>
 
           <div className={styles.profile__user}>
-            <MdAccountCircle className={styles.user__img} />
+            <FokusIcon iconKey='user' className={styles.user__img} />
             <div>
               <p className={styles.user__name}>{user?.name}</p>
               <p className={styles.user__email}>{user?.email}</p>
@@ -127,14 +129,14 @@ export default function MenuBar(): JSX.Element {
                   user?.themeMode === 'light' && styles.theme_selected,
                 )}
               >
-                <MdLightMode />
+                <FokusIcon iconKey='sun' />
               </span>
               <span
                 className={clsx(
                   user?.themeMode === 'dark' && styles.theme_selected,
                 )}
               >
-                <MdDarkMode />
+                <FokusIcon iconKey='moon' />
               </span>
             </div>
           </div>

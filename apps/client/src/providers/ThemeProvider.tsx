@@ -7,7 +7,6 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
   const { data: user } = useUserQueries().meQuery;
-
   useEffect(() => {
     document.documentElement.classList.toggle(
       'dark',

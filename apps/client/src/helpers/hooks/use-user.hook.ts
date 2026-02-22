@@ -9,7 +9,7 @@ import type {
 } from '@fokus/shared';
 
 export function useUserQueries() {
-  const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse, void>({
+  const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse>({
     queryKey: ['user'],
     queryFn: async () => {
       const response = await api.get<UserResponseDTO>('/users/me', {

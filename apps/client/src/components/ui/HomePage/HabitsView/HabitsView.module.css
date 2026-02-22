@@ -1,3 +1,4 @@
+/* HEADER PART */
 .header {
   display: flex;
   flex-direction: column;
@@ -80,4 +81,33 @@
 
 .week__day_selected * {
   color: var(--text-primary);
+}
+
+
+
+/* HABITS PART */
+.habits__completed,
+.habits__uncompleted {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  padding: 1rem;
+}
+
+.habits__completed {
+  padding-bottom: 0;
+}
+
+.habits__uncompleted {
+  padding-top: 0;
+}
+
+.habits__uncompleted hr {
+  margin-block: 1rem .5rem;
+}
+
+
+.habits_loading {
+  text-align: center;
 }

@@ -15,7 +15,7 @@ interface UseHabitsQueriesParams {
 }
 
 export function useHabitsQueries({ habitId, filter }: UseHabitsQueriesParams) {
-  const habitQuery = useQuery({
+  const habitQuery = useQuery<HabitResponseDTO, HTTPErrorResponse>({
     queryKey: ['habit', habitId],
     queryFn: async () => {
       const response = await api.get(`/habits/${habitId}`, {
@@ -26,7 +26,7 @@ export function useHabitsQueries({ habitId, filter }: UseHabitsQueriesParams) {
     enabled: !!habitId,
   });
 
-  const habitsFilterQuery = useQuery({
+  const habitsFilterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
     queryKey: ['habits', filter],
     queryFn: async () => {
       const response = await api.get(`/habits`, {

@@ -24,7 +24,6 @@ userRoutes.post('/auth/register', async (req, res) => {
       accessToken: validation.data.accessToken,
       refreshToken: validation.data.refreshToken,
     });
-
     return res.status(statusCode).json(validation.data.user);
   }
 
