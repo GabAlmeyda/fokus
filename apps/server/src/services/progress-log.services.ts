@@ -1,5 +1,4 @@
-import { differenceInDays, startOfDay } from 'date-fns';
-
+import { differenceInDays, format } from 'date-fns';
 import type {
   EntityIdDTO,
   HabitStatsDTO,
@@ -83,6 +82,7 @@ export class ProgressLogService implements IProgressLogService {
 
   async getHabitActivityStats(
     userId: EntityIdDTO,
+    selectedDate: Date,
     habitId?: EntityIdDTO,
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>> {
     const habitDates = await this.progressLogRepository.getEntityDates(
@@ -94,21 +94,21 @@ export class ProgressLogService implements IProgressLogService {
     const stats: Record<EntityIdDTO, HabitStatsDTO> = {};
 
     for (const data of habitDates) {
-      const dates = data.dates;
-
+      const dates = data.dates.map((d) => format(d, 'yyyy-MM-dd'));
       if (dates.length === 0) continue;
 
-      // Logic for 'isCompletedToday'
-      const today = startOfDay(new Date());
-      const lastLogDate = dates[0]!;
-      const isCompletedToday = differenceInDays(today, lastLogDate) === 0;
+      // Logic for 'isCompleted'
+      const selectedDateString = format(selectedDate, 'yyyy-MM-dd');
+      const isCompleted = dates.includes(selectedDateString);
 
       // Logic for 'streak'
       let streak = 0;
-      if (differenceInDays(today, lastLogDate) <= 1) {
+      if (isCompleted) {
         streak = 1;
 
         for (let i = 0; i < dates.length - 1; i++) {
+          if (dates[i] !== selectedDateString) continue;
+
           const currDate = dates[i]!;
           const lastDate = dates[i + 1]!;
 
@@ -135,7 +135,7 @@ export class ProgressLogService implements IProgressLogService {
         }
       }
 
-      stats[data.entityId] = { streak, bestStreak, isCompletedToday };
+      stats[data.entityId] = { streak, bestStreak, isCompleted };
     }
 
     return stats;
@@ -182,9 +182,7 @@ export class ProgressLogService implements IProgressLogService {
     userId: EntityIdDTO,
   ): Promise<number> {
     const deleteFilter = filter;
-    if (deleteFilter.date) {
-      deleteFilter.date.setUTCHours(0, 0, 0, 0);
-    } else {
+    if (!deleteFilter.date) {
       delete deleteFilter.date;
     }
 

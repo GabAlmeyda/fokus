@@ -33,7 +33,7 @@ export class HabitService implements IHabitService {
       const stats: HabitStatsDTO = {
         streak: 0,
         bestStreak: 0,
-        isCompletedToday: false,
+        isCompleted: false,
       };
 
       const habit = mapHabitDocToPublicDTO(doc, stats);
@@ -53,6 +53,7 @@ export class HabitService implements IHabitService {
 
   async findOneById(
     habitId: EntityIdDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO> {
     const doc = await this.habitRepository.findOneById(habitId, userId);
@@ -62,7 +63,9 @@ export class HabitService implements IHabitService {
         `Habit with ID '${habitId}' not found.`,
       );
     }
-    const stats = (await this.getHabitStats(userId, habitId))[habitId]!;
+    const stats = (await this.getHabitStats(userId, selectedDate, habitId))[
+      habitId
+    ]!;
 
     const habit = mapHabitDocToPublicDTO(doc, stats);
     return habit;
@@ -70,10 +73,11 @@ export class HabitService implements IHabitService {
 
   async findByFilter(
     filter: HabitFilterDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO[]> {
     const docs = await this.habitRepository.findByFilter(filter, userId);
-    const stats = await this.getHabitStats(userId);
+    const stats = await this.getHabitStats(userId, selectedDate);
 
     const habits = docs.map((d) =>
       mapHabitDocToPublicDTO(d, stats[d._id.toString()]!),
@@ -84,6 +88,7 @@ export class HabitService implements IHabitService {
   async update(
     habitId: EntityIdDTO,
     newData: HabitUpdateDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO> {
     // Verifies if the habit exists
@@ -111,7 +116,9 @@ export class HabitService implements IHabitService {
           `Habit with ID '${habitId}' not found.`,
         );
       }
-      const stats = (await this.getHabitStats(userId, habitId))[habitId]!;
+      const stats = (await this.getHabitStats(userId, selectedDate, habitId))[
+        habitId
+      ]!;
 
       const habit = mapHabitDocToPublicDTO(updatedDoc, stats);
       return habit;
@@ -148,10 +155,12 @@ export class HabitService implements IHabitService {
 
   private async getHabitStats(
     userId: EntityIdDTO,
+    selectedDate: Date,
     habitId?: EntityIdDTO,
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>> {
     const registeredStats = await this.progressLogService.getHabitActivityStats(
       userId,
+      selectedDate,
       habitId,
     );
 
@@ -166,7 +175,7 @@ export class HabitService implements IHabitService {
       stats[h._id.toString()] = registeredStats[h._id.toString()] || {
         streak: 0,
         bestStreak: 0,
-        isCompletedToday: false,
+        isCompleted: false,
       };
     }
 

@@ -4,17 +4,17 @@ import { MdNavigateBefore } from 'react-icons/md';
 import styles from './HabitsView.module.css';
 import {
   generateHeaderDateString,
-  generateISODate,
   generateWeeklyDays,
 } from '../../../../helpers/utils/dates.utils';
 import {
-  useHabitsMutations,
-  useHabitsQueries,
-} from '../../../../helpers/hooks/use-habits.hook';
+  useHabitMutations,
+  useHabitQueries,
+} from '../../../../helpers/hooks/use-habit.hook';
 import type { HabitFilterDTO } from '@fokus/shared';
 import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 import Habit from '../../../common/Habit/Habit';
+import { addDays, format } from 'date-fns';
 
 const weekDaysMap: Record<number, HabitFilterDTO['weekDay']> = {
   0: 'dom',
@@ -28,31 +28,31 @@ const weekDaysMap: Record<number, HabitFilterDTO['weekDay']> = {
 
 export default function HabitsView(): JSX.Element {
   const navigate = useNavigate();
-  const checkMutation = useHabitsMutations().checkMutation;
-  const uncheckMutation = useHabitsMutations().uncheckMutation;
+  const checkMutation = useHabitMutations().checkMutation;
+  const uncheckMutation = useHabitMutations().uncheckMutation;
   const [selectedDay, setSelectedDay] = useState(() => {
-    const day = new Date();
-    return generateISODate(day);
+    const day = new Date().toISOString();
+    return format(day, 'yyyy-MM-dd');
   });
-  const dateObj = new Date(`${selectedDay}T12:00:00`);
-  const { data: habits } = useHabitsQueries({
+  const dateObj = new Date(selectedDay + 'T12:00:00Z');
+  const { data: habits } = useHabitQueries({
     filter: {
-      weekDay: weekDaysMap[dateObj.getDate()],
+      weekDay: weekDaysMap[dateObj.getDay()],
     },
+    selectedDate: dateObj
   }).habitsFilterQuery;
-  const completedHabits = habits?.filter((h) => h.isCompletedToday);
+  const completedHabits = habits?.filter((h) => h.isCompleted);
   const days = useMemo(() => generateWeeklyDays(dateObj), [selectedDay]);
   const dateString = generateHeaderDateString(dateObj);
 
   const onDateNavigationClick = (event: React.MouseEvent<SVGElement>) => {
-    const action = (event.target as SVGAElement).dataset['action'] as
+    const action = (event.currentTarget as SVGAElement).dataset['action'] as
       | 'back'
       | 'next';
     const offset = action === 'back' ? -7 : 7;
-    const newDate = new Date(selectedDay.replaceAll('-', '/'));
-    newDate.setDate(newDate.getDate() + offset);
+    const newDate = addDays(dateObj, offset);
 
-    setSelectedDay(generateISODate(newDate));
+    setSelectedDay(format(newDate, 'yyyy-MM-dd'));
   };
 
   const onHabitPreviewClick = (habitId: string) => {
@@ -60,18 +60,16 @@ export default function HabitsView(): JSX.Element {
   };
 
   const onHabitCheckClick = (habitId: string) => {
-    const date = new Date(`${selectedDay}T12:00:00`);
-    checkMutation.mutate(
-      { habitId, date }
-    );
+    const date = new Date(selectedDay + 'T12:00:00Z');
+    checkMutation.mutate({ habitId, date });
   };
 
   const onHabitUncheckClick = (habitId: string) => {
-    const date = new Date(`${selectedDay}T12:00:00`);
-    uncheckMutation.mutate(
-      { habitId, date }
-    );
+    const date = new Date(selectedDay + 'T12:00:00Z');
+    uncheckMutation.mutate({ habitId, date });
   };
+
+  console.log(habits?.map((h) => h.isCompleted));
 
   return (
     <>
@@ -107,7 +105,7 @@ export default function HabitsView(): JSX.Element {
           <>
             <div className={styles.habits__completed}>
               {habits
-                .filter((h) => !h.isCompletedToday)
+                .filter((h) => !h.isCompleted)
                 .map((h) => (
                   <Habit
                     habit={h}

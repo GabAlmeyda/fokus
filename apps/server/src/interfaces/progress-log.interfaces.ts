@@ -139,6 +139,7 @@ export interface IProgressLogService {
    */
   getHabitActivityStats(
     userId: EntityIdDTO,
+    selectedDate: Date,
     habitId?: EntityIdDTO,
   ): Promise<Record<EntityIdDTO, HabitStatsDTO>>;
 

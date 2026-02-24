@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { differenceInDays, startOfDay } from 'date-fns';
 
 import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
 
@@ -11,9 +12,8 @@ const ProgressLogBaseSchema = z.object({
   value: z.number().min(1, 'Valor mínimo deve ser 1.'),
 
   date: z.coerce.date().transform((val) => {
-    const date = new Date(val);
-    date.setUTCHours(0, 0, 0, 0);
-    return date;
+    const date = val.toISOString().split('T')[0];
+    return new Date(date + 'T12:00:00Z');
   }),
 });
 
@@ -36,9 +36,8 @@ function progressLogRefinement(
 
   if (data.date) {
     const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
 
-    if (data.date.getTime() > today.getTime()) {
+    if (differenceInDays(startOfDay(today), startOfDay(data.date)) > 0) {
       ctx.addIssue({
         code: 'custom',
         path: ['date'],

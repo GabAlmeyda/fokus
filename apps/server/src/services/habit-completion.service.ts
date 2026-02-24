@@ -31,6 +31,7 @@ export class HabitCompletionService implements IhabitCompletionService {
   ): Promise<HabitResponseDTO> {
     const habit = await this.habitService.findOneById(
       checkData.habitId,
+      checkData.date,
       userId,
     );
     const log: ProgressLogCreateDTO = {
@@ -48,7 +49,11 @@ export class HabitCompletionService implements IhabitCompletionService {
     }
     await this.progressLogService.create(log);
 
-    const updatedHabit = await this.habitService.findOneById(habit.id, userId);
+    const updatedHabit = await this.habitService.findOneById(
+      habit.id,
+      checkData.date,
+      userId,
+    );
     return updatedHabit;
   }
 
@@ -67,6 +72,7 @@ export class HabitCompletionService implements IhabitCompletionService {
 
     const habit = await this.habitService.findOneById(
       uncheckData.habitId,
+      uncheckData.date,
       userId,
     );
     return habit;

@@ -1,17 +1,16 @@
+import { addDays, format, isToday, startOfWeek } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
 export function generateWeeklyDays(date: Date): {
   label: string;
   dayNum: number;
   isToday: boolean;
   fullDate: string;
 }[] {
-  const startOfWeek = new Date(date);
-  startOfWeek.setDate(date.getDate() - date.getDay());
-
+  const weekStart = startOfWeek(date);
   const days = [];
-  const today = new Date();
   for (let i = 0; i < 7; i++) {
-    const day = new Date(startOfWeek);
-    day.setDate(startOfWeek.getDate() + i);
+    const day = addDays(weekStart, i);
 
     days.push({
       label: day
@@ -19,8 +18,8 @@ export function generateWeeklyDays(date: Date): {
         .slice(0, 3)
         .replace('.', ''),
       dayNum: day.getDate(),
-      isToday: day.toDateString() === today.toDateString(),
-      fullDate: generateISODate(day),
+      isToday: isToday(day),
+      fullDate: format(day, 'yyyy-MM-dd'),
     });
   }
 
@@ -28,22 +27,7 @@ export function generateWeeklyDays(date: Date): {
 }
 
 export function generateHeaderDateString(date: Date) {
-  let weekDay = date
-    .toLocaleDateString('pt-BR', { weekday: 'long' })
-    .split('-')[0];
-  weekDay = weekDay[0].toUpperCase() + weekDay.slice(1);
-  const month = date
-    .toLocaleDateString('pt-BR', { month: 'short' })
-    .replace('.', '');
-  const day = date.getDate();
-  const year = date.getFullYear();
+  const formattedDate = format(date, 'EEE, dd MMM, yyyy', { locale: ptBR });
 
-  return `${weekDay}, ${day} ${month}, ${year}`;
-}
-
-export function generateISODate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return formattedDate[0].toUpperCase() + formattedDate.slice(1).replaceAll('.', '');
 }

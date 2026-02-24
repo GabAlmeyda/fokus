@@ -67,7 +67,7 @@ export function mapHabitDocToPublicDTO(
     icon: habit.icon,
     streak: stats.streak,
     bestStreak: stats.bestStreak,
-    isCompletedToday: stats.isCompletedToday,
+    isCompleted: stats.isCompleted,
   };
 }
 

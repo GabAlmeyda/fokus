@@ -1,4 +1,5 @@
 import { model, Schema, type HydratedDocument } from 'mongoose';
+import { format } from 'date-fns';
 
 interface IProgressLog {
   userId: string | Schema.Types.ObjectId;
@@ -39,9 +40,7 @@ const progressLogSchema = new Schema<IProgressLog>({
     type: Date,
     required: true,
     set: (val: Date) => {
-      const date = new Date(val);
-
-      date.setUTCHours(0, 0, 0, 0);
+      const date = new Date(format(val, 'yyyy-MM-dd') + 'T12:00:00Z');
       return date;
     },
   },

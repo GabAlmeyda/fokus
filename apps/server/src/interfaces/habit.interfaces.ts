@@ -89,23 +89,27 @@ export interface IHabitService {
   /**
    * Returns a user habit by its ID.
    * @param habitId - The habit ID to be searched for.
+   * @param selectedDate - The date displayed to the user.
    * @param userId - The owner ID to ensure authorization.
    * @returns The sanitized habit data.
    * @throws *`AppServerError`* If the habit is not found or unauthorized.
    */
   findOneById(
     habitId: EntityIdDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO>;
 
   /**
    * Returns all habits of a user based on filters.
    * @param filter - The filter criteria.
+   * @param selectedDate - The date displayed to the user.
    * @param userId - The owner ID to ensure data authorization.
    * @returns An array of sanitized habit data.
    */
   findByFilter(
     filter: HabitFilterDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO[]>;
 
@@ -113,6 +117,7 @@ export interface IHabitService {
    * Updates a user habit.
    * @param habitId - The habit ID to be searched for.
    * @param newData - The data to be updated.
+   * @param selectedDate - The date displayed to the user.
    * @param userId - The owner ID to ensure authorization.
    * @returns The updated sanitized habit data.
    * @throws *`AppServerError`* If the habit is not found or the provided data
@@ -121,6 +126,7 @@ export interface IHabitService {
   update(
     habitId: EntityIdDTO,
     newData: HabitUpdateDTO,
+    selectedDate: Date,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO>;
 
@@ -190,9 +196,8 @@ export interface IHabitController {
 
   /**
    * Returns a habit by its ID for the authenticated user.
-   * @param req - The request object containing the *`habitId`* in the params and the
-   * authenticated *`userId`*.
-   * in the cookies.
+   * @param req - The request object containing the *`habitId`* in the params,
+   * the *`selectedDate`* in the query and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized habit.
    * - 400 (Bad Request): On failure, if the habit ID format is invalid.
@@ -202,8 +207,8 @@ export interface IHabitController {
 
   /**
    * Returns habits based on filters for the authenticated user.
-   * @param req - The request object containing the *`HabitFilterDTO`* in the query and the
-   * authenticated *`userId`*.
+   * @param req - The request object containing the *`HabitFilterDTO`* and the *`selectedDate`*
+   * in the query and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing an array of sanitized habits.
    * - 400 (Bad Request): On failure, if the filter data format is invalid.
@@ -215,8 +220,8 @@ export interface IHabitController {
 
   /**
    * Updates a habit for the authenticated user.
-   * @param req - The request object containing the *`habitId`* in the params, updated data in the
-   * body, and the authenticated *`userId`*.
+   * @param req - The request object containing the *`habitId`* in the params, the *`selectedDate`*
+   * in the query, the updated data in the body and the authenticated *`userId`*.
    * @returns The HTTP response with:
    * - 200 (Ok): On success, containing the sanitized updated habit.
    * - 400 (Bad Request): On failure, if the new habit data format, or the habit ID, is invalid.

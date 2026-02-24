@@ -7,7 +7,7 @@ export const REQUESTS_RATE_LIMITER = {
   login: 10,
   register: 10,
   post: 20,
-  get: 100,
+  get: 200,
   patch: 50,
   delete: 50,
   default: 250,

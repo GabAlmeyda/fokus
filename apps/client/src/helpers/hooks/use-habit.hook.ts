@@ -10,16 +10,18 @@ import {
 } from '@fokus/shared';
 
 interface UseHabitsQueriesParams {
+  selectedDate?: Date;
   habitId?: string;
   filter?: HabitFilterDTO;
 }
 
-export function useHabitsQueries({ habitId, filter }: UseHabitsQueriesParams) {
+export function useHabitQueries({ selectedDate, habitId, filter }: UseHabitsQueriesParams) {
   const habitQuery = useQuery<HabitResponseDTO, HTTPErrorResponse>({
-    queryKey: ['habit', habitId],
+    queryKey: ['habit', habitId, selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits/${habitId}`, {
         withCredentials: true,
+        params: {selectedDate}
       });
       return response.data;
     },
@@ -27,10 +29,10 @@ export function useHabitsQueries({ habitId, filter }: UseHabitsQueriesParams) {
   });
 
   const habitsFilterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
-    queryKey: ['habits', filter],
+    queryKey: ['habits', filter, selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits`, {
-        params: filter,
+        params: {...filter, selectedDate},
         withCredentials: true,
       });
       return response.data;
@@ -44,7 +46,7 @@ export function useHabitsQueries({ habitId, filter }: UseHabitsQueriesParams) {
   };
 }
 
-export function useHabitsMutations() {
+export function useHabitMutations() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation<
@@ -69,11 +71,13 @@ export function useHabitsMutations() {
     {
       habitId: string;
       data: HabitUpdateDTO;
+      selectedDate: Date;
     }
   >({
-    mutationFn: async ({ habitId, data }) => {
+    mutationFn: async ({ habitId, data, selectedDate }) => {
       const response = await api.patch(`/habits/${habitId}`, data, {
         withCredentials: true,
+        params: {selectedDate}
       });
       return response.data;
     },

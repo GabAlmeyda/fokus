@@ -30,10 +30,11 @@ habitRoutes.get(
   '/:habitId',
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
-    const { params, user } = req as AuthRequest;
+    const { params, user, query } = req as AuthRequest;
 
     const { statusCode, body } = await habitController.findOneById({
       params,
+      query,
       userId: user.id,
     });
     return res.status(statusCode).json(body);
@@ -92,10 +93,11 @@ habitRoutes.patch(
   '/:habitId',
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
-    const { params, body: reqBody, user } = req as AuthRequest;
+    const { params, query, body: reqBody, user } = req as AuthRequest;
 
     const { statusCode, body } = await habitController.update({
       params,
+      query,
       body: reqBody,
       userId: user.id,
     });

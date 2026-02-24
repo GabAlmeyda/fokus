@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
+import { differenceInDays, startOfDay } from 'date-fns';
 
 extendZodWithOpenApi(z);
 
@@ -192,35 +193,40 @@ export const HabitCompletionLogSchema = z
     date: z.coerce
       .date()
       .transform((val) => {
-        const date = new Date(val);
-        date.setUTCHours(0, 0, 0, 0);
-        return date;
+        const date = val.toISOString().split('T')[0];
+        return new Date(date + 'T12:00:00Z');
       })
       .refine(
         (val) => {
           const today = new Date();
-          today.setUTCHours(0, 0, 0, 0);
-
-          if (val.getTime() > today.getTime()) return false;
+          if (differenceInDays(startOfDay(val), startOfDay(today)) > 0) {
+            return false;
+          }
 
           return true;
         },
-        { message: 'Data não pode ser no futuro.' },
+        { error: () => ({ message: 'Data não pode ser no futuro.' }) },
       )
       .openapi({
         description:
           "Date of the check/uncheck. A valid 'Date' \n" +
-          " object or a string in format 'YYYY-MM-DD'.",
+          'object or a valid string to be transformed.',
         example: '2025-11-02',
       }),
   })
   .openapi('HabitCheck');
 export type HabitCompletionLogDTO = z.infer<typeof HabitCompletionLogSchema>;
 
+export const HabitDateSchema = z.coerce.date().transform((val) => {
+  const date = val.toISOString().split('T')[0];
+  return new Date(date + 'T12:00:00Z');
+});
+export type HabitDateDTO = z.infer<typeof HabitDateSchema>;
+
 export type HabitStatsDTO = {
   streak: number;
   bestStreak: number;
-  isCompletedToday: boolean;
+  isCompleted: boolean;
 };
 export type HabitResponseDTO = z.infer<typeof HabitBaseSchema> &
   HabitStatsDTO & { id: EntityIdDTO };
@@ -246,7 +252,7 @@ export const HabitResponseSchema = HabitBaseSchema.extend({
       readOnly: true,
     }),
 
-  isCompletedToday: z.boolean().openapi({
+  isCompleted: z.boolean().openapi({
     description: 'Indicates if the habit was completed in the day.',
     example: true,
     readOnly: true,

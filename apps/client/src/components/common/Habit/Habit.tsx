@@ -16,7 +16,7 @@ export default function Habit({
 }: HabitProps): JSX.Element {
   return (
     <div
-      className={`${styles.habit} ${habit.isCompletedToday ? styles.habit_completed : ''}`}
+      className={`${styles.habit} ${habit.isCompleted ? styles.habit_completed : ''}`}
     >
       <div
         onClick={onPreviewClick}
@@ -43,7 +43,7 @@ export default function Habit({
         data-action="check"
         className={styles.habit__completion}
       >
-        <FokusIcon iconKey={habit.isCompletedToday ? 'marked' : 'unmarked'} />
+        <FokusIcon iconKey={habit.isCompleted ? 'marked' : 'unmarked'} />
       </span>
     </div>
   );

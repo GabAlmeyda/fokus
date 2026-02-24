@@ -10,6 +10,7 @@ import {
   type HabitUpdateDTO,
   HabitFilterSchema,
   HabitCompletionLogSchema,
+  HabitDateSchema,
 } from '@fokus/shared';
 import type {
   IhabitCompletionService,
@@ -50,9 +51,14 @@ export class HabitController implements IHabitController {
   ): Promise<HTTPResponse<HabitResponseDTO>> {
     try {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
+      const selectedDate = HabitDateSchema.parse(req.query?.selectedDate);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habit = await this.habitService.findOneById(habitId, userId);
+      const habit = await this.habitService.findOneById(
+        habitId,
+        selectedDate,
+        userId,
+      );
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -67,9 +73,14 @@ export class HabitController implements IHabitController {
         title: req.query?.title,
         weekDay: req.query?.weekDay,
       });
+      const selectedDate = HabitDateSchema.parse(req.query?.selectedDate);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habits = await this.habitService.findByFilter(filter, userId);
+      const habits = await this.habitService.findByFilter(
+        filter,
+        selectedDate,
+        userId,
+      );
       return { statusCode: HTTPStatusCode.OK, body: habits };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -82,9 +93,15 @@ export class HabitController implements IHabitController {
     try {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
       const newData = HabitUpdateSchema.parse(req.body);
+      const selectedDate = HabitDateSchema.parse(req.query?.selectedDate);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habit = await this.habitService.update(habitId, newData, userId);
+      const habit = await this.habitService.update(
+        habitId,
+        newData,
+        selectedDate,
+        userId,
+      );
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -98,7 +115,6 @@ export class HabitController implements IHabitController {
         date: req.query?.date,
       });
       const userId = EntityIdSchema.parse(req.userId);
-
       const habit = await this.habitCompletionService.check(checkData, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
