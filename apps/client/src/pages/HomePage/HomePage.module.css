@@ -33,3 +33,9 @@
 
   background-color: var(--text-secondary);
 }
+
+@media screen and (min-width: 1080px) {
+  .homepage {
+    margin-left: 300px;
+  }
+}

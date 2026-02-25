@@ -143,7 +143,7 @@ export default function MenuBar(): JSX.Element {
         </div>
       </nav>
       {activeSidebar !== 'none' && (
-        <div className={styles._menubar__shadow}></div>
+        <div className={styles._menubar__shadow} onClick={() => setActiveSidebar('none')}></div>
       )}
     </>
   );

@@ -39,7 +39,7 @@ export default function HabitsView(): JSX.Element {
     filter: {
       weekDay: weekDaysMap[dateObj.getDay()],
     },
-    selectedDate: dateObj
+    selectedDate: dateObj,
   }).habitsFilterQuery;
   const completedHabits = habits?.filter((h) => h.isCompleted);
   const days = useMemo(() => generateWeeklyDays(dateObj), [selectedDay]);
@@ -117,13 +117,8 @@ export default function HabitsView(): JSX.Element {
             </div>
             <div
               className={styles.habits__uncompleted}
-              style={
-                completedHabits?.length
-                  ? { display: 'flex' }
-                  : { display: 'none' }
-              }
+              style={completedHabits?.length === 0 ? { display: 'none' } : undefined}
             >
-              <hr />
               {completedHabits?.map((h) => (
                 <Habit
                   habit={h}

@@ -22,7 +22,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <PageView>
-      <Main>
+      <Main className={styles.homepage}>
         <MenuBar />
         <div
           className={styles.home__viewSwitcher}
