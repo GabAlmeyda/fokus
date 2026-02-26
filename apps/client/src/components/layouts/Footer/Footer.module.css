@@ -14,3 +14,10 @@
 .footer p small{
   color: var(--text-inverse);
 }
+
+@media screen and (min-width: 1080px) {
+  .footer {
+    position: relative;
+    z-index: 2000;
+  }
+}

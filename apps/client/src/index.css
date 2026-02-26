@@ -29,10 +29,10 @@
 
 
 html.dark {
-  --bg-primary: #111815;
-  --bg-secondary: #1e2621;
+  --bg-primary: #101b14;
+  --bg-secondary: #1b251f;
   --bg-muted: #2d3a31;
-  --bg-inverse: #3c9932;
+  --bg-inverse: #2d5a42;
 
   --text-primary: #ececec;
   --text-secondary: #6b8272;

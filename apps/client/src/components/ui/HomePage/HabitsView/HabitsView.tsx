@@ -69,8 +69,6 @@ export default function HabitsView(): JSX.Element {
     uncheckMutation.mutate({ habitId, date });
   };
 
-  console.log(habits?.map((h) => h.isCompleted));
-
   return (
     <>
       <div className={styles.header}>
@@ -130,7 +128,7 @@ export default function HabitsView(): JSX.Element {
             </div>
           </>
         ) : (
-          <div className={styles.habits_loading}>Carregando</div>
+          <div className={styles.habits_loading}>Carregando...</div>
         )}
       </div>
     </>

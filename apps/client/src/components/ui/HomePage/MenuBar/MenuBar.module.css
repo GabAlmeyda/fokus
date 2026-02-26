@@ -132,8 +132,9 @@
 
     max-width: 300px;
 
+    border-right: 2px solid var(--text-secondary);
+
     background-color: var(--bg-primary);
-    filter: brightness(.8);
 
     font-size: .9rem;
   }
