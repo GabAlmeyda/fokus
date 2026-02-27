@@ -162,11 +162,12 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['Goal'],
     method: 'delete',
-    path: '/goals/logs/{progressLogId}',
+    path: '/goals/{goalId}/logs/{progressLogId}',
     security: [{ accessTokenCookie: [] }],
     summary: 'Removes a goal progress log of an authenticated user.',
     request: {
       params: z.object({
+        goalId: EntityIdSchema,
         progressLogId: EntityIdSchema,
       }),
     },

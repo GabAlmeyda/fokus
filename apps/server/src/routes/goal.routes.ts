@@ -90,7 +90,7 @@ goalRoutes.patch(
 
 // Remove progress log route
 goalRoutes.delete(
-  '/logs/:progressLogId',
+  '/:goalId/logs/:progressLogId',
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { params, user } = req as AuthRequest;

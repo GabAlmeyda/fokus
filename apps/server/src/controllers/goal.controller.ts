@@ -106,10 +106,12 @@ export class GoalController implements IGoalController {
   ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
       const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const goal = await this.goalCompletionService.removeProgressEntry(
+      const goal = await this.goalCompletionService.removeProgressLog(
         progressLogId,
+        goalId,
         userId,
       );
       return { statusCode: HTTPStatusCode.OK, body: goal };

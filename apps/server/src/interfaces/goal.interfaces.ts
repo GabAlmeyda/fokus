@@ -159,15 +159,17 @@ export interface IGoalCompletionService {
   ): Promise<{ updatedGoal: GoalResponseDTO; progressLogId: EntityIdDTO }>;
 
   /**
-   * Removes an user progress entry of a goal, searching for its ID.
+   * Removes an user progress log of a goal, searching for its ID.
    * @param progressLogId - The progress log ID to be searched for.
+   * @param goalId - The goal ID of the log.
    * @param userId - The owner ID to ensure authorization.
    * @returns The updated sanitized goal data.
    * @throws *`AppServerError`* If:
-   * - The progress entry is not found or unauthorized.
+   * - The progress log is not found or unauthorized.
    */
-  removeProgressEntry(
+  removeProgressLog(
     progressLogId: EntityIdDTO,
+    goalId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO>;
 }

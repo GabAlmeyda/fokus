@@ -72,7 +72,7 @@ export class GoalCompletionService implements IGoalCompletionService {
     return { updatedGoal, progressLogId: log.id };
   }
 
-  async removeProgressEntry(
+  async removeProgressLog(
     progressLogId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO> {

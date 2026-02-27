@@ -107,17 +107,21 @@ export function useGoalMutations() {
   const removeLogMutation = useMutation<
     GoalResponseDTO,
     HTTPErrorResponse,
-    EntityIdDTO
+    { progressLogId: EntityIdDTO; goalId: EntityIdDTO }
   >({
-    mutationFn: async (progressLogId) => {
-      const response = await api.delete(`/goals/logs/${progressLogId}`, {
-        withCredentials: true,
-      });
+    mutationFn: async ({ progressLogId, goalId }) => {
+      const response = await api.delete(
+        `/goals/${goalId}/logs/${progressLogId}`,
+        {
+          withCredentials: true,
+        },
+      );
       return response.data;
     },
-    onSuccess: async (goal) => {
+    onSuccess: async (_, variables) => {
+      const { goalId } = variables;
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['goal', goal.id] }),
+        queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),
       ]);
     },
