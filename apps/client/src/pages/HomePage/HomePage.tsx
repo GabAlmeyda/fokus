@@ -4,6 +4,7 @@ import PageView from '../../components/layouts/PageView/PageView';
 import Main from '../../components/layouts/Main/Main';
 import MenuBar from '../../components/ui/HomePage/MenuBar/MenuBar';
 import HabitsView from '../../components/ui/HomePage/HabitsView/HabitsView';
+import GoalsView from '../../components/ui/HomePage/GoalsView/GoalsView';
 
 export default function HomePage(): JSX.Element {
   const [activeView, setActiveView] = useState<'habits' | 'goals'>('habits');
@@ -43,7 +44,13 @@ export default function HomePage(): JSX.Element {
           </button>
         </div>
 
-        {activeView === 'habits' ? <HabitsView /> : <div></div>}
+        {activeView === 'habits' ? (
+          <HabitsView />
+        ) : activeView === 'goals' ? (
+          <GoalsView></GoalsView>
+        ) : (
+          <div></div>
+        )}
       </Main>
     </PageView>
   );

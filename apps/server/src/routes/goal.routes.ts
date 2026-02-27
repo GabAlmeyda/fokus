@@ -12,7 +12,7 @@ goalRoutes.use(authMiddleware);
 
 // Add progress log route
 goalRoutes.post(
-  '/:goalId/log',
+  '/:goalId/logs',
   authUserRateLimiter(REQUESTS_RATE_LIMITER.post),
   async (req, res) => {
     const { body: reqBody, params, query, user } = req as AuthRequest;

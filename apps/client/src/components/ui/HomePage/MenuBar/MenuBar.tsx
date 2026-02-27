@@ -29,7 +29,7 @@ export default function MenuBar(): JSX.Element {
           onClick={() => setActiveSidebar('navigation')}
           data-sidebar="navigation"
         >
-          <FokusIcon iconKey='menu' />
+          <FokusIcon iconKey="menu" />
         </button>
 
         <nav
@@ -55,35 +55,21 @@ export default function MenuBar(): JSX.Element {
             <ul>
               <li>
                 <Link to={APP_URLS.home}>Voltar para o início</Link>
-                <FokusIcon iconKey='big-right' />
+                <FokusIcon iconKey="big-right" />
               </li>
             </ul>
           </section>
 
           <section>
-            <h3>Hábitos</h3>
+            <h3>Criar</h3>
             <ul>
-              <li>
-                <Link to={APP_URLS.habits}>Ver hábitos registrados</Link>
-                <FokusIcon iconKey='big-right' />
-              </li>
               <li>
                 <Link to={APP_URLS.createHabit}>Criar novo hábito</Link>
-                <FokusIcon iconKey='big-right' />
-              </li>
-            </ul>
-          </section>
-
-          <section>
-            <h3>Metas</h3>
-            <ul>
-              <li>
-                <Link to={APP_URLS.goals}>Ver metas registradas</Link>
-                <FokusIcon iconKey='big-right' />
+                <FokusIcon iconKey="big-right" />
               </li>
               <li>
                 <Link to={APP_URLS.createGoal}>Criar nova meta</Link>
-                <FokusIcon iconKey='big-right' />
+                <FokusIcon iconKey="big-right" />
               </li>
             </ul>
           </section>
@@ -93,7 +79,7 @@ export default function MenuBar(): JSX.Element {
           onClick={() => setActiveSidebar('profile')}
           data-sidebar="profile"
         >
-          <FokusIcon iconKey='user' />
+          <FokusIcon iconKey="user" />
         </button>
 
         <div
@@ -114,7 +100,7 @@ export default function MenuBar(): JSX.Element {
           </div>
 
           <div className={styles.profile__user}>
-            <FokusIcon iconKey='user' className={styles.user__img} />
+            <FokusIcon iconKey="user" className={styles.user__img} />
             <div>
               <p className={styles.user__name}>{user?.name}</p>
               <p className={styles.user__email}>{user?.email}</p>
@@ -129,21 +115,24 @@ export default function MenuBar(): JSX.Element {
                   user?.themeMode === 'light' && styles.theme_selected,
                 )}
               >
-                <FokusIcon iconKey='sun' />
+                <FokusIcon iconKey="sun" />
               </span>
               <span
                 className={clsx(
                   user?.themeMode === 'dark' && styles.theme_selected,
                 )}
               >
-                <FokusIcon iconKey='moon' />
+                <FokusIcon iconKey="moon" />
               </span>
             </div>
           </div>
         </div>
       </nav>
       {activeSidebar !== 'none' && (
-        <div className={styles._menubar__shadow} onClick={() => setActiveSidebar('none')}></div>
+        <div
+          className={styles._menubar__shadow}
+          onClick={() => setActiveSidebar('none')}
+        ></div>
       )}
     </>
   );

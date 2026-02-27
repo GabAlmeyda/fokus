@@ -1,0 +1,67 @@
+/* HEADER PART */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .8rem;
+
+  height: 130px;
+
+  padding: .5rem;
+
+  background-color: var(--bg-muted);
+}
+
+.header span {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.header * {
+  color: var(--text-secondary);
+}
+
+.header span svg {
+  font-size: 1.3rem;
+}
+
+.header__filters {
+  display: flex;
+  overflow-x: auto;
+  gap: .5rem;
+  scrollbar-width: none;
+
+  max-width: 100%;
+  min-width: 100%;
+}
+.header__filters::-webkit-scrollbar {
+  display: none;
+}
+
+.header__filters button {
+  display: inline-block;
+  flex-shrink: 0;
+
+  padding: .1rem .5rem;
+  border-radius: 10px;
+  border: 2px solid var(--accent-inverse);
+
+  background-color: transparent;
+
+  white-space: nowrap;
+  color: var(--accent-inverse);
+  font-weight: 500;
+}
+
+.header__filters button.active {
+  border: none;
+
+  background-color: var(--accent-primary);
+
+  color: var(--text-primary);
+}
+
+
+
+/* GOALS PART */

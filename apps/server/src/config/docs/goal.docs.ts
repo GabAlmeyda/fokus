@@ -25,7 +25,7 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     tags: ['Goal'],
     method: 'post',
-    path: '/goals/{goalId}/log',
+    path: '/goals/{goalId}/logs',
     security: [{ accessTokenCookie: [] }],
     summary: 'Adds a goal progress log for an authenticated user.',
     request: {
@@ -175,7 +175,14 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
       ...INVALID_INPUT_ERRORS_DOCS,
       200: {
         description: 'Progress log removed successfully.',
-        content: { 'application/json': { schema: GoalResponseSchema } },
+        content: {
+          'application/json': {
+            schema: z.object({
+              updatedGoal: GoalResponseSchema,
+              progressLogId: EntityIdSchema,
+            }),
+          },
+        },
       },
       404: {
         description: 'Goal progress log not found.',

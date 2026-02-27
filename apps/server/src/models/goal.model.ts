@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { Types, Schema, model, type HydratedDocument } from 'mongoose';
 
 interface IGoal {
@@ -61,9 +62,7 @@ const goalSchema = new Schema<IGoal>(
       set: function (val: Date | null) {
         if (!val) return null;
 
-        const date = new Date(val);
-        date.setUTCHours(0, 0, 0, 0);
-
+        const date = new Date(format(val, 'yyyy-MM-dd') + 'T12:00:00Z');
         return date;
       },
     },

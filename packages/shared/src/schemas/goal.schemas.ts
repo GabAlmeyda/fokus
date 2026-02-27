@@ -108,11 +108,11 @@ function goalRefinement(data: GoalRefinementData, ctx: z.RefinementCtx) {
   // and 'unitOfMeasure'
   switch (data.type) {
     case 'qualitative':
-      if (data.targetValue != null) {
+      if (data.targetValue != 1) {
         ctx.addIssue({
           code: 'custom',
           path: ['targetValue'],
-          message: 'Metas qualitativas não podem ter um valor final.',
+          message: 'Metas qualitativas devem ter o valor final sendo 1.',
         });
       }
       if (data.unitOfMeasure != null) {

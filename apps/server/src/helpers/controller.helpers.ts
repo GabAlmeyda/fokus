@@ -54,7 +54,9 @@ export function setTokens(
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
-  res.cookie('XSRF-TOKEN', randomUUID(), {
+  const id = randomUUID();
+  // console.log(id);
+  res.cookie('XSRF-TOKEN', id, {
     httpOnly: false,
     secure: true,
     sameSite: isProduction ? 'none' : 'lax',
