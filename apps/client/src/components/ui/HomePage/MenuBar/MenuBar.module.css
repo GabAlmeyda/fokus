@@ -13,6 +13,8 @@
   align-items: center;
   justify-content: space-between;
 
+  height: 45px;
+
   padding: .3rem;
 
   background-color: var(--bg-inverse);

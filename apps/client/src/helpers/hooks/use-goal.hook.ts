@@ -15,28 +15,28 @@ interface UseGoalQueriesParams {
   filter?: GoalFilterDTO;
 }
 
-export function useGoalQueries({ goalId, filter }: UseGoalQueriesParams) {
+export function useGoalQueries(query: UseGoalQueriesParams) {
   const idQuery = useQuery<GoalResponseDTO, HTTPErrorResponse>({
-    queryKey: ['goal', goalId],
+    queryKey: ['goal', query.goalId],
     queryFn: async () => {
-      const response = await api.get(`/goals/${goalId}`, {
+      const response = await api.get(`/goals/${query.goalId}`, {
         withCredentials: true,
       });
       return response.data;
     },
-    enabled: !!goalId,
+    enabled: !!query.goalId,
   });
 
   const filterQuery = useQuery<GoalResponseDTO[], HTTPErrorResponse>({
-    queryKey: ['goals', filter],
+    queryKey: ['goals', query.filter],
     queryFn: async () => {
       const response = await api.get('/goals', {
         withCredentials: true,
-        params: filter,
+        params: query.filter,
       });
       return response.data;
     },
-    enabled: !!filter,
+    enabled: !!query,
   });
 
   return { idQuery, filterQuery };

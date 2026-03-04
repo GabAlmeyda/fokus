@@ -9,7 +9,7 @@ import GoalsView from '../../components/ui/HomePage/GoalsView/GoalsView';
 export default function HomePage(): JSX.Element {
   const [activeView, setActiveView] = useState<'habits' | 'goals'>('habits');
 
-  const onViewSwitcherClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleViewSwitcherClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const view = (event.target as HTMLElement).dataset['view'];
     if (!view) return;
 
@@ -27,7 +27,7 @@ export default function HomePage(): JSX.Element {
         <MenuBar />
         <div
           className={styles.home__viewSwitcher}
-          onClick={onViewSwitcherClick}
+          onClick={handleViewSwitcherClick}
         >
           <button
             data-view="habits"

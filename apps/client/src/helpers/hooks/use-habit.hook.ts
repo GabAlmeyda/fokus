@@ -15,29 +15,29 @@ interface UseHabitsQueriesParams {
   filter?: HabitFilterDTO;
 }
 
-export function useHabitQueries({ selectedDate, habitId, filter }: UseHabitsQueriesParams) {
+export function useHabitQueries(query: UseHabitsQueriesParams) {
   const habitQuery = useQuery<HabitResponseDTO, HTTPErrorResponse>({
-    queryKey: ['habit', habitId, selectedDate],
+    queryKey: ['habit', query.habitId, query.selectedDate],
     queryFn: async () => {
-      const response = await api.get(`/habits/${habitId}`, {
+      const response = await api.get(`/habits/${query.habitId}`, {
         withCredentials: true,
-        params: {selectedDate}
+        params: {selectedDate: query.selectedDate}
       });
       return response.data;
     },
-    enabled: !!habitId,
+    enabled: !!query.habitId,
   });
 
   const habitsFilterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
-    queryKey: ['habits', filter, selectedDate],
+    queryKey: ['habits', query.filter,query. selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits`, {
-        params: {...filter, selectedDate},
+        params: {...query.filter, selectedDate: query.selectedDate},
         withCredentials: true,
       });
       return response.data;
     },
-    enabled: !!filter,
+    enabled: !!query,
   });
 
   return {

@@ -20,12 +20,13 @@
   width: 100%;
 }
 
-.header__fullDate > svg {
+.header__fullDate>svg {
   font-size: 1.6rem;
 
   cursor: pointer;
 }
-.header__fullDate > svg * {
+
+.header__fullDate>svg * {
   color: var(--text-primary);
 }
 
@@ -84,13 +85,13 @@
 }
 
 @media screen and (min-width: 750px) {
-  .header > * {
+  .header>* {
     max-width: 500px;
 
     margin-inline: auto;
   }
 
-  .header__fullDate > svg {
+  .header__fullDate>svg {
     margin-inline: 2rem;
   }
 
@@ -126,6 +127,7 @@
 }
 
 @media screen and (min-width: 750px) {
+
   .habits__completed,
   .habits__uncompleted {
     display: grid;
@@ -134,5 +136,13 @@
     max-width: 700px;
 
     margin-inline: auto;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+
+  .habits__completed,
+  .habits__uncompleted {
+    max-width: 800px;
   }
 }

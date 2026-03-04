@@ -33,7 +33,9 @@ const HABIT_ICONS = {
   menu: LuIcons.LuMenu,
   moon: LuIcons.LuMoon,
   sun: LuIcons.LuSunMedium,
-  filter: LuIcons.LuFilter
+  filter: LuIcons.LuFilter,
+  tag: LuIcons.LuTag,
+  calendar: LuIcons.LuCalendar,
 } as const;
 
 export type FokusIconKey = keyof typeof HABIT_ICONS;

@@ -13,31 +13,28 @@ interface UseCategoryQueriesParams {
   filter?: CategoryFilterDTO;
 }
 
-export function useCategoryQueries({
-  categoryId,
-  filter,
-}: UseCategoryQueriesParams) {
+export function useCategoryQueries(query: UseCategoryQueriesParams) {
   const idQuery = useQuery<CategoryResponseDTO, HTTPErrorResponse>({
-    queryKey: ['category', categoryId],
+    queryKey: ['category', query.categoryId],
     queryFn: async () => {
-      const response = await api.get(`/categories/${categoryId}`, {
+      const response = await api.get(`/categories/${query.categoryId}`, {
         withCredentials: true,
       });
       return response.data;
     },
-    enabled: !!categoryId,
+    enabled: !!query.categoryId,
   });
 
   const filterQuery = useQuery<CategoryResponseDTO[], HTTPErrorResponse>({
-    queryKey: ['categories', filter],
+    queryKey: ['categories', query.filter],
     queryFn: async () => {
       const response = await api.get('/categories', {
         withCredentials: true,
-        params: filter,
+        params: query.filter,
       });
       return response.data;
     },
-    enabled: !!filter,
+    enabled: !!query,
   });
 
   return { idQuery, filterQuery };

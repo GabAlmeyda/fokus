@@ -1,6 +1,9 @@
 import { useMemo, useState, type JSX } from 'react';
 import { MdNavigateNext } from 'react-icons/md';
 import { MdNavigateBefore } from 'react-icons/md';
+import { addDays, format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import type { HabitFilterDTO } from '@fokus/shared';
 import styles from './HabitsView.module.css';
 import {
   generateHeaderDateString,
@@ -10,11 +13,8 @@ import {
   useHabitMutations,
   useHabitQueries,
 } from '../../../../helpers/hooks/use-habit.hook';
-import type { HabitFilterDTO } from '@fokus/shared';
-import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 import Habit from '../../../common/Habit/Habit';
-import { addDays, format } from 'date-fns';
 
 const weekDaysMap: Record<number, HabitFilterDTO['weekDay']> = {
   0: 'dom',
