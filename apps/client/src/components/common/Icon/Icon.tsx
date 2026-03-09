@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import * as LuIcons from 'react-icons/lu';
 
-const HABIT_ICONS = {
+export const USER_HABIT_ICONS = {
   gym: LuIcons.LuDumbbell,
   water: LuIcons.LuDroplets,
   diet: LuIcons.LuApple,
@@ -22,13 +22,16 @@ const HABIT_ICONS = {
   plants: LuIcons.LuSprout,
   cleanup: LuIcons.LuBrush,
   target: LuIcons.LuTarget,
-  unmarked: LuIcons.LuBadge,
-  marked: LuIcons.LuBadgeCheck,
-  bell: LuIcons.LuBell,
+};
+
+const HABIT_ICONS = {
+  ...USER_HABIT_ICONS,
   left: LuIcons.LuChevronLeft,
   'big-left': LuIcons.LuArrowBigLeftDash,
   right: LuIcons.LuChevronRight,
   'big-right': LuIcons.LuArrowBigRightDash,
+  'big-down': LuIcons.LuArrowBigDownDash,
+  'big-up': LuIcons.LuArrowBigUpDash,
   user: LuIcons.LuCircleUserRound,
   menu: LuIcons.LuMenu,
   moon: LuIcons.LuMoon,
@@ -36,6 +39,9 @@ const HABIT_ICONS = {
   filter: LuIcons.LuFilter,
   tag: LuIcons.LuTag,
   calendar: LuIcons.LuCalendar,
+  unmarked: LuIcons.LuBadge,
+  marked: LuIcons.LuBadgeCheck,
+  bell: LuIcons.LuBell,
 } as const;
 
 export type FokusIconKey = keyof typeof HABIT_ICONS;
@@ -51,5 +57,5 @@ export default function FokusIcon({
 }: FokusIconProps): JSX.Element {
   const Icon = HABIT_ICONS[iconKey] || LuIcons.LuCircleAlert;
 
-  return <Icon className={className} />;
+  return <Icon className={className} style={{ userSelect: 'none' }} />;
 }

@@ -5,15 +5,19 @@ import styles from './Input.module.css';
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: 'text' | 'number' | 'email' | 'password';
   hasError?: boolean;
+  className?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type = 'text', hasError = false, ...props }: InputProps, ref): JSX.Element => {
+  (
+    { type = 'text', hasError = false, className, ...props }: InputProps,
+    ref,
+  ): JSX.Element => {
     return (
       <input
         type={type}
         {...props}
-        className={`${styles.input} ${hasError ? styles.input_error : ''}`}
+        className={`${styles.input} ${hasError ? styles.input_error : ''} ${className}`}
         ref={ref}
       />
     );

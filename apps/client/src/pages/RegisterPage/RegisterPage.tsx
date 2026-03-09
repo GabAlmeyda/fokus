@@ -80,7 +80,7 @@ export default function RegisterPage(): JSX.Element {
   };
 
   return (
-    <PageView bgType="inverse">
+    <PageView cssBgType="inverse">
       <Main>
         <section className={styles.register}>
           <div className={styles.register__top}>

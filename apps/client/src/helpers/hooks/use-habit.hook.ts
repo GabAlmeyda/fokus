@@ -21,22 +21,26 @@ export function useHabitQueries(query: UseHabitsQueriesParams) {
     queryFn: async () => {
       const response = await api.get(`/habits/${query.habitId}`, {
         withCredentials: true,
-        params: {selectedDate: query.selectedDate}
+        params: { selectedDate: query.selectedDate },
       });
       return response.data;
     },
-    enabled: !!query.habitId,
+    retry: 3,
+    refetchOnWindowFocus: false,
+    enabled: !!query.habitId && query.habitId !== 'new',
   });
 
   const habitsFilterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
-    queryKey: ['habits', query.filter,query. selectedDate],
+    queryKey: ['habits', query.filter, query.selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits`, {
-        params: {...query.filter, selectedDate: query.selectedDate},
+        params: { ...query.filter, selectedDate: query.selectedDate },
         withCredentials: true,
       });
       return response.data;
     },
+    retry: 3,
+    refetchOnWindowFocus: false,
     enabled: !!query,
   });
 
@@ -52,7 +56,7 @@ export function useHabitMutations() {
   const createMutation = useMutation<
     HabitResponseDTO,
     HTTPErrorResponse,
-    HabitCreateDTO
+    Omit<HabitCreateDTO, 'userId'>
   >({
     mutationFn: async (data) => {
       const response = await api.post('/habits', data, {
@@ -77,7 +81,7 @@ export function useHabitMutations() {
     mutationFn: async ({ habitId, data, selectedDate }) => {
       const response = await api.patch(`/habits/${habitId}`, data, {
         withCredentials: true,
-        params: {selectedDate}
+        params: { selectedDate },
       });
       return response.data;
     },

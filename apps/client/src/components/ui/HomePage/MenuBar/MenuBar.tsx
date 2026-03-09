@@ -54,8 +54,10 @@ export default function MenuBar(): JSX.Element {
             <h3>Início</h3>
             <ul>
               <li>
-                <Link to={APP_URLS.home}>Voltar para o início</Link>
-                <FokusIcon iconKey="big-right" />
+                <Link to={APP_URLS.home}>
+                  <span>Voltar para o início</span>
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </Link>
               </li>
             </ul>
           </section>
@@ -64,12 +66,16 @@ export default function MenuBar(): JSX.Element {
             <h3>Criar</h3>
             <ul>
               <li>
-                <Link to={APP_URLS.createHabit}>Criar novo hábito</Link>
-                <FokusIcon iconKey="big-right" />
+                <Link to={APP_URLS.createHabit}>
+                  <span>Criar novo hábito</span>{' '}
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </Link>
               </li>
               <li>
-                <Link to={APP_URLS.createGoal}>Criar nova meta</Link>
-                <FokusIcon iconKey="big-right" />
+                <Link to={APP_URLS.createGoal}>
+                  <span>Criar nova meta</span>
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </Link>
               </li>
             </ul>
           </section>

@@ -1,18 +1,42 @@
-import type { JSX } from 'react';
+import { useEffect, type HTMLAttributes, type JSX } from 'react';
 import styles from './PageView.module.css';
 import type React from 'react';
 import Footer from '../Footer/Footer';
 
-interface PageViewProps {
-  bgType?: 'primary' | 'secondary' | 'muted' | 'inverse';
+interface PageViewProps extends HTMLAttributes<HTMLDivElement> {
+  cssBgType?: 'primary' | 'secondary' | 'muted' | 'inverse' | 'none';
+  customBgColor?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
-export default function PageView({ bgType='primary', children }: PageViewProps): JSX.Element {
+export default function PageView({
+  cssBgType = 'none',
+  customBgColor,
+  className = '',
+  children,
+}: PageViewProps): JSX.Element {
+  const finalBg =
+    customBgColor || (cssBgType !== 'none' ? `var(--bg-${cssBgType})` : '');
+
+  useEffect(() => {
+    if (!finalBg) return;
+
+    document.documentElement.style.backgroundColor = finalBg;
+    document.body.style.backgroundColor = finalBg;
+
+    return () => {
+      document.documentElement.style.backgroundColor = '';
+      document.body.style.backgroundColor = '';
+    };
+  }, [finalBg]);
+
   return (
-    <div className={`${styles.pageView} ${styles[bgType]}`}>
+    <div
+      className={`${styles.pageView} ${cssBgType !== 'none' ? styles[cssBgType] : ''} ${className}`}
+    >
       {children}
-      <Footer />
+      <Footer customBgColor={finalBg} />
     </div>
   );
 }

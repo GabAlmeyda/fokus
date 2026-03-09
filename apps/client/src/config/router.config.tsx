@@ -4,6 +4,7 @@ import RegisterPage from '../pages/RegisterPage/RegisterPage';
 import ProtectedRoute from '../components/auth/ProtectedRoute/ProtectedRoute';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import HomePage from '../pages/HomePage/HomePage';
+import HabitPage from '../pages/HabitPage/HabitPage';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
         path: '/app',
         element: <HomePage></HomePage>,
       },
+      {
+        path: '/app/habits/:habitId',
+        element: <HabitPage></HabitPage>
+      }
     ],
   },
   {

@@ -37,7 +37,7 @@ export default function LoginPage(): JSX.Element {
     document.title = 'Fokus - Conecte-se';
   }, []);
 
-  const onSubmit = async (data: UserLoginDTO) => {
+  const handleFormSubmit = async (data: UserLoginDTO) => {
     await loginMutation.mutateAsync(data, {
       onError: (error) => {
         if (error.statusCode === HTTPStatusCode.NOT_FOUND) {
@@ -55,7 +55,7 @@ export default function LoginPage(): JSX.Element {
   };
 
   return (
-    <PageView bgType="inverse">
+    <PageView cssBgType="inverse">
       <Main>
         <section className={styles.login}>
           <div className={styles.login__top}>
@@ -70,7 +70,7 @@ export default function LoginPage(): JSX.Element {
             )}
             <form
               action="POST"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(handleFormSubmit)}
               autoComplete="on"
               className={styles.login__form}
             >

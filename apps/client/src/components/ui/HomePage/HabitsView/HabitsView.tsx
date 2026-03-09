@@ -115,7 +115,9 @@ export default function HabitsView(): JSX.Element {
             </div>
             <div
               className={styles.habits__uncompleted}
-              style={completedHabits?.length === 0 ? { display: 'none' } : undefined}
+              style={
+                completedHabits?.length === 0 ? { display: 'none' } : undefined
+              }
             >
               {completedHabits?.map((h) => (
                 <Habit

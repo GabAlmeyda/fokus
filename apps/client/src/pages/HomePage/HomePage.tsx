@@ -22,7 +22,7 @@ export default function HomePage(): JSX.Element {
   }, []);
 
   return (
-    <PageView>
+    <PageView cssBgType='primary'>
       <Main className={styles.homepage}>
         <MenuBar />
         <div

@@ -31,7 +31,7 @@ const GoalBaseSchema = z.object({
     })
     .openapi({ description: 'Goal type.', example: 'quantitative' }),
 
-  targetValue: z
+  targetValue: z.coerce
     .number()
     .min(1, 'Valor mínimo para o campo é 1.')
     .openapi({
@@ -283,7 +283,7 @@ export const GoalProgressLogSchema = z.object({
       example: '2026-12-02',
     }),
 
-  value: z
+  value: z.coerce
     .number()
     .min(1, 'Valor mínimo é 1.')
     .openapi({ description: 'The value of the progress.', example: 100 }),
@@ -301,7 +301,7 @@ export const GoalResponseSchema = GoalBaseSchema.extend({
     readOnly: true,
   }),
 
-  currentValue: z
+  currentValue: z.coerce
     .number()
     .min(0, 'Valor deve ser maior ou igual a 0.')
     .openapi({

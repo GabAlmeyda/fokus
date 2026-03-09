@@ -1,22 +1,27 @@
 import type { JSX } from 'react';
 import styles from './Habit.module.css';
 import FokusIcon, { type FokusIconKey } from '../Icon/Icon';
-import type { HabitResponseDTO } from '@fokus/shared';
+import type { HabitCreateDTO, HabitResponseDTO } from '@fokus/shared';
 
 interface HabitProps {
-  habit: HabitResponseDTO;
+  habit: Pick<
+    HabitCreateDTO,
+    'color' | 'icon' | 'title' | 'weekDays' | 'reminder'
+  > & { isCompleted: HabitResponseDTO['isCompleted'] };
   onPreviewClick: () => void;
   onCheckClick: () => void;
+  className?: string;
 }
 
 export default function Habit({
   habit,
   onPreviewClick,
   onCheckClick,
+  className,
 }: HabitProps): JSX.Element {
   return (
     <div
-      className={`${styles.habit} ${habit.isCompleted ? styles.habit_completed : ''}`}
+      className={`${styles.habit} ${habit.isCompleted ? styles.habit_completed : ''} ${className}`}
     >
       <div
         onClick={onPreviewClick}

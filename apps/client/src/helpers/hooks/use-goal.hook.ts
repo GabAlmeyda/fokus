@@ -24,6 +24,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       });
       return response.data;
     },
+    refetchOnWindowFocus: false,
     enabled: !!query.goalId,
   });
 
@@ -36,6 +37,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       });
       return response.data;
     },
+    refetchOnWindowFocus: false,
     enabled: !!query,
   });
 

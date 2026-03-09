@@ -1,0 +1,72 @@
+.iconPicker {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  background-color: #a4dbb6;
+}
+
+.iconPicker > p {
+  font-size: .9rem;
+}
+
+.iconPicker * {
+  color: #060806;
+}
+
+.iconPicker__toggle,
+.iconPicker__toggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 1rem;
+
+  font-size: 1.5rem;
+}
+
+.iconPicker > div > button {
+  border: none;
+  border-left: 2px solid #333a33;
+
+  background: none;
+
+  font-size: 1.2rem;
+}
+
+.iconPicker > div > button > svg * {
+  color: #333a33;
+}
+
+.iconPicker__icons {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  justify-items: center;
+  align-items: center;
+
+  border-radius: 0 0 10px 10px;
+  padding-top: 1rem;
+
+  background-color: #a4dbb6;
+}
+
+.iconPicker__icons > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: .5rem;
+  border-radius: 100%;
+
+  font-size: 1.1rem;
+
+  cursor: pointer;
+}
+.iconPicker__icons > div.active {
+  background-color: var(--accent-primary);
+}

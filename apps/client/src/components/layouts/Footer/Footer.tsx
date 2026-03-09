@@ -1,9 +1,26 @@
-import type { JSX } from "react";
+import type { JSX } from 'react';
 
 import styles from './Footer.module.css';
 
-export default function Footer(): JSX.Element {
-  return <footer className={styles.footer}>
-    <p><small>&copy;Fokus {new Date().getFullYear()}. Todos os direitos reservados.</small></p>
-  </footer>
+interface FooterProps {
+  customBgColor?: string;
+  className?: string;
+}
+
+export default function Footer({
+  className = '',
+  customBgColor = '',
+}: FooterProps): JSX.Element {
+  return (
+    <footer
+      className={`${styles.footer} ${className}`}
+      style={{ backgroundColor: customBgColor }}
+    >
+      <p>
+        <small>
+          &copy;Fokus {new Date().getFullYear()}. Todos os direitos reservados.
+        </small>
+      </p>
+    </footer>
+  );
 }

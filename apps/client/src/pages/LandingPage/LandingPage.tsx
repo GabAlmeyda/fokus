@@ -21,7 +21,7 @@ export default function LandingPage(): JSX.Element {
   }, []);
 
   return (
-    <PageView>
+    <PageView cssBgType='primary'>
       <Navbar />
       <Main>
         <section className={styles.hero}>

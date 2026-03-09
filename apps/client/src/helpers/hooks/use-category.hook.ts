@@ -22,6 +22,8 @@ export function useCategoryQueries(query: UseCategoryQueriesParams) {
       });
       return response.data;
     },
+    refetchOnWindowFocus: false,
+    retry: 3,
     enabled: !!query.categoryId,
   });
 
@@ -34,6 +36,8 @@ export function useCategoryQueries(query: UseCategoryQueriesParams) {
       });
       return response.data;
     },
+    refetchOnWindowFocus: false,
+    retry: 3,
     enabled: !!query,
   });
 

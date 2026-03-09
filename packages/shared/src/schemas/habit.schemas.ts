@@ -21,7 +21,7 @@ const HabitBaseSchema = z.object({
     .enum(['quantitative', 'qualitative'])
     .openapi({ description: 'Habit type.', example: 'quantitative' }),
 
-  progressImpactValue: z
+  progressImpactValue: z.coerce
     .number()
     .min(1, 'Valor mínimo é 1.')
     .openapi({
@@ -165,13 +165,16 @@ export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 
 export const HabitCreateSchema = HabitBaseSchema.extend({
   progressImpactValue: HabitBaseSchema.shape.progressImpactValue
-    .default(0)
-    .openapi({ default: 0 }),
+    .default(1)
+    .optional()
+    .openapi({ default: 1 }),
   unitOfMeasure: HabitBaseSchema.shape.unitOfMeasure
     .default(null)
+    .optional()
     .openapi({ default: 'null' }),
   reminder: HabitBaseSchema.shape.reminder
     .default(null)
+    .optional()
     .openapi({ default: 'null' }),
 })
   .superRefine(habitRefinement)
@@ -237,13 +240,16 @@ export const HabitResponseSchema = HabitBaseSchema.extend({
     readOnly: true,
   }),
 
-  streak: z.number().min(0, 'Sequência deve ser maior ou igual a 0.').openapi({
-    description: 'Current streak days of the habit.',
-    example: 17,
-    readOnly: true,
-  }),
+  streak: z.coerce
+    .number()
+    .min(0, 'Sequência deve ser maior ou igual a 0.')
+    .openapi({
+      description: 'Current streak days of the habit.',
+      example: 17,
+      readOnly: true,
+    }),
 
-  bestStreak: z
+  bestStreak: z.coerce
     .number()
     .min(0, 'Melhor sequência deve ser maior ou igual a 0.')
     .openapi({

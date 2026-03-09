@@ -104,16 +104,19 @@
 }
 
 .navigation>section>ul>li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
   position: relative;
 
   padding: .4rem;
   border-bottom: 2px solid var(--text-primary);
 
   cursor: pointer;
+}
+
+.navigation>section>ul>li>a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .navigation>section>ul>li svg {

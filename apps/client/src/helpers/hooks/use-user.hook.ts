@@ -17,6 +17,7 @@ export function useUserQueries() {
       });
       return response.data;
     },
+    refetchOnWindowFocus: false,
     staleTime: Infinity,
     gcTime: Infinity,
     retry: false,
