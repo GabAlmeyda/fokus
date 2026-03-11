@@ -93,7 +93,7 @@ export function useUserMutations() {
     },
     onSuccess: async () => {
       queryClient.clear();
-    }
+    },
   });
 
   const updateMutation = useMutation<
@@ -107,7 +107,28 @@ export function useUserMutations() {
       });
       return response.data;
     },
-    onSuccess: async () => {
+    onMutate: async (newData) => {
+      if (!newData.themeMode) return;
+
+      await queryClient.cancelQueries({ queryKey: ['user'] });
+      const previousUser = queryClient.getQueryData(['user']);
+      queryClient.setQueryData(
+        ['user'],
+        (old: Omit<UserResponseDTO, 'userId'>) => ({
+          ...old,
+          themeMode: newData.themeMode,
+        }),
+      );
+
+      return { previousUser };
+    },
+    onError: (_err, _variables, context) => {
+      const { previousUser } = context as {
+        previousUser: Omit<UserResponseDTO, 'userId'>;
+      };
+      queryClient.setQueryData(['user'], previousUser);
+    },
+    onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });

@@ -1,0 +1,48 @@
+.weekDays {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-top: 1rem;
+}
+
+.weekDays p {
+  margin-bottom: .2rem;
+
+  color: #6b8272;
+}
+
+.weekDays div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.weekDays div span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 40px;
+  width: 12%;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 5px;
+
+  font-size: .9rem;
+  font-weight: 500;
+  color: #a4dbb6;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.weekDays div span:hover {
+  background-color: #2d3a31;
+}
+
+.weekDays div span.active {
+  background-color: var(--accent-primary);
+
+  color: #060806;
+}

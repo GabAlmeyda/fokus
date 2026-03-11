@@ -7,7 +7,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Main from '../../components/layouts/Main/Main';
 import Input from '../../components/common/Input/Input';
 import styles from './RegisterPage.module.css';
 import Button from '../../components/common/Button/Button';
@@ -16,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../helpers/app.helpers';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 import { useUserMutations } from '../../helpers/hooks/use-user.hook';
+import Footer from '../../components/layouts/Footer/Footer';
 
 const RegisterFormSchema = UserRegisterSchema.extend({
   confirmPassword: z.string(),
@@ -81,7 +81,7 @@ export default function RegisterPage(): JSX.Element {
 
   return (
     <PageView cssBgType="inverse">
-      <Main>
+      <main>
         <section className={styles.register}>
           <div className={styles.register__top}>
             <h2>Cadastre-se</h2>
@@ -177,7 +177,8 @@ export default function RegisterPage(): JSX.Element {
             </div>
           </div>
         </section>
-      </Main>
+      </main>
+      <Footer />
     </PageView>
   );
 }

@@ -130,7 +130,7 @@ export default function HabitsView(): JSX.Element {
             </div>
           </>
         ) : (
-          <div className={styles.habits_loading}>Carregando...</div>
+          <div className={styles.habits__spinner}></div>
         )}
       </div>
     </>

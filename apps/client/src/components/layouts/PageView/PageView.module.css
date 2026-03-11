@@ -8,15 +8,25 @@
   width: 100%;
 }
 
+.pageView main {
+  position: relative;
+  flex: 1;
+
+  height: 100%;
+}
+
 .primary {
   background-color: var(--bg-primary);
 }
+
 .secondary {
   background-color: var(--bg-secondary);
 }
+
 .muted {
   background-color: var(--bg-muted);
 }
+
 .inverse {
   background-color: var(--bg-inverse);
 }

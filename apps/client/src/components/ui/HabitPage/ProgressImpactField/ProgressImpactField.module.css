@@ -1,0 +1,78 @@
+.progressImpact__propToggle {
+  position: relative;
+
+  display: flex;
+
+  user-select: none;
+}
+
+.progressImpact__propToggle span {
+  padding: .1rem .5rem;
+
+  background-color: #6b8272;
+
+  font-size: .9rem;
+
+  cursor: pointer;
+}
+
+.progressImpact__propToggle span.active {
+  background-color: var(--accent-primary);
+}
+
+.progressImpact__propToggle span:first-child {
+  border-radius: 5px 0 0 5px;
+}
+
+.progressImpact__propToggle span:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
+.progressImpact__propToggle div {
+  position: absolute;
+  left: 50%;
+
+  height: 100%;
+  width: 2px;
+
+  background-color: #2d3a31;
+}
+
+.progressImpact__typeToggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  background-color: #a4dbb6;
+}
+
+.progressImpact__typeToggle>p {
+  font-size: .9rem;
+}
+
+.progressImpact__typeToggle > div:has(.typeToggle__values) {
+  grid-column: 1 / -1;
+}
+
+.typeToggle__values {
+  display: flex;
+  gap: .5rem;
+
+  padding-top: 1rem;
+
+  background-color: inherit;
+}
+
+.values__input {
+  background-color: #a4dbb6;
+}
+.values__input:focus-within {
+  background-color: #ececec;
+}
+
+.typeToggle__values+span {
+  grid-column: 1 / -1;
+}

@@ -1,6 +1,5 @@
 import { useEffect, type JSX } from 'react';
 import PageView from '../../components/layouts/PageView/PageView';
-import Main from '../../components/layouts/Main/Main';
 import styles from './LoginPage.module.css';
 import { useForm } from 'react-hook-form';
 import {
@@ -15,6 +14,7 @@ import FormErrorMessage from '../../components/common/FormErrorMessage/FormError
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import { useUserMutations } from '../../helpers/hooks/use-user.hook';
+import Footer from '../../components/layouts/Footer/Footer';
 
 export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <PageView cssBgType="inverse">
-      <Main>
+      <main>
         <section className={styles.login}>
           <div className={styles.login__top}>
             <h2>Conecte-se</h2>
@@ -124,7 +124,8 @@ export default function LoginPage(): JSX.Element {
             </div>
           </div>
         </section>
-      </Main>
+      </main>
+      <Footer />
     </PageView>
   );
 }

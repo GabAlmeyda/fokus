@@ -1,10 +1,10 @@
 import { useEffect, useState, type JSX } from 'react';
 import styles from './HomePage.module.css';
 import PageView from '../../components/layouts/PageView/PageView';
-import Main from '../../components/layouts/Main/Main';
 import MenuBar from '../../components/ui/HomePage/MenuBar/MenuBar';
 import HabitsView from '../../components/ui/HomePage/HabitsView/HabitsView';
 import GoalsView from '../../components/ui/HomePage/GoalsView/GoalsView';
+import Footer from '../../components/layouts/Footer/Footer';
 
 export default function HomePage(): JSX.Element {
   const [activeView, setActiveView] = useState<'habits' | 'goals'>('habits');
@@ -23,7 +23,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <PageView cssBgType='primary'>
-      <Main className={styles.homepage}>
+      <main className={styles.homepage}>
         <MenuBar />
         <div
           className={styles.home__viewSwitcher}
@@ -51,7 +51,8 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div></div>
         )}
-      </Main>
+      </main>
+      <Footer customBgColor='var(--bg-inverse)' />
     </PageView>
   );
 }

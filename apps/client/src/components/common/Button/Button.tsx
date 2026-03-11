@@ -13,7 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function Button({
   variant,
-  isSmall=false,
+  isSmall = false,
   customColor,
   isDisabled,
   children,
@@ -26,7 +26,8 @@ export default function Button({
         styles.btn,
         variant && styles[`btn_${variant}`],
         isDisabled && styles['btn_disabled'],
-        isSmall && styles['btn_small']
+        isSmall && styles['btn_small'],
+        props['className'],
       )}
       style={customColor ? { backgroundColor: customColor } : undefined}
       disabled={isDisabled}

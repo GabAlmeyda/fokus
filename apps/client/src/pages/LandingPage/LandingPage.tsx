@@ -4,7 +4,6 @@ import notificationImage from '../../assets/notification-img.png';
 import organizationImage from '../../assets/organization-img.png';
 import routineImage from '../../assets/routine-img.png';
 import ctaImage from '../../assets/cta.svg';
-import Main from '../../components/layouts/Main/Main';
 import Button from '../../components/common/Button/Button';
 import styles from './LandingPage.module.css';
 import FeatureCard from '../../components/ui/LandingPage/FeatureCard/FeatureCard';
@@ -12,6 +11,7 @@ import Navbar from '../../components/ui/LandingPage//Navbar/Navbar';
 import Testimonial from '../../components/ui/LandingPage/Testimonial/Testimonial';
 import { APP_URLS } from '../../helpers/app.helpers';
 import PageView from '../../components/layouts/PageView/PageView';
+import Footer from '../../components/layouts/Footer/Footer';
 
 export default function LandingPage(): JSX.Element {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function LandingPage(): JSX.Element {
   return (
     <PageView cssBgType='primary'>
       <Navbar />
-      <Main>
+      <main>
         <section className={styles.hero}>
           <div className={styles.hero__main}>
             <h1>Construa seus hábitos e registre suas metas rapidamente</h1>
@@ -121,7 +121,8 @@ export default function LandingPage(): JSX.Element {
 
           <img src={ctaImage} alt="" className={styles.cta__img} />
         </section>
-      </Main>
+      </main>
+      <Footer customBgColor='var(--bg-inverse)' />
     </PageView>
   );
 }

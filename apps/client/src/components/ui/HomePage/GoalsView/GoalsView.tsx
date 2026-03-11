@@ -112,7 +112,7 @@ export default function GoalsView(): JSX.Element {
                 </Button>
               </>
             ) : (
-              'Carregando...'
+              <div className={styles.goals__spinner}></div>
             )}
           </div>
         )}

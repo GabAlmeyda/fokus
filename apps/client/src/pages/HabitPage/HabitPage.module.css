@@ -16,6 +16,10 @@
   margin-top: 1rem;
 }
 
+.goBack__btn {
+  color: #056117;
+}
+
 .habit__preview {
   margin-top: 3rem;
   user-select: none;
@@ -60,46 +64,6 @@
 
 
 /* FORM PART */
-.l_form__propToggle {
-  position: relative;
-
-  display: flex;
-
-  user-select: none;
-}
-
-.l_form__propToggle span {
-  padding: .1rem .5rem;
-
-  background-color: #6b8272;
-
-  font-size: .9rem;
-
-  cursor: pointer;
-}
-
-.l_form__propToggle span.active {
-  background-color: var(--accent-primary);
-}
-
-.l_form__propToggle span:first-child {
-  border-radius: 5px 0 0 5px;
-}
-
-.l_form__propToggle span:last-child {
-  border-radius: 0 5px 5px 0;
-}
-
-.l_form__propToggle div {
-  position: absolute;
-  left: 50%;
-
-  height: 100%;
-  width: 2px;
-
-  background-color: #2d3a31;
-}
-
 .habit__form {
   display: flex;
   flex-direction: column;
@@ -134,168 +98,6 @@
   outline: none;
 
   background-color: #2d3a31;
-}
-
-.form__typeToggle {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-
-  padding: .5rem;
-  border-radius: 10px;
-
-  background-color: #a4dbb6;
-}
-
-.form__typeToggle>p {
-  font-size: .9rem;
-}
-
-.form__typeToggle > div:has(.typeToggle__values) {
-  grid-column: 1 / -1;
-}
-
-.typeToggle__values {
-  display: flex;
-  gap: .5rem;
-
-  padding-top: 1rem;
-
-  background-color: inherit;
-}
-
-.values__input {
-  background-color: #a4dbb6;
-}
-.values__input:focus-within {
-  background-color: #ececec;
-}
-
-.typeToggle__values+span {
-  grid-column: 1 / -1;
-}
-
-.form__reminder {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-
-  position: relative;
-
-  padding: .5rem;
-  border-radius: 10px;
-
-  background-color: #a4dbb6;
-
-  font-size: .9rem;
-}
-
-.form__reminder input {
-  background-color: transparent;
-}
-
-.reminder__values {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: .5rem;
-
-  padding-top: 1rem;
-
-  background-color: inherit;
-}
-
-.reminder__values div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.reminder__values div:first-child {
-  padding-left: 3rem;
-}
-
-.reminder__values div:last-child {
-  padding-right: 3rem;
-}
-
-.reminder__values span {
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.reminder__values div p {
-  color: #2d3a31;
-}
-
-.reminder__values div input {
-  width: 100%;
-
-  border: none;
-
-  background-color: transparent;
-
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.reminder__values div input:focus {
-  outline: none;
-}
-
-.reminder__values span {
-  padding-bottom: 5px;
-}
-
-.form__weekDays {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  margin-top: 1rem;
-}
-
-.form__weekDays p {
-  margin-bottom: .2rem;
-
-  color: #6b8272;
-}
-
-.form__weekDays div {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.form__weekDays div span {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  min-width: 40px;
-  width: 12%;
-  aspect-ratio: 1 / 1;
-
-  border-radius: 5px;
-
-  font-size: .9rem;
-  font-weight: 500;
-  color: #a4dbb6;
-
-  cursor: pointer;
-  user-select: none;
-}
-
-.form__weekDays div span:hover {
-  background-color: #2d3a31;
-}
-
-.form__weekDays div span.active {
-  background-color: var(--accent-primary);
-
-  color: #060806;
 }
 
 .form__submit {
