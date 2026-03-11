@@ -1,4 +1,4 @@
-import { useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import styles from './MenuBar.module.css';
 import Button from '../../../common/Button/Button';
 import clsx from 'clsx';
@@ -9,21 +9,46 @@ import {
   useUserQueries,
 } from '../../../../helpers/hooks/use-user.hook';
 import FokusIcon from '../../../common/Icon/Icon';
+import Toast from '../../../common/Toast/Toast';
 
 export default function MenuBar(): JSX.Element {
+  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
   const { data: user } = useUserQueries().meQuery;
   const updateMutation = useUserMutations().updateMutation;
   const [activeSidebar, setActiveSidebar] = useState<
     'navigation' | 'profile' | 'none'
   >('none');
 
-  const onToggleThemeClick = () => {
+  useEffect(() => {
+    let timerId = undefined;
+    if (isToastOpen) {
+      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [isToastOpen]);
+
+  const handleToggleThemeClick = () => {
     const theme = user?.themeMode === 'light' ? 'dark' : 'light';
-    updateMutation.mutate({ themeMode: theme });
+    updateMutation.mutate(
+      { themeMode: theme },
+      {
+        onError: () => setIsToastOpen(true),
+      },
+    );
   };
 
   return (
     <>
+      {isToastOpen && (
+        <Toast
+          message="Erro ao atualizar dados da conta."
+          bgColor="#f73838ff"
+          ariaLive="assertive"
+        />
+      )}
       <nav className={styles.menubar}>
         <button
           onClick={() => setActiveSidebar('navigation')}
@@ -115,7 +140,10 @@ export default function MenuBar(): JSX.Element {
 
           <div className={styles.profile__theme}>
             <p>Tema:</p>
-            <div className={styles.theme__toggle} onClick={onToggleThemeClick}>
+            <div
+              className={styles.theme__toggle}
+              onClick={handleToggleThemeClick}
+            >
               <span
                 className={clsx(
                   user?.themeMode === 'light' && styles.theme_selected,

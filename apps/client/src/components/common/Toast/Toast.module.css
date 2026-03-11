@@ -1,0 +1,28 @@
+.toast {
+  display: none;
+
+  position: fixed;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+
+  border-radius: 10px;
+  padding: 1rem;
+
+  user-select: none;
+  cursor: pointer;
+
+  font-weight: 500;
+
+  animation: slide .5s linear forwards;
+}
+.toast_open {
+  display: block;
+}
+
+@keyframes slide {
+  to {
+    top: 3rem;
+  }
+}

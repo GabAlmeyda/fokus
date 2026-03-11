@@ -131,6 +131,7 @@ export function useUserMutations() {
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },
+    retry: 0,
   });
 
   const deleteMutation = useMutation<null, HTTPErrorResponse, null>({

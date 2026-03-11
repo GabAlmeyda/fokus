@@ -22,7 +22,7 @@ export default function HomePage(): JSX.Element {
   }, []);
 
   return (
-    <PageView cssBgType='primary'>
+    <PageView cssBgType="primary">
       <main className={styles.homepage}>
         <MenuBar />
         <div
@@ -52,7 +52,7 @@ export default function HomePage(): JSX.Element {
           <div></div>
         )}
       </main>
-      <Footer customBgColor='var(--bg-inverse)' />
+      <Footer customBgColor="var(--bg-inverse)" />
     </PageView>
   );
 }
