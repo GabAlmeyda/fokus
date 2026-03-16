@@ -1,18 +1,21 @@
 import { useState, type JSX } from 'react';
 import { format } from 'date-fns';
-import type { GoalResponseDTO } from '@fokus/shared';
+import type { GoalCreateDTO, GoalResponseDTO } from '@fokus/shared';
 import styles from './Goal.module.css';
 import FokusIcon from '../Icon/Icon';
 
 interface GoalProps {
-  goal: GoalResponseDTO;
-  categoriesMap: Record<string, string>;
+  goal: Omit<GoalCreateDTO, 'userId'> & {
+    isCompleted: GoalResponseDTO['isCompleted'];
+    currentValue: number;
+  };
+  categoryName: string | null;
   onPreviewClick: () => void;
 }
 
 export default function Goal({
   goal,
-  categoriesMap,
+  categoryName,
   onPreviewClick,
 }: GoalProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -23,7 +26,7 @@ export default function Goal({
     >
       <div
         onClick={onPreviewClick}
-        className={styles.goal__icon}
+        className={styles.goal__color}
         style={{ backgroundColor: goal.color }}
       ></div>
       <div className={styles.goal__content} onClick={onPreviewClick}>
@@ -34,7 +37,7 @@ export default function Goal({
             <FokusIcon iconKey="target" />
             {goal.type === 'quantitative' ? (
               <span>
-                {goal.currentValue}/{goal.targetValue} {goal.unitOfMeasure}
+                {goal.currentValue}/{goal.targetValue || 1} {goal.unitOfMeasure}
               </span>
             ) : (
               <span>
@@ -45,22 +48,22 @@ export default function Goal({
           <div>
             <span
               style={{
-                minWidth: `${(goal.currentValue / goal.targetValue) * 100}%`,
+                minWidth: `${(goal.currentValue / (goal.targetValue || 1)) * 100}%`,
               }}
             ></span>
           </div>
         </div>
 
         <div className={styles.content__bottom}>
-          {goal.categoryId && (
+          {categoryName && (
             <div className={styles.content__tag}>
               <FokusIcon iconKey="tag" />
-              <span>{categoriesMap[goal.categoryId].slice(0, 6)}...</span>
+              <span>{categoryName?.slice(0, 6)}...</span>
             </div>
           )}
 
           <span></span>
-  
+
           {goal.deadline && (
             <div className={styles.content__deadline}>
               <FokusIcon iconKey="calendar" />

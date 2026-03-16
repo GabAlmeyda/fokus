@@ -1,0 +1,142 @@
+.deadlineField {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  min-width: 288px;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  background-color: #a4dbb6;
+}
+
+.deadlineField>p {
+  font-size: .9rem;
+}
+
+.deadlineField * {
+  color: #060806;
+}
+
+.deadlineField__toggle,
+.deadlineField__toggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 1rem;
+
+  font-size: 1.2rem;
+}
+
+.deadlineField__toggle span {
+  margin-left: .5rem;
+
+  font-size: .9rem;
+  font-style: italic;
+}
+
+.deadlineField>div>button {
+  border: none;
+  border-left: 2px solid #333a33;
+
+  background: none;
+
+  font-size: 1.2rem;
+}
+
+.deadlineField>div>button>svg * {
+  color: #333a33;
+}
+
+.deadlineField__date {
+  grid-column: 1 / -1;
+
+  background-color: #a4dbb6;
+}
+
+
+
+/* REACT DAY PICKER PART */
+.date__container {
+  border-radius: 5px;
+  margin-top: 1.5rem;
+
+  background-color: #6fb186;
+}
+
+.date__months {
+  position: relative;
+  width: 100%;
+}
+
+.date__nav {
+  position: absolute;
+  right: 0;
+  top: .3rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.date__monthCaption {
+  border-radius: 5px 5px 0 0;
+  padding: .3rem;
+  background-color: #189631;
+}
+
+.date__monthCaption * {
+  font-weight: 600;
+}
+
+.date__monthGrid {
+  width: 100%;
+}
+
+.date__container thead tr th {
+  text-align: center;
+  font-weight: 600;
+}
+
+.date__weeks {
+  width: 100%;
+}
+
+.date__weeks tr {
+  height: 31px;
+  width: 100%;
+}
+
+.date__weeks tr td {
+  height: 31px;
+  width: 31px;
+  aspect-ratio:  1 / 1;
+}
+
+.date__day {
+  width: 31px;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 50px;
+}
+
+.date__day:not(.date__selected, .date__today):hover {
+  background-color: #60a076;
+}
+
+.date__day button {
+  margin-inline: auto;
+}
+
+.date__today {
+  background-color: #60d88a;
+}
+
+.date__selected {
+  background-color: var(--accent-primary);
+
+  font-weight: 600;
+}

@@ -11,7 +11,6 @@ interface IGoal {
   habitId: Types.ObjectId | string | null;
   deadline: Date | null;
   color: string;
-  icon: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -72,11 +71,6 @@ const goalSchema = new Schema<IGoal>(
       trim: true,
       lowercase: true,
       default: '#15E03B',
-    },
-    icon: {
-      type: String,
-      minLength: 2,
-      required: true,
     },
   },
   {

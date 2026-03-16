@@ -88,7 +88,6 @@ export function mapGoalDocToPublicDTO(
     habitId: goal.habitId?.toString() || null,
     deadline: goal.deadline,
     color: goal.color,
-    icon: goal.icon,
   };
 }
 

@@ -12,7 +12,7 @@ const mappedWeekDays: Record<string, string> = {
   Sáb: 'sab',
 };
 const fullDayNames: Record<string, string> = {
-  dom: 'aos domingo',
+  dom: 'aos domingos',
   seg: 'às segundas-feiras',
   ter: 'às terças-feiras',
   qua: 'às quartas-feiras',
@@ -34,10 +34,9 @@ export default function WeekDaysField({
     <div
       className={styles.weekDays}
       aria-labelledby="week-days-label"
-      role="group"
     >
       <p id="week-days-label">Repetir hábitos nos dias:</p>
-      <div>
+      <div role='group'>
         {Object.entries(mappedWeekDays).map(([label, day]) => {
           const isSelected = weekDays.includes(
             day as HabitCreateDTO['weekDays'][number],
@@ -51,26 +50,16 @@ export default function WeekDaysField({
             }
           };
           return (
-            <span
+            <button
               onClick={handleToggle}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                } else {
-                  return;
-                }
-
-                handleToggle();
-              }}
               className={`${isSelected ? styles.active : ''}`}
               key={day}
-              tabIndex={0}
               role="checkbox"
               aria-checked={isSelected}
               aria-label={`Repetir ${fullDayNames[day]}`}
             >
-              {label}
-            </span>
+              <span aria-hidden='true'>{label}</span>
+            </button>
           );
         })}
       </div>

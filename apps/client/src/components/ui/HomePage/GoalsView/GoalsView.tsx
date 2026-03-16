@@ -80,9 +80,12 @@ export default function GoalsView(): JSX.Element {
                 ?.filter((g) => !g.isCompleted)
                 .map((g) => (
                   <Goal
-                    categoriesMap={categoriesMap}
+                    categoryName={
+                      g.categoryId ? categoriesMap[g.categoryId] : null
+                    }
                     goal={g}
-                    onPreviewClick={() => {}}
+                    onPreviewClick={() => { }}
+                    key={`goal-${g.id}`}
                   ></Goal>
                 ))}
             </div>
@@ -91,9 +94,12 @@ export default function GoalsView(): JSX.Element {
                 ?.filter((g) => g.isCompleted)
                 .map((g) => (
                   <Goal
-                    categoriesMap={categoriesMap}
+                    categoryName={
+                      g.categoryId ? categoriesMap[g.categoryId] : null
+                    }
                     goal={g}
                     onPreviewClick={() => {}}
+                    key={`goal-${g.id}`}
                   ></Goal>
                 ))}
             </div>

@@ -15,7 +15,7 @@ import Footer from '../../components/layouts/Footer/Footer';
 
 export default function LandingPage(): JSX.Element {
   const navigate = useNavigate();
-  // Changes the page title
+  
   useEffect(() => {
     document.title = 'Fokus - Landing Page';
   }, []);

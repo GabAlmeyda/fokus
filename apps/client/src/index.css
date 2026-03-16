@@ -69,6 +69,17 @@ body,
   font-family: var(--font-body);
 }
 
+.g_sr-only {
+  display: none;
+}
+
+.favicon {
+  background-color: #15e03b;
+}
+.favicon * {
+  color: #ececec;
+}
+
 a {
   text-decoration: none;
   color: var(--accent-primary);

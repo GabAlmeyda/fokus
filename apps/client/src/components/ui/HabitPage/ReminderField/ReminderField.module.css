@@ -5,6 +5,8 @@
 
   position: relative;
 
+  min-width: 288px;
+
   padding: .5rem;
   border-radius: 10px;
 
@@ -17,40 +19,40 @@
   position: relative;
 
   display: flex;
+  align-items: center;
 
-  user-select: none;
-}
+  height: 22px;
+  width: 45px;
 
-.reminder__propToggle span {
-  padding: .1rem .5rem;
+  padding: .2rem;
+  border-radius: 25px;
+  border: none;
 
   background-color: #6b8272;
-
-  font-size: .9rem;
-
-  cursor: pointer;
-}
-
-.reminder__propToggle span.active {
-  background-color: var(--accent-primary);
-}
-
-.reminder__propToggle span:first-child {
-  border-radius: 5px 0 0 5px;
-}
-
-.reminder__propToggle span:last-child {
-  border-radius: 0 5px 5px 0;
 }
 
 .reminder__propToggle div {
   position: absolute;
-  left: 50%;
+  left: .2rem;
 
-  height: 100%;
-  width: 2px;
+  display: flex;
 
-  background-color: #2d3a31;
+  height: 16px;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 50px;
+
+  background-color: #ececec;
+
+  transition: transform .1s ease-out;
+}
+
+.reminder__propToggle.active {
+  background-color: var(--accent-primary);
+}
+
+.reminder__propToggle.active div {
+  transform: translateX(23px);
 }
 
 .reminder input {

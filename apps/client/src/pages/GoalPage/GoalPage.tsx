@@ -1,0 +1,235 @@
+import styles from './Goalpage.module.css';
+import Button from '../../components/common/Button/Button';
+import PageView from '../../components/layouts/PageView/PageView';
+import Goal from '../../components/common/Goal/Goal';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useGoalMutations,
+  useGoalQueries,
+} from '../../helpers/hooks/use-goal.hook';
+import { APP_URLS } from '../../helpers/app.helpers';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { GoalCreateSchema, type GoalCreateDTO } from '@fokus/shared';
+import ColorPicker from '../../components/common/ColorPicker/ColorPicker';
+import Footer from '../../components/layouts/Footer/Footer';
+import TargetValueField from '../../components/ui/GoalPage/TargetValueField/TargetValueField';
+import CategoryField from '../../components/ui/GoalPage/CategoryField/CategoryField';
+import { useCategoryQueries } from '../../helpers/hooks/use-category.hook';
+import DeadlineField from '../../components/ui/GoalPage/DeadlineField/DeadlineField';
+import HabitField from '../../components/ui/GoalPage/HabitField/HabitField';
+import { useHabitQueries } from '../../helpers/hooks/use-habit.hook';
+import { useEffect } from 'react';
+
+const defaultGoal: Omit<GoalCreateDTO, 'userId'> = {
+  title: '',
+  color: '#8838dd',
+  type: 'qualitative',
+  unitOfMeasure: null,
+  deadline: null,
+  habitId: null,
+  categoryId: null,
+  targetValue: 1,
+};
+const selectedDate = new Date();
+
+export default function GoalPage() {
+  const navigate = useNavigate();
+  const { goalId } = useParams<{ goalId: string }>();
+  const { data } = useGoalQueries({ goalId }).idQuery;
+  const createMutation = useGoalMutations().createMutation;
+  const goal = data
+    ? GoalCreateSchema.omit({ userId: true }).parse(data)
+    : defaultGoal;
+  const { data: categories } = useCategoryQueries({}).filterQuery;
+  const categoriesMap: Record<string, string> = {};
+  categories?.forEach((c) => (categoriesMap[c.id] = c.name));
+  const { data: habits } = useHabitQueries({ selectedDate }).filterQuery;
+  const habitsMap: Record<
+    string,
+    { title: string; color: string; unitOfMeasure: string }
+  > = {};
+  habits
+    ?.filter((h) => h.type === 'quantitative')
+    .forEach(
+      (h) =>
+        (habitsMap[h.id] = {
+          title: h.title,
+          color: h.color,
+          unitOfMeasure: h.unitOfMeasure!,
+        }),
+    );
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    clearErrors,
+  } = useForm<Omit<GoalCreateDTO, 'userId'>>({
+    resolver: zodResolver(GoalCreateSchema.omit({ userId: true }) as any),
+    defaultValues: goal,
+  });
+  const formData = useWatch({ control });
+  const goalPreview = {
+    ...goal,
+    ...formData,
+  };
+
+  useEffect(() => {
+    document.title =
+      goalId === 'new' ? 'Fokus - Nova meta' : 'Fokus - Atualizar meta';
+  }, []);
+
+  useEffect(() => {
+    if (goalPreview.type === 'qualitative' && goalPreview.habitId != null) {
+      setValue('habitId', null, { shouldDirty: true });
+    }
+  }, [goalPreview.type]);
+
+  const handleFormSubmit = async (data: Omit<GoalCreateDTO, 'userId'>) => {
+    await createMutation.mutateAsync(data, {
+      onSuccess: () => navigate(APP_URLS.home),
+    });
+  };
+
+  const handleHabitFieldChange = (unitOfMeasure: string | null) => {
+    if (goalPreview.type === 'qualitative') {
+      setValue('type', 'quantitative', { shouldDirty: true });
+      setValue('unitOfMeasure', unitOfMeasure, { shouldDirty: true });
+    }
+  };
+
+  return (
+    <PageView customBgColor="#101b14">
+      <main>
+        <section className={styles.goal}>
+          <span className={styles.goal__goBack}>
+            <Button
+              onClick={() => navigate(APP_URLS.home)}
+              variant="ghost-inverse"
+              isSmall
+              className={styles.goBack__btn}
+            >
+              Voltar
+            </Button>
+          </span>
+
+          <div className={styles.goal__preview}>
+            <p>Pré-visualização</p>
+            <Goal
+              goal={{ ...goalPreview, isCompleted: false, currentValue: 0 }}
+              onPreviewClick={() => {}}
+              categoryName={
+                goalPreview.categoryId
+                  ? categoriesMap[goalPreview.categoryId]
+                  : null
+              }
+            />
+            <div className={styles.preview__line}></div>
+          </div>
+
+          <form
+            className={styles.goal__form}
+            autoComplete="off"
+            onSubmit={handleSubmit(handleFormSubmit)}
+          >
+            {/* TITLE FIELD */}
+            <div>
+              <input
+                {...register('title')}
+                type="text"
+                placeholder="Insira o título"
+                className={styles.form__title}
+              />
+            </div>
+
+            {/* COLOR FIELD */}
+            <div>
+              <Controller
+                name="color"
+                control={control}
+                render={({ field }) => (
+                  <ColorPicker value={field.value} onChange={field.onChange} />
+                )}
+              />
+            </div>
+
+            {/* TARGET VALUE FIELD */}
+            <div>
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => (
+                  <TargetValueField
+                    type={field.value}
+                    register={register}
+                    setValue={setValue}
+                    errors={errors}
+                    clearErrors={clearErrors}
+                  />
+                )}
+              />
+            </div>
+
+            {/* CATEGORY FIELD */}
+            <div>
+              <Controller
+                name="categoryId"
+                control={control}
+                render={({ field }) => (
+                  <CategoryField
+                    value={field.value}
+                    onChange={field.onChange}
+                    categoriesMap={categoriesMap}
+                  />
+                )}
+              />
+            </div>
+
+            {/* DEADLINE FIELD */}
+            <div>
+              <Controller
+                name="deadline"
+                control={control}
+                render={({ field }) => (
+                  <DeadlineField
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
+
+            {/* HABIT FIELD */}
+            <div>
+              <Controller
+                name="habitId"
+                control={control}
+                render={({ field }) => (
+                  <HabitField
+                    value={field.value}
+                    onChange={(habitId, unitOfMeasure) => {
+                      handleHabitFieldChange(unitOfMeasure);
+                      field.onChange(habitId);
+                    }}
+                    habitsMap={habitsMap}
+                  />
+                )}
+              />
+            </div>
+
+            <div className={styles.form__submit}>
+              <Button type="submit" isDisabled={createMutation.isPending}>
+                {createMutation.isPending
+                  ? 'Criando meta...'
+                  : 'Criar nova meta'}
+              </Button>
+            </div>
+          </form>
+        </section>
+      </main>
+      <Footer customBgColor="#101b14" />
+    </PageView>
+  );
+}

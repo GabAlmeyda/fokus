@@ -3,6 +3,8 @@
   flex-direction: column;
   align-items: center;
 
+  min-width: 288px;
+
   margin-top: 1rem;
 }
 
@@ -14,11 +16,11 @@
 
 .weekDays div {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly ;
   width: 100%;
 }
 
-.weekDays div span {
+.weekDays div button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,21 +30,31 @@
   aspect-ratio: 1 / 1;
 
   border-radius: 5px;
+  border: none;
+
+  background-color: transparent;
 
   font-size: .9rem;
   font-weight: 500;
-  color: #a4dbb6;
 
   cursor: pointer;
   user-select: none;
 }
 
-.weekDays div span:hover {
+.weekDays div button * {
+  color: #a4dbb6;
+}
+
+.weekDays div button:hover {
   background-color: #2d3a31;
 }
 
-.weekDays div span.active {
+.weekDays div button.active {
   background-color: var(--accent-primary);
 
+  font-weight: 600;
+}
+
+.weekDays div button.active * {
   color: #060806;
 }

@@ -7,6 +7,7 @@
   align-items: center;
 
   height: 90px;
+  min-width: 288px;
 
   padding: .5rem;
   padding-left: calc(50px + .5rem);

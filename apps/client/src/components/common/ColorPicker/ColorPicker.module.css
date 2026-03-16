@@ -4,6 +4,7 @@
   justify-content: space-between;
 
   width: 100%;
+  min-width: 288px;
   max-width: 400px;
 
   margin-inline: auto;

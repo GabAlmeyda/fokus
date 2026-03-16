@@ -49,7 +49,6 @@ export default function RegisterPage(): JSX.Element {
   });
   const registerMutation = useUserMutations().registerMutation;
 
-  // Changes the page title
   useEffect(() => {
     document.title = 'Fokus - Cadastre-se';
   }, []);
@@ -90,7 +89,11 @@ export default function RegisterPage(): JSX.Element {
           <div className={styles.register__formContainer}>
             {errors.root && (
               <span className={styles.register__formError}>
-                <FormErrorMessage message={errors.root.message} />
+                <FormErrorMessage
+                  id="form-error"
+                  isHidden={!!errors.root}
+                  message={errors.root.message}
+                />
               </span>
             )}
             <form
@@ -98,6 +101,7 @@ export default function RegisterPage(): JSX.Element {
               onSubmit={handleSubmit(onSubmit)}
               className={styles.register__form}
               autoComplete="on"
+              aria-describedby="form-error"
             >
               <div className={styles.form__inputs}>
                 <div>
@@ -107,9 +111,15 @@ export default function RegisterPage(): JSX.Element {
                     placeholder="Nome"
                     type="text"
                     autoComplete="name"
+                    aria-describedby="name-error"
+                    aria-label="Insira seu nome"
                   />
                   {errors.name && (
-                    <FormErrorMessage message={errors.name.message} />
+                    <FormErrorMessage
+                      id="name-error"
+                      isHidden={!!errors.name}
+                      message={errors.name.message}
+                    />
                   )}
                 </div>
 
@@ -120,9 +130,15 @@ export default function RegisterPage(): JSX.Element {
                     placeholder="Email"
                     type="email"
                     autoComplete="username"
+                    aria-describedby="email-error"
+                    aria-label="Insira seu email"
                   />
                   {errors.email && (
-                    <FormErrorMessage message={errors.email.message} />
+                    <FormErrorMessage
+                      id="email-error"
+                      isHidden={!!errors.email}
+                      message={errors.email.message}
+                    />
                   )}
                 </div>
 
@@ -133,9 +149,15 @@ export default function RegisterPage(): JSX.Element {
                     placeholder="Senha"
                     type="password"
                     autoComplete="new-password"
+                    aria-describedby="password-error"
+                    aria-label="Insira uma senha"
                   />
                   {errors.password && (
-                    <FormErrorMessage message={errors.password.message} />
+                    <FormErrorMessage
+                      id="password-error"
+                      isHidden={!!errors.password}
+                      message={errors.password.message}
+                    />
                   )}
                 </div>
 
@@ -146,9 +168,13 @@ export default function RegisterPage(): JSX.Element {
                     placeholder="Confirme sua senha"
                     type="password"
                     autoComplete="new-password"
+                    aria-describedby="confirm-password-error"
+                    aria-label="Digite novamente a senha"
                   />
                   {errors.confirmPassword && (
                     <FormErrorMessage
+                      id="confirm-password-error"
+                      isHidden={!!errors.confirmPassword}
                       message={errors.confirmPassword.message}
                     />
                   )}
@@ -158,7 +184,7 @@ export default function RegisterPage(): JSX.Element {
               <div className={styles.form__btn}>
                 <Button isDisabled={registerMutation.isPending}>
                   {registerMutation.isPending
-                    ? 'Crianto conta...'
+                    ? 'Criando conta...'
                     : 'Crie sua conta agora'}
                 </Button>
               </div>

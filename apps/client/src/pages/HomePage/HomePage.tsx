@@ -16,7 +16,6 @@ export default function HomePage(): JSX.Element {
     setActiveView(view as typeof activeView);
   };
 
-  // Changes the page title
   useEffect(() => {
     document.title = 'Fokus - Início';
   }, []);

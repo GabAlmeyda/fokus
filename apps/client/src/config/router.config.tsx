@@ -5,19 +5,20 @@ import ProtectedRoute from '../components/auth/ProtectedRoute/ProtectedRoute';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import HomePage from '../pages/HomePage/HomePage';
 import HabitPage from '../pages/HabitPage/HabitPage';
+import GoalPage from '../pages/GoalPage/GoalPage';
 
 export const router = createBrowserRouter([
   {
     path: '/landing-page',
-    element: <LandingPage></LandingPage>,
+    element: <LandingPage />,
   },
   {
     path: '/register',
-    element: <RegisterPage></RegisterPage>,
+    element: <RegisterPage />,
   },
   {
     path: '/login',
-    element: <LoginPage></LoginPage>,
+    element: <LoginPage />,
   },
   // Protected routes
   {
@@ -25,11 +26,15 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/app',
-        element: <HomePage></HomePage>,
+        element: <HomePage />,
       },
       {
         path: '/app/habits/:habitId',
-        element: <HabitPage></HabitPage>
+        element: <HabitPage />
+      },
+      {
+        path: '/app/goals/:goalId',
+        element: <GoalPage />
       }
     ],
   },

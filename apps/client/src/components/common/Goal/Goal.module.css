@@ -7,6 +7,7 @@
   align-items: flex-start;
 
   height: 130px;
+  min-width: 288px;
 
   padding: .5rem;
   border-radius: 10px;
@@ -14,11 +15,11 @@
   background-color: var(--bg-secondary);
 }
 
-.goal__icon {
+.goal__color {
   flex-grow: 1;
 
   height: calc(100% + 2 * .5rem);
-  min-width: 11%;
+  min-width: 15%;
 
   margin: -.5rem;
   margin-right: .5rem;
@@ -127,6 +128,8 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 
+  min-height: 25px;
+
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 400;
@@ -137,7 +140,7 @@
   justify-content: center;
   align-items: center;
 
-  padding: .5rem;
+  padding: .3rem;
 
   margin-left: .5rem;
 

@@ -4,6 +4,8 @@
   display: grid;
   grid-template-columns: 1fr auto;
 
+  min-width: 288px;
+
   padding: .5rem;
   border-radius: 10px;
 
@@ -29,17 +31,14 @@
   font-size: 1.5rem;
 }
 
-.iconPicker > div > button {
+.iconPicker__toggle button {
   border: none;
-  border-left: 2px solid #333a33;
 
-  background: none;
-
-  font-size: 1.2rem;
+  background-color: transparent;
 }
 
-.iconPicker > div > button > svg * {
-  color: #333a33;
+.iconPicker__toggle button * {
+  color: #4e5f51;
 }
 
 .iconPicker__icons {
@@ -50,23 +49,27 @@
   align-items: center;
 
   border-radius: 0 0 10px 10px;
+  margin-top: .5rem;
   padding-top: 1rem;
 
   background-color: #a4dbb6;
 }
 
-.iconPicker__icons > div {
+.iconPicker__icons > button {
   display: flex;
   justify-content: center;
   align-items: center;
 
   padding: .5rem;
   border-radius: 100%;
+  border: none;
+
+  background-color: transparent;
 
   font-size: 1.1rem;
 
   cursor: pointer;
 }
-.iconPicker__icons > div.active {
+.iconPicker__icons > button.active {
   background-color: var(--accent-primary);
 }

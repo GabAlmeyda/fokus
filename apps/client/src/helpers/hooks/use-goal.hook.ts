@@ -25,7 +25,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       return response.data;
     },
     refetchOnWindowFocus: false,
-    enabled: !!query.goalId,
+    enabled: !!query.goalId && query.goalId !== 'new',
   });
 
   const filterQuery = useQuery<GoalResponseDTO[], HTTPErrorResponse>({
@@ -50,7 +50,7 @@ export function useGoalMutations() {
   const createMutation = useMutation<
     GoalResponseDTO,
     HTTPErrorResponse,
-    GoalCreateDTO
+    Omit<GoalCreateDTO, 'userId'>
   >({
     mutationFn: async (data) => {
       const response = await api.post('/goals', data, {

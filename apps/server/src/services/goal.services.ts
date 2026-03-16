@@ -36,6 +36,7 @@ export class GoalService implements IGoalService {
       if (newData.habitId) {
         const habit = await this.habitService.findOneById(
           newData.habitId,
+          new Date(),
           newData.userId,
         );
         if (habit.type !== newData.type) {
@@ -128,6 +129,7 @@ export class GoalService implements IGoalService {
     if (newData.habitId) {
       const habit = await this.habitService.findOneById(
         newData.habitId,
+        new Date(),
         userId,
       );
       if (habit.type !== newData.type) {

@@ -1,56 +1,25 @@
-.progressImpact {
+.targetValue {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
 
-  position: relative;
+  padding: .5rem;
+  border-radius: 10px;
 
   min-width: 288px;
 
-  padding: .5rem;
-  border-radius: 10px;
-
-  background-color: #a4dbb6;
-
-  font-size: .9rem;
-}
-
-.progressImpact {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-
-  padding: .5rem;
-  border-radius: 10px;
-
   background-color: #a4dbb6;
 }
 
-.progressImpact>p {
-  display: flex;
-  align-items: center;
-  gap: .1rem;
-
+.targetValue>p {
   font-size: .9rem;
 }
 
-.progressImpact > p > span {
-  height: 16px;
-  width: 16px;
-}
-
-.progressImpact > p svg {
-  font-size: 1rem;
-
-  cursor: help;
-}
-
-.progressImpact>div:has(.progressImpact__values) {
+.targetValue > div:has(.typeToggle__values) {
   grid-column: 1 / -1;
 }
 
-.progressImpact__propToggle {
+.targetValue__propToggle {
   position: relative;
 
   display: flex;
@@ -66,7 +35,7 @@
   background-color: #6b8272;
 }
 
-.progressImpact__propToggle div {
+.targetValue__propToggle div {
   position: absolute;
   left: .2rem;
 
@@ -82,15 +51,15 @@
   transition: transform .1s ease-out;
 }
 
-.progressImpact__propToggle.active {
+.targetValue__propToggle.active {
   background-color: var(--accent-primary);
 }
 
-.progressImpact__propToggle.active div {
+.targetValue__propToggle.active div {
   transform: translateX(23px);
 }
 
-.progressImpact__values {
+.typeToggle__values {
   display: flex;
   gap: .5rem;
 
@@ -102,7 +71,6 @@
 .values__input {
   background-color: #a4dbb6;
 }
-
 .values__input:focus-within {
   background-color: #ececec;
 }

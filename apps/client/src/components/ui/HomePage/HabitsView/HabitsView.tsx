@@ -40,7 +40,7 @@ export default function HabitsView(): JSX.Element {
       weekDay: weekDaysMap[dateObj.getDay()],
     },
     selectedDate: dateObj,
-  }).habitsFilterQuery;
+  }).filterQuery;
   const completedHabits = habits?.filter((h) => h.isCompleted);
   const days = useMemo(() => generateWeeklyDays(dateObj), [selectedDay]);
   const dateString = generateHeaderDateString(dateObj);

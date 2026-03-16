@@ -93,11 +93,6 @@ const GoalBaseSchema = z.object({
       example: '#a202f0',
       default: '#15E03B',
     }),
-
-  icon: z
-    .string()
-    .min(1, 'Nome do ícone deve ter no mínimo 1 caractere.')
-    .openapi({ description: 'Visual icon of the goal.' }),
 });
 
 type GoalRefinementData = z.infer<ReturnType<typeof GoalBaseSchema.partial>>;

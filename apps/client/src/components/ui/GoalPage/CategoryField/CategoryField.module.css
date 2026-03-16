@@ -1,0 +1,120 @@
+.categoryField {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  min-width: 288px;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  background-color: #a4dbb6;
+}
+
+.categoryField > p {
+  font-size: .9rem;
+}
+
+.categoryField * {
+  color: #060806;
+}
+
+.categoryField__toggle,
+.categoryField__toggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 1rem;
+
+  font-size: 1.2rem;
+}
+
+.categoryField__toggle span {
+  display: -webkit-box;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+
+  max-width: 120px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: .3rem;
+
+  font-size: .9rem;
+  font-style: italic;
+}
+
+.categoryField__toggle > button {
+  border: none;
+  border-left: 2px solid #333a33;
+
+  background: none;
+
+  font-size: 1.2rem;
+}
+
+.categoryField__toggle > button > svg * {
+  color: #333a33;
+}
+
+.categoryField__items {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 30px;
+  gap: .2rem;
+
+  height: 110px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-inverse) #86b395;
+
+  padding-top: 1rem;
+  padding-right: 5px;
+
+  background-color:#a4dbb6;
+}
+
+.categoryField__items::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.categoryField__items::-webkit-scrollbar-track {
+  background: #86b395;
+  border-radius: 10px;
+}
+
+.categoryField__items::-webkit-scrollbar-thumb {
+  background-color: var(--accent-inverse);
+  border-radius: 10px;
+  border: 2px solid #86b395;
+}
+
+.categoryField__items > button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  white-space: nowrap;
+  overflow-x: hidden;
+
+  border-radius: 5px;
+  border: none;
+  padding: .2rem .5rem;
+
+  background-color: transparent;
+
+  font-size: .9rem;
+  text-overflow: ellipsis;
+
+  cursor: pointer;
+}
+.categoryField__items > button:hover {
+  background-color: #86b395;
+}
+.categoryField__items > button.active {
+  background-color: var(--accent-primary);
+}

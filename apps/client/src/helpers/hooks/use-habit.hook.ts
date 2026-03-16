@@ -16,7 +16,7 @@ interface UseHabitsQueriesParams {
 }
 
 export function useHabitQueries(query: UseHabitsQueriesParams) {
-  const habitQuery = useQuery<HabitResponseDTO, HTTPErrorResponse>({
+  const idQuery = useQuery<HabitResponseDTO, HTTPErrorResponse>({
     queryKey: ['habit', query.habitId, query.selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits/${query.habitId}`, {
@@ -30,7 +30,7 @@ export function useHabitQueries(query: UseHabitsQueriesParams) {
     enabled: !!query.habitId && query.habitId !== 'new',
   });
 
-  const habitsFilterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
+  const filterQuery = useQuery<HabitResponseDTO[], HTTPErrorResponse>({
     queryKey: ['habits', query.filter, query.selectedDate],
     queryFn: async () => {
       const response = await api.get(`/habits`, {
@@ -45,8 +45,8 @@ export function useHabitQueries(query: UseHabitsQueriesParams) {
   });
 
   return {
-    habitQuery,
-    habitsFilterQuery,
+    idQuery,
+    filterQuery,
   };
 }
 

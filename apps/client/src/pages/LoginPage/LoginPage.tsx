@@ -32,7 +32,6 @@ export default function LoginPage(): JSX.Element {
     },
   });
 
-  // Changes the page title
   useEffect(() => {
     document.title = 'Fokus - Conecte-se';
   }, []);
@@ -65,7 +64,11 @@ export default function LoginPage(): JSX.Element {
           <div className={styles.login__formContainer}>
             {errors.root && (
               <span className={styles.login__formError}>
-                <FormErrorMessage message={errors.root.message} />
+                <FormErrorMessage
+                  id="form-error"
+                  isHidden={!!errors.root}
+                  message={errors.root.message}
+                />
               </span>
             )}
             <form
@@ -73,6 +76,7 @@ export default function LoginPage(): JSX.Element {
               onSubmit={handleSubmit(handleFormSubmit)}
               autoComplete="on"
               className={styles.login__form}
+              aria-describedby="form-error"
             >
               <div className={styles.form__inputs}>
                 <div>
@@ -82,9 +86,15 @@ export default function LoginPage(): JSX.Element {
                     placeholder="Email"
                     type="email"
                     autoComplete="username"
+                    aria-describedby="email-error"
+                    aria-label="Insira seu email"
                   />
                   {errors.email && (
-                    <FormErrorMessage message={errors.email.message} />
+                    <FormErrorMessage
+                      id="email-error"
+                      isHidden={!!errors.email}
+                      message={errors.email.message}
+                    />
                   )}
                 </div>
 
@@ -95,9 +105,15 @@ export default function LoginPage(): JSX.Element {
                     placeholder="Senha"
                     type="password"
                     autoComplete="password"
+                    aria-describedby="password-error"
+                    aria-label="Insira sua senha"
                   />
                   {errors.password && (
-                    <FormErrorMessage message={errors.password.message} />
+                    <FormErrorMessage
+                      id="password-error"
+                      isHidden={!!errors.password}
+                      message={errors.password.message}
+                    />
                   )}
                 </div>
               </div>

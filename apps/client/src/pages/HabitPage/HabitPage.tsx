@@ -13,11 +13,12 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import { HabitCreateSchema, type HabitCreateDTO } from '@fokus/shared';
 import ColorPicker from '../../components/common/ColorPicker/ColorPicker';
 import { type FokusIconKey } from '../../components/common/Icon/Icon';
-import IconPicker from '../../components/ui/HabitPage/IconPicker/IconPicker';
+import IconPickerField from '../../components/ui/HabitPage/IconPickerField/IconPickerField';
 import Footer from '../../components/layouts/Footer/Footer';
 import ProgressImpactField from '../../components/ui/HabitPage/ProgressImpactField/ProgressImpactValue';
 import ReminderField from '../../components/ui/HabitPage/ReminderField/ReminderField';
 import WeekDaysField from '../../components/ui/HabitPage/WeekDaysField/WeekDaysField';
+import { useEffect } from 'react';
 
 const defaultHabit: Omit<HabitCreateDTO, 'userId'> = {
   title: 'Novo título',
@@ -26,6 +27,7 @@ const defaultHabit: Omit<HabitCreateDTO, 'userId'> = {
   type: 'qualitative',
   unitOfMeasure: null,
   reminder: null,
+  progressImpactValue: 0,
   weekDays: [],
 };
 const date = new Date();
@@ -36,7 +38,7 @@ export default function HabitPage() {
   const { data } = useHabitQueries({
     habitId,
     selectedDate: date,
-  }).habitQuery;
+  }).idQuery;
   const createMutation = useHabitMutations().createMutation;
   const habit = data
     ? HabitCreateSchema.omit({ userId: true }).parse(data)
@@ -57,6 +59,11 @@ export default function HabitPage() {
     ...habit,
     ...formData,
   };
+
+  useEffect(() => {
+    document.title =
+      habitId === 'new' ? 'Fokus - Novo hábito' : 'Fokus - Atualizar hábito';
+  }, []);
 
   const handleFormSubmit = async (data: Omit<HabitCreateDTO, 'userId'>) => {
     await createMutation.mutateAsync(data, {
@@ -125,7 +132,7 @@ export default function HabitPage() {
                 name="icon"
                 control={control}
                 render={({ field }) => (
-                  <IconPicker
+                  <IconPickerField
                     value={field.value as FokusIconKey}
                     onChange={field.onChange}
                   />
