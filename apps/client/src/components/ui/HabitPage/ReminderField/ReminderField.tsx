@@ -84,7 +84,7 @@ export default function ReminderField({
             : 'Ativar progresso para o hábito'
         }
       >
-        <div aria-hidden='true'></div>
+        <div aria-hidden="true"></div>
       </button>
 
       <div

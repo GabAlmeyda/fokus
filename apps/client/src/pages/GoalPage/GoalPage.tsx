@@ -19,10 +19,11 @@ import { useCategoryQueries } from '../../helpers/hooks/use-category.hook';
 import DeadlineField from '../../components/ui/GoalPage/DeadlineField/DeadlineField';
 import HabitField from '../../components/ui/GoalPage/HabitField/HabitField';
 import { useHabitQueries } from '../../helpers/hooks/use-habit.hook';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { parseGoal } from '../../helpers/session-parse.helpers';
 
 const defaultGoal: Omit<GoalCreateDTO, 'userId'> = {
-  title: '',
+  title: 'Título',
   color: '#8838dd',
   type: 'qualitative',
   unitOfMeasure: null,
@@ -36,11 +37,13 @@ const selectedDate = new Date();
 export default function GoalPage() {
   const navigate = useNavigate();
   const { goalId } = useParams<{ goalId: string }>();
-  const { data } = useGoalQueries({ goalId }).idQuery;
+  const { data: goal } = useGoalQueries({ goalId }).idQuery;
   const createMutation = useGoalMutations().createMutation;
-  const goal = data
-    ? GoalCreateSchema.omit({ userId: true }).parse(data)
-    : defaultGoal;
+  const initialGoal = useMemo(() => {
+    return goal
+      ? GoalCreateSchema.omit({ userId: true }).parse(goal)
+      : (parseGoal(goalId!) ?? defaultGoal);
+  }, [goal, goalId]);
   const { data: categories } = useCategoryQueries({}).filterQuery;
   const categoriesMap: Record<string, string> = {};
   categories?.forEach((c) => (categoriesMap[c.id] = c.name));
@@ -68,13 +71,10 @@ export default function GoalPage() {
     clearErrors,
   } = useForm<Omit<GoalCreateDTO, 'userId'>>({
     resolver: zodResolver(GoalCreateSchema.omit({ userId: true }) as any),
-    defaultValues: goal,
+    defaultValues: initialGoal,
+    values: initialGoal,
   });
   const formData = useWatch({ control });
-  const goalPreview = {
-    ...goal,
-    ...formData,
-  };
 
   useEffect(() => {
     document.title =
@@ -82,19 +82,30 @@ export default function GoalPage() {
   }, []);
 
   useEffect(() => {
-    if (goalPreview.type === 'qualitative' && goalPreview.habitId != null) {
+    if (formData.type === 'qualitative' && formData.habitId != null) {
       setValue('habitId', null, { shouldDirty: true });
     }
-  }, [goalPreview.type]);
+  }, [formData.type]);
+
+  useEffect(() => {
+    if (formData) {
+      const storedKey = 'goal-data' + (goalId === 'new' ? '-new' : '-update');
+      sessionStorage.setItem(storedKey, JSON.stringify(formData));
+    }
+  }, [formData]);
 
   const handleFormSubmit = async (data: Omit<GoalCreateDTO, 'userId'>) => {
     await createMutation.mutateAsync(data, {
-      onSuccess: () => navigate(APP_URLS.home),
+      onSuccess: () => {
+        const storedKey = 'goal-data' + (goalId === 'new' ? '-new' : '-update');
+        sessionStorage.removeItem(storedKey);
+        navigate(APP_URLS.home);
+      },
     });
   };
 
   const handleHabitFieldChange = (unitOfMeasure: string | null) => {
-    if (goalPreview.type === 'qualitative') {
+    if (formData.type === 'qualitative') {
       setValue('type', 'quantitative', { shouldDirty: true });
       setValue('unitOfMeasure', unitOfMeasure, { shouldDirty: true });
     }
@@ -118,12 +129,15 @@ export default function GoalPage() {
           <div className={styles.goal__preview}>
             <p>Pré-visualização</p>
             <Goal
-              goal={{ ...goalPreview, isCompleted: false, currentValue: 0 }}
+              goal={{
+                ...(formData as GoalCreateDTO),
+                isCompleted: false,
+                currentValue: 0,
+                id: ''
+              }}
               onPreviewClick={() => {}}
               categoryName={
-                goalPreview.categoryId
-                  ? categoriesMap[goalPreview.categoryId]
-                  : null
+                formData.categoryId ? categoriesMap[formData.categoryId] : null
               }
             />
             <div className={styles.preview__line}></div>

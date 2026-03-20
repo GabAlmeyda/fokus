@@ -47,7 +47,9 @@ export default function HabitField({
         className={styles.habitField__toggle}
       >
         <FokusIcon iconKey="target" />
-        <span>{value ? habitsMap[value]['title'] : 'Nenhum'}</span>
+        <span>
+          {!!value && habitsMap[value] ? habitsMap[value]['title'] : 'Nenhum'}
+        </span>
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label={

@@ -16,7 +16,7 @@ export default function MenuBar(): JSX.Element {
   const { data: user } = useUserQueries().meQuery;
   const updateMutation = useUserMutations().updateMutation;
   const [activeSidebar, setActiveSidebar] = useState<
-    'navigation' | 'profile' | 'none'
+    'navigation' | 'aside' | 'none'
   >('none');
 
   useEffect(() => {
@@ -60,11 +60,11 @@ export default function MenuBar(): JSX.Element {
         <nav
           className={clsx(
             styles.navigation,
-            activeSidebar === 'navigation' && styles.navigation_open,
+            activeSidebar === 'navigation' && styles.open,
           )}
           data-sidebar="profile"
         >
-          <div className={styles.shared__goBack}>
+          <div className={styles.l_menubar__goBack}>
             <Button
               onClick={() => setActiveSidebar('none')}
               variant="ghost-inverse"
@@ -77,7 +77,7 @@ export default function MenuBar(): JSX.Element {
 
           <section>
             <h3>Início</h3>
-            <ul>
+            <ul className={styles.l_menubar__list}>
               <li>
                 <Link to={APP_URLS.home}>
                   <span>Voltar para o início</span>
@@ -89,15 +89,15 @@ export default function MenuBar(): JSX.Element {
 
           <section>
             <h3>Criar</h3>
-            <ul>
+            <ul className={styles.l_menubar__list}>
               <li>
-                <Link to={APP_URLS.createHabit}>
+                <Link to={`${APP_URLS.habits}/new`}>
                   <span>Criar novo hábito</span>{' '}
                   <FokusIcon iconKey="big-right" aria-hidden="true" />
                 </Link>
               </li>
               <li>
-                <Link to={APP_URLS.createGoal}>
+                <Link to={`${APP_URLS.goals}/new`}>
                   <span>Criar nova meta</span>
                   <FokusIcon iconKey="big-right" aria-hidden="true" />
                 </Link>
@@ -106,20 +106,17 @@ export default function MenuBar(): JSX.Element {
           </section>
         </nav>
 
-        <button
-          onClick={() => setActiveSidebar('profile')}
-          data-sidebar="profile"
-        >
+        <button onClick={() => setActiveSidebar('aside')} data-sidebar="aside">
           <FokusIcon iconKey="user" />
         </button>
 
         <div
           className={clsx(
-            styles.profile,
-            activeSidebar === 'profile' && styles['profile_open'],
+            styles.aside,
+            activeSidebar === 'aside' && styles.open,
           )}
         >
-          <div className={styles.shared__goBack}>
+          <div className={styles.l_menubar__goBack}>
             <Button
               onClick={() => setActiveSidebar('none')}
               variant="ghost-inverse"
@@ -130,36 +127,71 @@ export default function MenuBar(): JSX.Element {
             </Button>
           </div>
 
-          <div className={styles.profile__user}>
-            <FokusIcon iconKey="user" className={styles.user__img} />
-            <div>
-              <p className={styles.user__name}>{user?.name}</p>
-              <p className={styles.user__email}>{user?.email}</p>
+          <section className={styles.aside__user}>
+            <div className={styles.user__container}>
+              <FokusIcon iconKey="user" className={styles.user__img} />
+              <div>
+                <p className={styles.user__name}>{user?.name}</p>
+                <p className={styles.user__email}>{user?.email}</p>
+              </div>
             </div>
-          </div>
 
-          <div className={styles.profile__theme}>
-            <p>Tema:</p>
-            <div
-              className={styles.theme__toggle}
-              onClick={handleToggleThemeClick}
-            >
-              <span
-                className={clsx(
-                  user?.themeMode === 'light' && styles.theme_selected,
-                )}
+            <div className={styles.user__theme}>
+              <p>Tema:</p>
+              <div
+                className={styles.theme__toggle}
+                onClick={handleToggleThemeClick}
               >
-                <FokusIcon iconKey="sun" />
-              </span>
-              <span
-                className={clsx(
-                  user?.themeMode === 'dark' && styles.theme_selected,
-                )}
-              >
-                <FokusIcon iconKey="moon" />
-              </span>
+                <span
+                  className={clsx(
+                    user?.themeMode === 'light' && styles.theme_selected,
+                  )}
+                >
+                  <FokusIcon iconKey="sun" />
+                </span>
+                <span
+                  className={clsx(
+                    user?.themeMode === 'dark' && styles.theme_selected,
+                  )}
+                >
+                  <FokusIcon iconKey="moon" />
+                </span>
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section className={styles.aside__contact}>
+            <h3>Entre em contato</h3>
+            <ul className={styles.l_menubar__list}>
+              <li>
+                <a href="https://www.instagram.com/almeyda.dev/" target="_blank">
+                  <span>
+                    <FokusIcon iconKey="instagram" aria-hidden="true" />
+                    Instagram
+                  </span>
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/gabriel-almeyda/" target="_blank">
+                  <span>
+                    <FokusIcon iconKey="linkedin" aria-hidden="true" />
+                    LinkedIn
+                  </span>
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </a>
+              </li>
+              <li>
+                <a href="https://gabalmeyda.vercel.app" target="_blank">
+                  <span>
+                    <FokusIcon iconKey="website" aria-hidden="true" />
+                    Portfólio
+                  </span>
+                  <FokusIcon iconKey="big-right" aria-hidden="true" />
+                </a>
+              </li>
+            </ul>
+          </section>
         </div>
       </nav>
       {activeSidebar !== 'none' && (

@@ -18,16 +18,17 @@ import Footer from '../../components/layouts/Footer/Footer';
 import ProgressImpactField from '../../components/ui/HabitPage/ProgressImpactField/ProgressImpactValue';
 import ReminderField from '../../components/ui/HabitPage/ReminderField/ReminderField';
 import WeekDaysField from '../../components/ui/HabitPage/WeekDaysField/WeekDaysField';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { parseHabit } from '../../helpers/session-parse.helpers';
 
 const defaultHabit: Omit<HabitCreateDTO, 'userId'> = {
-  title: 'Novo título',
+  title: 'Título',
   color: '#C92023',
   icon: 'music',
   type: 'qualitative',
   unitOfMeasure: null,
   reminder: null,
-  progressImpactValue: 0,
+  progressImpactValue: 1,
   weekDays: [],
 };
 const date = new Date();
@@ -35,14 +36,16 @@ const date = new Date();
 export default function HabitPage() {
   const navigate = useNavigate();
   const { habitId } = useParams<{ habitId: string }>();
-  const { data } = useHabitQueries({
+  const { data: habit } = useHabitQueries({
     habitId,
     selectedDate: date,
   }).idQuery;
   const createMutation = useHabitMutations().createMutation;
-  const habit = data
-    ? HabitCreateSchema.omit({ userId: true }).parse(data)
-    : defaultHabit;
+  const initialHabit = useMemo(() => {
+    return habit
+      ? HabitCreateSchema.omit({ userId: true }).parse(habit)
+      : (parseHabit(habitId!) ?? defaultHabit);
+  }, [habit]);
   const {
     register,
     control,
@@ -52,22 +55,31 @@ export default function HabitPage() {
     clearErrors,
   } = useForm<Omit<HabitCreateDTO, 'userId'>>({
     resolver: zodResolver(HabitCreateSchema.omit({ userId: true }) as any),
-    defaultValues: habit,
+    defaultValues: initialHabit,
+    values: initialHabit,
   });
   const formData = useWatch({ control });
-  const habitPreview = {
-    ...habit,
-    ...formData,
-  };
 
   useEffect(() => {
     document.title =
       habitId === 'new' ? 'Fokus - Novo hábito' : 'Fokus - Atualizar hábito';
   }, []);
 
+  useEffect(() => {
+    if (formData) {
+      const storedKey = 'habit-data' + (habitId === 'new' ? '-new' : '-update');
+      sessionStorage.setItem(storedKey, JSON.stringify(formData));
+    }
+  }, [formData]);
+
   const handleFormSubmit = async (data: Omit<HabitCreateDTO, 'userId'>) => {
     await createMutation.mutateAsync(data, {
-      onSuccess: () => navigate(APP_URLS.home),
+      onSuccess: () => {
+        const storedKey =
+          'habit-data' + (habitId === 'new' ? '-new' : '-update');
+        sessionStorage.removeItem(storedKey);
+        navigate(APP_URLS.home);
+      },
     });
   };
 
@@ -90,7 +102,7 @@ export default function HabitPage() {
             <p>Pré-visualização</p>
             <Habit
               habit={{
-                ...habitPreview,
+                ...(formData as HabitCreateDTO),
                 isCompleted: false,
               }}
               onPreviewClick={() => {}}
@@ -147,7 +159,7 @@ export default function HabitPage() {
                 control={control}
                 render={() => (
                   <ProgressImpactField
-                    type={habitPreview.type}
+                    type={formData.type!}
                     register={register}
                     setValue={setValue}
                     errors={errors}
@@ -164,7 +176,7 @@ export default function HabitPage() {
                 control={control}
                 render={() => (
                   <ReminderField
-                    reminder={habitPreview.reminder}
+                    reminder={formData.reminder}
                     setValue={setValue}
                     clearErrors={clearErrors}
                   />
@@ -177,17 +189,19 @@ export default function HabitPage() {
               <Controller
                 name="weekDays"
                 control={control}
-                render={({ field: { onChange } }) => (
+                render={({ field }) => (
                   <WeekDaysField
-                    weekDays={habitPreview.weekDays}
-                    onChange={onChange}
+                    weekDays={formData.weekDays ?? []}
+                    onChange={field.onChange}
                   />
                 )}
               />
             </div>
 
             <div className={styles.form__submit}>
-              <Button type="submit">Criar novo hábito</Button>
+              <Button type="submit">
+                {habitId === 'new' ? 'Criar novo hábito' : 'Atualizar hábito'}
+              </Button>
             </div>
           </form>
         </section>

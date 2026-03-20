@@ -7,14 +7,14 @@ export const REQUESTS_RATE_LIMITER = {
   login: 10,
   register: 10,
   post: 20,
-  get: 200,
+  get: 300,
   patch: 50,
   delete: 50,
-  default: 250,
+  default: 200,
 } as const;
 
 export const defaultRateLimiter = rateLimit({
-  windowMs: 1000 * 60 * 15, // 15 minutes
+  windowMs: 1000 * 60 * 5, // 5 minutes
   limit: REQUESTS_RATE_LIMITER.default,
   message: {
     statusCode: HTTPStatusCode.TOO_MANY_REQUESTS,
@@ -26,7 +26,7 @@ export const defaultRateLimiter = rateLimit({
 
 export function authUserRateLimiter(limit: number) {
   return rateLimit({
-    windowMs: 1000 * 60 * 15, // 15 minutes
+    windowMs: 1000 * 60 * 5, // 5 minutes
     limit,
     message: {
       statusCode: HTTPStatusCode.TOO_MANY_REQUESTS,

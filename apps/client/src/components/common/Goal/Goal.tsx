@@ -1,13 +1,16 @@
-import { useState, type JSX } from 'react';
+import { type JSX } from 'react';
 import { format } from 'date-fns';
 import type { GoalCreateDTO, GoalResponseDTO } from '@fokus/shared';
 import styles from './Goal.module.css';
 import FokusIcon from '../Icon/Icon';
+import { Link } from 'react-router-dom';
+import { APP_URLS } from '../../../helpers/app.helpers';
 
 interface GoalProps {
   goal: Omit<GoalCreateDTO, 'userId'> & {
     isCompleted: GoalResponseDTO['isCompleted'];
     currentValue: number;
+    id: string;
   };
   categoryName: string | null;
   onPreviewClick: () => void;
@@ -18,8 +21,6 @@ export default function Goal({
   categoryName,
   onPreviewClick,
 }: GoalProps): JSX.Element {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
   return (
     <div
       className={`${styles.goal} ${goal.isCompleted ? styles.goal_completed : ''}`}
@@ -55,16 +56,16 @@ export default function Goal({
         </div>
 
         <div className={styles.content__bottom}>
-          {categoryName && (
+          {!!categoryName && (
             <div className={styles.content__tag}>
               <FokusIcon iconKey="tag" />
-              <span>{categoryName?.slice(0, 6)}...</span>
+              <span>{categoryName}</span>
             </div>
           )}
 
           <span></span>
 
-          {goal.deadline && (
+          {!!goal.deadline && (
             <div className={styles.content__deadline}>
               <FokusIcon iconKey="calendar" />
               {format(goal.deadline, 'dd/MM/yyyy')}
@@ -72,17 +73,13 @@ export default function Goal({
           )}
         </div>
       </div>
-      <span
-        onClick={(prev) => setIsMenuOpen(!prev)}
-        className={styles.goal__menuToggle}
+      <Link
+        to={`${APP_URLS.goals}/${goal.id}/logs`}
+        className={styles.goal__logs}
+        title="Ver todos os registros da meta"
       >
-        <FokusIcon iconKey="menu" />
-      </span>
-      {isMenuOpen && (
-        <div className={styles.goal__menu}>
-          <p>Teste</p>
-        </div>
-      )}
+        <FokusIcon iconKey="logs" />
+      </Link>
     </div>
   );
 }

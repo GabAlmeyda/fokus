@@ -23,7 +23,7 @@ const fullDayNames: Record<string, string> = {
 
 interface WeekDaysFieldProps {
   weekDays: HabitCreateDTO['weekDays'];
-  onChange: (...event: any[]) => void;
+  onChange: (weekDays: HabitCreateDTO['weekDays']) => void;
 }
 
 export default function WeekDaysField({
@@ -44,13 +44,14 @@ export default function WeekDaysField({
 
           const handleToggle = () => {
             if (!isSelected) {
-              onChange([...weekDays, day]);
+              onChange([...weekDays, day] as HabitCreateDTO['weekDays']);
             } else {
               onChange([...weekDays].filter((d) => d !== day));
             }
           };
           return (
             <button
+              type='button'
               onClick={handleToggle}
               className={`${isSelected ? styles.active : ''}`}
               key={day}

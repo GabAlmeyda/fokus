@@ -42,7 +42,11 @@ const HABIT_ICONS = {
   unmarked: LuIcons.LuBadge,
   marked: LuIcons.LuBadgeCheck,
   bell: LuIcons.LuBell,
-  help: LuIcons.LuCircleHelp
+  help: LuIcons.LuCircleHelp,
+  instagram: LuIcons.LuInstagram,
+  linkedin: LuIcons.LuLinkedin,
+  website: LuIcons.LuGlobe,
+  'logs': LuIcons.LuFiles,
 } as const;
 
 export type FokusIconKey = keyof typeof HABIT_ICONS;

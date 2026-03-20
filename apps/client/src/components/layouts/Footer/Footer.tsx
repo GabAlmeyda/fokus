@@ -18,6 +18,11 @@ export default function Footer({
       <p>
         <small>
           &copy;Fokus {new Date().getFullYear()}. Todos os direitos reservados.
+          Feito por{' '}
+          <a href="https://gabalmeyda.vercel.app" target="_blank">
+            Gabriel Almeida
+          </a>
+          .
         </small>
       </p>
     </footer>

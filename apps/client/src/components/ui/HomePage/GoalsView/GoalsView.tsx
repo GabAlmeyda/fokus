@@ -84,7 +84,7 @@ export default function GoalsView(): JSX.Element {
                       g.categoryId ? categoriesMap[g.categoryId] : null
                     }
                     goal={g}
-                    onPreviewClick={() => { }}
+                    onPreviewClick={() => navigate(`${APP_URLS.goals}/${g.id}`)}
                     key={`goal-${g.id}`}
                   ></Goal>
                 ))}
@@ -98,7 +98,7 @@ export default function GoalsView(): JSX.Element {
                       g.categoryId ? categoriesMap[g.categoryId] : null
                     }
                     goal={g}
-                    onPreviewClick={() => {}}
+                    onPreviewClick={() => navigate(`${APP_URLS.goals}/${g.id}`)}
                     key={`goal-${g.id}`}
                   ></Goal>
                 ))}
@@ -111,7 +111,7 @@ export default function GoalsView(): JSX.Element {
                 <span>Nenhuma meta encontrada</span>
                 <Button
                   onClick={() => {
-                    navigate(APP_URLS.createGoal);
+                    navigate(`${APP_URLS.goals}/new`);
                   }}
                 >
                   Adicione uma nova meta
