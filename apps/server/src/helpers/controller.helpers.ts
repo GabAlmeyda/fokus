@@ -55,7 +55,6 @@ export function setTokens(
     path: '/users/auth',
   });
   const id = randomUUID();
-  console.log(id);
   res.cookie('XSRF-TOKEN', id, {
     httpOnly: false,
     secure: true,

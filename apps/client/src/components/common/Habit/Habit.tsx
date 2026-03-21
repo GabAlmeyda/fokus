@@ -1,11 +1,11 @@
 import type { JSX } from 'react';
 import styles from './Habit.module.css';
 import FokusIcon, { type FokusIconKey } from '../Icon/Icon';
-import type { HabitCreateDTO, HabitResponseDTO } from '@fokus/shared';
+import type { HabitFormDTO, HabitResponseDTO } from '@fokus/shared';
 
 interface HabitProps {
   habit: Pick<
-    HabitCreateDTO,
+    HabitFormDTO,
     'color' | 'icon' | 'title' | 'weekDays' | 'reminder'
   > & { isCompleted: HabitResponseDTO['isCompleted'] };
   onPreviewClick: () => void;

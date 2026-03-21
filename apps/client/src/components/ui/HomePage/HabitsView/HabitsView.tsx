@@ -35,7 +35,7 @@ export default function HabitsView(): JSX.Element {
     return format(day, 'yyyy-MM-dd');
   });
   const dateObj = new Date(selectedDay + 'T12:00:00Z');
-  const { data: habits } = useHabitQueries({
+  const { data: habits, isFetching } = useHabitQueries({
     filter: {
       weekDay: weekDaysMap[dateObj.getDay()],
     },
@@ -99,7 +99,7 @@ export default function HabitsView(): JSX.Element {
       </div>
 
       <div className={styles.habits}>
-        {habits ? (
+        {!!habits?.length ? (
           <>
             <div className={styles.habits__completed}>
               {habits
@@ -130,7 +130,7 @@ export default function HabitsView(): JSX.Element {
             </div>
           </>
         ) : (
-          <div className={styles.habits__spinner}></div>
+          isFetching && <div className={styles.habits__spinner}></div>
         )}
       </div>
     </>

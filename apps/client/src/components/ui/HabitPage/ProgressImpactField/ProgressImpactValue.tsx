@@ -7,18 +7,16 @@ import {
   type UseFormRegister,
   type UseFormSetValue,
 } from 'react-hook-form';
-import type { HabitCreateDTO } from '@fokus/shared';
+import type { HabitFormDTO } from '@fokus/shared';
 import FormErrorMessage from '../../../common/FormErrorMessage/FormErrorMessage';
 import FokusIcon from '../../../common/Icon/Icon';
 
-type Habit = Omit<HabitCreateDTO, 'userId'>;
-
 interface ProgressImpactFieldProps {
   type: 'qualitative' | 'quantitative';
-  register: UseFormRegister<Habit>;
-  setValue: UseFormSetValue<Habit>;
-  errors: FieldErrors<Habit>;
-  clearErrors: UseFormClearErrors<Habit>;
+  register: UseFormRegister<HabitFormDTO>;
+  setValue: UseFormSetValue<HabitFormDTO>;
+  errors: FieldErrors<HabitFormDTO>;
+  clearErrors: UseFormClearErrors<HabitFormDTO>;
   className?: string;
 }
 

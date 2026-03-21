@@ -190,7 +190,7 @@ export class ProgressLogService implements IProgressLogService {
       deleteFilter,
       userId,
     );
-    if (!deleteFilter.date && deletedDocs === 0) {
+    if (deleteFilter.date && deletedDocs === 0) {
       throw new AppServerError(
         'NOT_FOUND',
         `Log of '${filter.entityType.replace('Id', '')}' with ID '${filter.entityId}' and date '${filter.date}' not found.`,

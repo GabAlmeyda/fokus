@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../config/api.config';
 import {
   type HabitCompletionLogDTO,
-  type HabitCreateDTO,
+  type HabitFormDTO,
   type HabitFilterDTO,
   type HabitResponseDTO,
   type HabitUpdateDTO,
@@ -56,7 +56,7 @@ export function useHabitMutations() {
   const createMutation = useMutation<
     HabitResponseDTO,
     HTTPErrorResponse,
-    Omit<HabitCreateDTO, 'userId'>
+    HabitFormDTO
   >({
     mutationFn: async (data) => {
       const response = await api.post('/habits', data, {

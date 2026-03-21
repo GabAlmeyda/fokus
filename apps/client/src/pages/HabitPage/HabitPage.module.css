@@ -100,11 +100,38 @@
   background-color: #2d3a31;
 }
 
-.form__submit {
+.form__submit,
+.habit__deleteBtn {
   width: 100%;
 
-  margin-top: 3rem;
+  margin-top: 5rem;
   margin-bottom: 1.5rem;
 
   text-align: center;
+}
+
+.habit__deleteBtn {
+  margin-top: 0rem;
+}
+
+.deleteBtn {
+  background-color: rgb(228, 11, 11);
+
+  color: #ececec;
+}
+
+.deleteBtn__root * {
+  color: var(--white-clr);
+}
+
+.deleteBtn__cancel {
+  border: 2px solid #a4dbb6;
+
+  background-color: transparent;
+
+  color: #a4dbb6;
+}
+
+.deleteBtn__confirm {
+  background-color: rgb(238, 29, 29);
 }

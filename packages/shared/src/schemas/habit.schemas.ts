@@ -6,11 +6,6 @@ import { differenceInDays, startOfDay } from 'date-fns';
 extendZodWithOpenApi(z);
 
 const HabitBaseSchema = z.object({
-  userId: EntityIdSchema.openapi({
-    description: 'Owner ID.',
-    example: '65f2a1b8c9d0e1f2a3b4c5d6',
-  }),
-
   title: z
     .string()
     .min(2, 'Título deve ter no mínimo 2 caracteres.')
@@ -21,7 +16,7 @@ const HabitBaseSchema = z.object({
     .enum(['quantitative', 'qualitative'])
     .openapi({ description: 'Habit type.', example: 'quantitative' }),
 
-  progressImpactValue: z.coerce
+  progressImpactValue: z
     .number()
     .min(1, 'Valor mínimo é 1.')
     .openapi({
@@ -45,7 +40,7 @@ const HabitBaseSchema = z.object({
   weekDays: z
     .array(z.enum(['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom']))
     .openapi({
-      description: 'Week days to the habit active.',
+      description: 'Week days to the habit active. The array cannot be empty.',
       example: ['ter', 'sab'],
     }),
 
@@ -85,6 +80,8 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
   if (!data) return;
 
   switch (data.type) {
+    case undefined:
+      break;
     case 'qualitative':
       if (data.progressImpactValue && data.progressImpactValue !== 1) {
         ctx.addIssue({
@@ -119,9 +116,6 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
           message: 'Hábitos quantitativos precisam de uma unidade de medida.',
         });
       }
-      break;
-
-    case undefined:
       break;
 
     default: {
@@ -164,6 +158,10 @@ export const HabitFilterSchema = HabitBaseSchema.pick({
 export type HabitFilterDTO = z.infer<typeof HabitFilterSchema>;
 
 export const HabitCreateSchema = HabitBaseSchema.extend({
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
   progressImpactValue: HabitBaseSchema.shape.progressImpactValue
     .default(1)
     .openapi({ default: 1 }),
@@ -174,14 +172,24 @@ export const HabitCreateSchema = HabitBaseSchema.extend({
     .default(null)
     .openapi({ default: 'null' }),
 })
-  .superRefine(habitRefinement)
+  .superRefine((data, ctx) => {
+    habitRefinement(data, ctx);
+    if (Array.isArray(data.weekDays) && data.weekDays.length === 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['weekDays'],
+        message: 'Ao menos um dia da semana precisa ser escolhido.',
+      });
+    }
+  })
   .openapi('habitCreate');
 export type HabitCreateDTO = z.infer<typeof HabitCreateSchema>;
 
-export const HabitUpdateSchema = HabitBaseSchema.omit({
-  userId: true,
-})
-  .partial()
+export const HabitFormSchema =
+  HabitBaseSchema.partial().superRefine(habitRefinement);
+export type HabitFormDTO = z.infer<typeof HabitFormSchema>;
+
+export const HabitUpdateSchema = HabitBaseSchema.partial()
   .superRefine(habitRefinement)
   .openapi('HabitUpdate');
 export type HabitUpdateDTO = z.infer<typeof HabitUpdateSchema>;

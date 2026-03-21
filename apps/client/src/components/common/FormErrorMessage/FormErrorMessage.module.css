@@ -1,4 +1,5 @@
 .form__error {
-  color: rgb(236, 30, 30);
+  color: rgb(236, 30, 30)!important;
   font-size: .9rem;
+  text-align: center;
 }

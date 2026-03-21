@@ -10,7 +10,11 @@ import {
 import { APP_URLS } from '../../helpers/app.helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { HabitCreateSchema, type HabitCreateDTO } from '@fokus/shared';
+import {
+  HabitFormSchema,
+  HTTPStatusCode,
+  type HabitFormDTO,
+} from '@fokus/shared';
 import ColorPicker from '../../components/common/ColorPicker/ColorPicker';
 import { type FokusIconKey } from '../../components/common/Icon/Icon';
 import IconPickerField from '../../components/ui/HabitPage/IconPickerField/IconPickerField';
@@ -18,10 +22,13 @@ import Footer from '../../components/layouts/Footer/Footer';
 import ProgressImpactField from '../../components/ui/HabitPage/ProgressImpactField/ProgressImpactValue';
 import ReminderField from '../../components/ui/HabitPage/ReminderField/ReminderField';
 import WeekDaysField from '../../components/ui/HabitPage/WeekDaysField/WeekDaysField';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { parseHabit } from '../../helpers/session-parse.helpers';
+import Dialog from '../../components/common/Dialog/Dialog';
+import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
+import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 
-const defaultHabit: Omit<HabitCreateDTO, 'userId'> = {
+const defaultHabit: HabitFormDTO = {
   title: 'Título',
   color: '#C92023',
   icon: 'music',
@@ -34,16 +41,19 @@ const defaultHabit: Omit<HabitCreateDTO, 'userId'> = {
 const date = new Date();
 
 export default function HabitPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { habitId } = useParams<{ habitId: string }>();
   const { data: habit } = useHabitQueries({
     habitId,
     selectedDate: date,
   }).idQuery;
+  const deleteMutation = useHabitMutations().deleteMutation;
   const createMutation = useHabitMutations().createMutation;
+  const updateMutation = useHabitMutations().updateMutation;
   const initialHabit = useMemo(() => {
     return habit
-      ? HabitCreateSchema.omit({ userId: true }).parse(habit)
+      ? HabitFormSchema.parse(habit)
       : (parseHabit(habitId!) ?? defaultHabit);
   }, [habit]);
   const {
@@ -51,10 +61,11 @@ export default function HabitPage() {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
     setValue,
     clearErrors,
-  } = useForm<Omit<HabitCreateDTO, 'userId'>>({
-    resolver: zodResolver(HabitCreateSchema.omit({ userId: true }) as any),
+  } = useForm<HabitFormDTO>({
+    resolver: zodResolver(HabitFormSchema),
     defaultValues: initialHabit,
     values: initialHabit,
   });
@@ -72,20 +83,82 @@ export default function HabitPage() {
     }
   }, [formData]);
 
-  const handleFormSubmit = async (data: Omit<HabitCreateDTO, 'userId'>) => {
-    await createMutation.mutateAsync(data, {
+  const handleFormSubmit = async (data: HabitFormDTO) => {
+    if ((data.weekDays ?? []).length === 0) {
+      setError('weekDays', {
+        message: 'Ao menos um dia da semana precisa ser escolhido.',
+      });
+      return;
+    }
+
+    if (habitId === 'new') {
+      await createMutation.mutateAsync(data, {
+        onSuccess: () => {
+          sessionStorage.removeItem('habit-data-new');
+          sessionStorage.removeItem('habit-data-update');
+          navigate(APP_URLS.home);
+        },
+        onError: (err) => {
+          if (err.statusCode === HTTPStatusCode.CONFLICT) {
+            setError('title', { message: 'Título já registrado.' });
+          }
+        },
+      });
+    } else {
+      await updateMutation.mutateAsync(
+        {
+          habitId: habitId!,
+          data,
+          selectedDate: date,
+        },
+        {
+          onSuccess: () => {
+            sessionStorage.removeItem('habit-data-new');
+            sessionStorage.removeItem('habit-data-update');
+            navigate(APP_URLS.home);
+          },
+        },
+      );
+    }
+  };
+
+  const handleDeleteConfirmation = async (confirmation: boolean) => {
+    if (!confirmation) {
+      setIsDialogOpen(false);
+      return;
+    }
+
+    await deleteMutation.mutateAsync(habitId!, {
       onSuccess: () => {
-        const storedKey =
-          'habit-data' + (habitId === 'new' ? '-new' : '-update');
-        sessionStorage.removeItem(storedKey);
+        sessionStorage.removeItem('habit-data-new');
+        sessionStorage.removeItem('habit-data-update');
+        setIsDialogOpen(false);
         navigate(APP_URLS.home);
       },
+      onSettled: () => setIsDialogOpen(false),
     });
   };
 
   return (
     <PageView customBgColor="#101b14">
       <main>
+        {isDialogOpen && (
+          <Dialog
+            title="Deletar hábito"
+            message="Deseja deletar o hábito? A ação não poderá ser desfeita."
+            type="alert"
+            onClick={handleDeleteConfirmation}
+            alertBtnText="Deletar"
+            classNames={{
+              root: styles.deleteBtn__root,
+              cancel: styles.deleteBtn__cancel,
+              confirm: styles.deleteBtn__confirm,
+            }}
+          />
+        )}
+        {createMutation.isPending && (
+          <LoadingOverlay message="Criando hábito. Só um momento..." />
+        )}
         <section className={styles.habit}>
           <span className={styles.habit__goBack}>
             <Button
@@ -102,7 +175,7 @@ export default function HabitPage() {
             <p>Pré-visualização</p>
             <Habit
               habit={{
-                ...(formData as HabitCreateDTO),
+                ...(formData as HabitFormDTO),
                 isCompleted: false,
               }}
               onPreviewClick={() => {}}
@@ -124,6 +197,12 @@ export default function HabitPage() {
                 type="text"
                 placeholder="Insira o título"
                 className={styles.form__title}
+                aria-describedby="title-error"
+              />
+              <FormErrorMessage
+                isHidden={!errors.title}
+                message={errors.title?.message || ''}
+                id="title-error"
               />
             </div>
 
@@ -174,9 +253,9 @@ export default function HabitPage() {
               <Controller
                 name="reminder"
                 control={control}
-                render={() => (
+                render={({ field }) => (
                   <ReminderField
-                    reminder={formData.reminder}
+                    reminder={field.value}
                     setValue={setValue}
                     clearErrors={clearErrors}
                   />
@@ -191,19 +270,46 @@ export default function HabitPage() {
                 control={control}
                 render={({ field }) => (
                   <WeekDaysField
-                    weekDays={formData.weekDays ?? []}
+                    weekDays={field.value ?? []}
                     onChange={field.onChange}
+                    errors={errors}
                   />
                 )}
               />
             </div>
 
             <div className={styles.form__submit}>
-              <Button type="submit">
-                {habitId === 'new' ? 'Criar novo hábito' : 'Atualizar hábito'}
+              <Button
+                type="submit"
+                isDisabled={
+                  createMutation.isPending || updateMutation.isPending
+                }
+              >
+                {habitId === 'new'
+                  ? createMutation.isPending
+                    ? 'Criando hábito...'
+                    : 'Criar hábito'
+                  : updateMutation.isPending
+                    ? 'Atualizando hábito...'
+                    : 'Atualizar hábito'}
               </Button>
             </div>
           </form>
+
+          {habitId !== 'new' && (
+            <div className={styles.habit__deleteBtn}>
+              <Button
+                type="button"
+                isDisabled={
+                  deleteMutation.isPending || updateMutation.isPending
+                }
+                className={styles.deleteBtn}
+                onClick={() => setIsDialogOpen(true)}
+              >
+                {deleteMutation.isPending ? 'Deletando...' : 'Deletar hábito'}
+              </Button>
+            </div>
+          )}
         </section>
       </main>
       <Footer customBgColor="#101b14" />

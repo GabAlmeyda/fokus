@@ -1,4 +1,4 @@
-import { GoalCreateSchema, HabitCreateSchema } from '@fokus/shared';
+import { GoalCreateSchema, HabitFormSchema } from '@fokus/shared';
 
 export function parseGoal(goalId: string) {
   try {
@@ -21,10 +21,9 @@ export function parseHabit(habitId: string) {
     const storedHabit = sessionStorage.getItem(storedKey);
     if (!storedHabit) return null;
 
-    return HabitCreateSchema.omit({ userId: true }).parse(
-      JSON.parse(storedHabit),
-    );
+    return HabitFormSchema.parse(JSON.parse(storedHabit));
   } catch (err) {
+    console.error(err);
     console.error('Error while attempting to read stored data.');
     return null;
   }

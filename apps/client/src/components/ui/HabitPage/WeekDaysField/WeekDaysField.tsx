@@ -1,6 +1,8 @@
 import type { JSX } from 'react';
 import styles from './WeekDaysField.module.css';
-import type { HabitCreateDTO } from '@fokus/shared';
+import type { HabitFormDTO } from '@fokus/shared';
+import type { FieldErrors } from 'react-hook-form';
+import FormErrorMessage from '../../../common/FormErrorMessage/FormErrorMessage';
 
 const mappedWeekDays: Record<string, string> = {
   Dom: 'dom',
@@ -22,36 +24,39 @@ const fullDayNames: Record<string, string> = {
 };
 
 interface WeekDaysFieldProps {
-  weekDays: HabitCreateDTO['weekDays'];
-  onChange: (weekDays: HabitCreateDTO['weekDays']) => void;
+  weekDays: HabitFormDTO['weekDays'];
+  onChange: (weekDays: HabitFormDTO['weekDays']) => void;
+  errors: FieldErrors<HabitFormDTO>;
 }
 
 export default function WeekDaysField({
-  weekDays,
+  weekDays = [],
   onChange,
+  errors,
 }: WeekDaysFieldProps): JSX.Element {
   return (
-    <div
-      className={styles.weekDays}
-      aria-labelledby="week-days-label"
-    >
+    <div className={styles.weekDays}>
       <p id="week-days-label">Repetir hábitos nos dias:</p>
-      <div role='group'>
+      <div
+        role="group"
+        aria-labelledby="week-days-label"
+        aria-describedby="week-days-error"
+      >
         {Object.entries(mappedWeekDays).map(([label, day]) => {
           const isSelected = weekDays.includes(
-            day as HabitCreateDTO['weekDays'][number],
+            day as (typeof weekDays)[number],
           );
 
           const handleToggle = () => {
             if (!isSelected) {
-              onChange([...weekDays, day] as HabitCreateDTO['weekDays']);
+              onChange([...weekDays, day] as HabitFormDTO['weekDays']);
             } else {
               onChange([...weekDays].filter((d) => d !== day));
             }
           };
           return (
             <button
-              type='button'
+              type="button"
               onClick={handleToggle}
               className={`${isSelected ? styles.active : ''}`}
               key={day}
@@ -59,11 +64,16 @@ export default function WeekDaysField({
               aria-checked={isSelected}
               aria-label={`Repetir ${fullDayNames[day]}`}
             >
-              <span aria-hidden='true'>{label}</span>
+              <span aria-hidden="true">{label}</span>
             </button>
           );
         })}
       </div>
+      <FormErrorMessage
+        id="week-days-error"
+        isHidden={!errors}
+        message={errors.weekDays?.message ?? ''}
+      />
     </div>
   );
 }

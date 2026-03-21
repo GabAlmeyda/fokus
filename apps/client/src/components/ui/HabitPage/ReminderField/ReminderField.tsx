@@ -1,14 +1,12 @@
 import { useState, type JSX } from 'react';
 import styles from './ReminderField.module.css';
-import type { HabitCreateDTO } from '@fokus/shared';
+import type { HabitFormDTO } from '@fokus/shared';
 import { type UseFormSetValue, type UseFormClearErrors } from 'react-hook-form';
-
-type Habit = Omit<HabitCreateDTO, 'userId'>;
 
 interface ReminderFieldProps {
   reminder?: string | null;
-  setValue: UseFormSetValue<Habit>;
-  clearErrors: UseFormClearErrors<Habit>;
+  setValue: UseFormSetValue<HabitFormDTO>;
+  clearErrors: UseFormClearErrors<HabitFormDTO>;
   className?: string;
 }
 
