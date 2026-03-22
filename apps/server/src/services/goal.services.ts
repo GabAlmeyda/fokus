@@ -6,6 +6,7 @@ import {
   type GoalUpdateDTO,
   type GoalResponseDTO,
   type GoalStatsDTO,
+  type ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type {
   IGoalRepository,
@@ -102,6 +103,28 @@ export class GoalService implements IGoalService {
       mapGoalDocToPublicDTO(g, stats[g._id.toString()]!),
     );
     return goals;
+  }
+
+  async getGoalProgressLogs(
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogResponseDTO[]> {
+    const goal = await this.findOneById(goalId, userId);
+    if (!goal) {
+      throw new AppServerError(
+        'NOT_FOUND',
+        `Goal with ID ${goalId} not found.`,
+      );
+    }
+
+    const logsDocs = await this.progressLogService.findByFilter(
+      {
+        entityId: goalId,
+        entityType: 'goalId',
+      },
+      userId,
+    );
+    return logsDocs;
   }
 
   async update(

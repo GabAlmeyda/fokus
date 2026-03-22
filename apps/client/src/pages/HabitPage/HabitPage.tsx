@@ -27,6 +27,7 @@ import { parseHabit } from '../../helpers/session-parse.helpers';
 import Dialog from '../../components/common/Dialog/Dialog';
 import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
+import Toast from '../../components/common/Toast/Toast';
 
 const defaultHabit: HabitFormDTO = {
   title: 'Título',
@@ -41,6 +42,7 @@ const defaultHabit: HabitFormDTO = {
 const date = new Date();
 
 export default function HabitPage() {
+  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { habitId } = useParams<{ habitId: string }>();
@@ -83,6 +85,17 @@ export default function HabitPage() {
     }
   }, [formData]);
 
+  useEffect(() => {
+    let timerId = undefined;
+    if (isToastOpen) {
+      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [isToastOpen]);
+
   const handleFormSubmit = async (data: HabitFormDTO) => {
     if ((data.weekDays ?? []).length === 0) {
       setError('weekDays', {
@@ -101,7 +114,10 @@ export default function HabitPage() {
         onError: (err) => {
           if (err.statusCode === HTTPStatusCode.CONFLICT) {
             setError('title', { message: 'Título já registrado.' });
+            return;
           }
+
+          setIsToastOpen(true);
         },
       });
     } else {
@@ -117,6 +133,7 @@ export default function HabitPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
+          onError: () => setIsToastOpen(true),
         },
       );
     }
@@ -135,6 +152,7 @@ export default function HabitPage() {
         setIsDialogOpen(false);
         navigate(APP_URLS.home);
       },
+      onError: () => setIsToastOpen(true),
       onSettled: () => setIsDialogOpen(false),
     });
   };
@@ -142,11 +160,19 @@ export default function HabitPage() {
   return (
     <PageView customBgColor="#101b14">
       <main>
+        {isToastOpen && (
+          <Toast
+            isOpen={isToastOpen}
+            onClick={() => setIsToastOpen(false)}
+            message="Erro ao tentar realizar a ação."
+            bgColor="#f73838ff"
+            ariaLive="assertive"
+          />
+        )}
         {isDialogOpen && (
           <Dialog
             title="Deletar hábito"
             message="Deseja deletar o hábito? A ação não poderá ser desfeita."
-            type="alert"
             onClick={handleDeleteConfirmation}
             alertBtnText="Deletar"
             classNames={{

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { EntityIdSchema, type EntityIdDTO } from './id.schemas.js';
+import { EntityIdSchema } from './id.schemas.js';
 import { differenceInDays, startOfDay } from 'date-fns';
 
 extendZodWithOpenApi(z);
@@ -198,7 +198,7 @@ export const HabitCompletionLogSchema = z
   .object({
     habitId: EntityIdSchema,
 
-    date: z
+    date: z.coerce
       .date()
       .transform((val) => {
         const date = val.toISOString().split('T')[0];
@@ -234,13 +234,16 @@ export type HabitStatsDTO = {
   bestStreak: number;
   isCompleted: boolean;
 };
-export type HabitResponseDTO = z.infer<typeof HabitBaseSchema> &
-  HabitStatsDTO & { id: EntityIdDTO };
 
 export const HabitResponseSchema = HabitBaseSchema.extend({
   id: EntityIdSchema.openapi({
     description: 'Goal ID.',
     readOnly: true,
+  }),
+
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
 
   streak: z.number().min(0, 'Sequência deve ser maior ou igual a 0.').openapi({
@@ -264,3 +267,4 @@ export const HabitResponseSchema = HabitBaseSchema.extend({
     readOnly: true,
   }),
 });
+export type HabitResponseDTO = z.infer<typeof HabitResponseSchema>;

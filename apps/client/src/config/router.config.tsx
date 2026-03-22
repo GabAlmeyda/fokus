@@ -7,6 +7,7 @@ import HomePage from '../pages/HomePage/HomePage';
 import HabitPage from '../pages/HabitPage/HabitPage';
 import GoalPage from '../pages/GoalPage/GoalPage';
 import GlobalErrorFallback from '../components/layouts/GlobalFallbackError/GlobalFallbackError';
+import ProgressLogsPage from '../pages/ProgressLogsPage/ProgressLogsPage';
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: '/app/goals/:goalId',
         element: <GoalPage />,
+      },
+      {
+        path: '/app/goals/:goalId/logs',
+        element: <ProgressLogsPage />,
       },
     ],
   },

@@ -72,6 +72,21 @@ goalRoutes.get(
   },
 );
 
+// Get goal logs route
+goalRoutes.get(
+  '/:goalId/logs',
+  authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
+  async (req, res) => {
+    const { user, params } = req as AuthRequest;
+
+    const { statusCode, body } = await goalController.getGoalProgressLogs({
+      params,
+      userId: user.id,
+    });
+    return res.status(statusCode).json(body);
+  },
+);
+
 // Update route
 goalRoutes.patch(
   '/:goalId',

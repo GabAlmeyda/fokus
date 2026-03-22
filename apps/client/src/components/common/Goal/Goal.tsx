@@ -49,7 +49,7 @@ export default function Goal({
           <div>
             <span
               style={{
-                minWidth: `${(goal.currentValue / (goal.targetValue || 1)) * 100}%`,
+                minWidth: `${Math.min(100, (goal.currentValue / (goal.targetValue ?? 1)) * 100)}%`,
               }}
             ></span>
           </div>

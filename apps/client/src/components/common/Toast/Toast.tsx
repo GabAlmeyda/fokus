@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState, type JSX } from 'react';
+import { useEffect, useRef, type JSX } from 'react';
 import styles from './Toast.module.css';
 
 interface ToastProps {
+  isOpen: boolean;
+  onClick: (state: boolean) => void;
   message: string;
   bgColor: string;
   ariaLive?: 'assertive' | 'polite';
@@ -9,28 +11,26 @@ interface ToastProps {
 }
 
 export default function Toast({
+  isOpen,
+  onClick,
   message,
   bgColor,
   ariaLive = 'polite',
   className,
 }: ToastProps): JSX.Element {
-  const [isOpen, setIsOpen] = useState<boolean>(true);
   const toastRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!toastRef.current) return;
-    const timerId = setTimeout(() => setIsOpen(false), 5000);
     const callback = () => {
-      setIsOpen(false);
-    }
-
+      onClick(false);
+    };
     toastRef.current.addEventListener('click', callback);
 
     return () => {
-      clearTimeout(timerId);
       toastRef.current?.removeEventListener('click', callback);
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <div

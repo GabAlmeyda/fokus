@@ -11,7 +11,7 @@ const ProgressLogBaseSchema = z.object({
 
   value: z.number().min(1, 'Valor mínimo deve ser 1.'),
 
-  date: z.coerce.date().transform((val) => {
+  date: z.date().transform((val) => {
     const date = val.toISOString().split('T')[0];
     return new Date(date + 'T12:00:00Z');
   }),

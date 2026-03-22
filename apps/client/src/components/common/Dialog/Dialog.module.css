@@ -11,15 +11,16 @@
   border-radius: 10px;
   border: none;
 
-  background-color: #2d3a31;
+  background-color: var(--bg-secondary);
 
   text-align: center;
 
   user-select: none;
 }
 
-.dialog * {
-  color: var(--white-clr);
+.dialog h2,
+.dialog p {
+  color: var(--text-primary);
 }
 
 .dialog::backdrop {
@@ -34,6 +35,8 @@
 .dialog hr {
   margin-top: .3rem;
   margin-bottom: .8rem;
+
+  background-color: var(--text-primary);
 }
 
 .dialog__loader {
@@ -84,6 +87,7 @@
   display: inline-block;
 
   font-size: .9rem;
+  line-height: 1.1rem;
 }
 
 .dialog__btns {

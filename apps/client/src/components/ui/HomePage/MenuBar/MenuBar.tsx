@@ -44,6 +44,8 @@ export default function MenuBar(): JSX.Element {
     <>
       {isToastOpen && (
         <Toast
+          isOpen={isToastOpen}
+          onClick={() => setIsToastOpen(false)}
           message="Erro ao atualizar dados da conta."
           bgColor="#f73838ff"
           ariaLive="assertive"
@@ -164,7 +166,10 @@ export default function MenuBar(): JSX.Element {
             <h3>Entre em contato</h3>
             <ul className={styles.l_menubar__list}>
               <li>
-                <a href="https://www.instagram.com/almeyda.dev/" target="_blank">
+                <a
+                  href="https://www.instagram.com/almeyda.dev/"
+                  target="_blank"
+                >
                   <span>
                     <FokusIcon iconKey="instagram" aria-hidden="true" />
                     Instagram
@@ -173,7 +178,10 @@ export default function MenuBar(): JSX.Element {
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/gabriel-almeyda/" target="_blank">
+                <a
+                  href="https://www.linkedin.com/in/gabriel-almeyda/"
+                  target="_blank"
+                >
                   <span>
                     <FokusIcon iconKey="linkedin" aria-hidden="true" />
                     LinkedIn

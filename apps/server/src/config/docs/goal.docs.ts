@@ -131,6 +131,32 @@ export function registerGoalDocs(registry: OpenAPIRegistry) {
     },
   });
 
+  // Get goal logs route
+  registry.registerPath({
+    tags: ['Goal'],
+    method: 'get',
+    path: '/goals/{goalId}/logs',
+    security: [{ accessTokenCookie: [] }],
+    summary: 'Returns all authenticated user goal logs by the goal ID',
+    request: {
+      params: z.object({ goalId: EntityIdSchema }),
+    },
+    responses: {
+      ...DEFAULT_ERRORS_DOCS,
+      ...INVALID_INPUT_ERRORS_DOCS,
+      200: {
+        description: 'Logs returned successfully.',
+        content: {
+          'application/json': { schema: z.array(GoalProgressLogSchema) },
+        },
+      },
+      404: {
+        description: 'Goal not found.',
+        content: { 'application/json': { schema: ErrorResponseSchema } },
+      },
+    },
+  });
+
   // Update route
   registry.registerPath({
     tags: ['Goal'],

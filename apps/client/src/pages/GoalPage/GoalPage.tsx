@@ -37,6 +37,7 @@ const defaultGoal: GoalFormDTO = {
 const selectedDate = new Date();
 
 export default function GoalPage() {
+  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { goalId } = useParams<{ goalId: string }>();
@@ -99,6 +100,17 @@ export default function GoalPage() {
     }
   }, [formData]);
 
+  useEffect(() => {
+    let timerId = undefined;
+    if (isToastOpen) {
+      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [isToastOpen]);
+
   const handleFormSubmit = async (data: GoalFormDTO) => {
     if (goalId === 'new') {
       await createMutation.mutateAsync(data, {
@@ -107,6 +119,7 @@ export default function GoalPage() {
           sessionStorage.removeItem('habit-data-update');
           navigate(APP_URLS.home);
         },
+        onError: () => setIsToastOpen(true),
       });
     } else {
       await updateMutation.mutateAsync(
@@ -117,6 +130,7 @@ export default function GoalPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
+          onError: () => setIsToastOpen(true),
         },
       );
     }
@@ -142,6 +156,7 @@ export default function GoalPage() {
         setIsDialogOpen(false);
         navigate(APP_URLS.home);
       },
+      onError: () => setIsToastOpen(true),
       onSettled: () => setIsDialogOpen(false),
     });
   };
@@ -153,7 +168,6 @@ export default function GoalPage() {
           <Dialog
             title="Deletar meta"
             message="Deseja deletar a meta? A ação não poderá ser desfeita."
-            type="alert"
             onClick={handleDeleteConfirmation}
             alertBtnText="Deletar"
             classNames={{

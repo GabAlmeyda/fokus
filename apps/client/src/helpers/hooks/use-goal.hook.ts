@@ -6,6 +6,7 @@ import type {
   GoalResponseDTO,
   GoalUpdateDTO,
   HTTPErrorResponse,
+  ProgressLogResponseDTO,
 } from '@fokus/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../config/api.config';
@@ -22,7 +23,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       const response = await api.get(`/goals/${query.goalId}`, {
         withCredentials: true,
       });
-      
+
       const data = response.data;
       if (data.deadline) {
         data.deadline = new Date(data.deadline);
@@ -47,7 +48,19 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
     enabled: !!query,
   });
 
-  return { idQuery, filterQuery };
+  const logsQuery = useQuery<ProgressLogResponseDTO[], HTTPErrorResponse>({
+    queryKey: ['goal-logs', query.goalId],
+    queryFn: async () => {
+      const response = await api.get(`/goals/${query.goalId}/logs`, {
+        withCredentials: true,
+      });
+      return response.data;
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!query.goalId,
+  });
+
+  return { idQuery, filterQuery, logsQuery };
 }
 
 export function useGoalMutations() {
@@ -87,6 +100,7 @@ export function useGoalMutations() {
       const { goalId } = variables;
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
+        queryClient.invalidateQueries({ queryKey: ['goal-logs', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),
       ]);
     },
@@ -130,6 +144,7 @@ export function useGoalMutations() {
       const { goalId } = variables;
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
+        queryClient.invalidateQueries({ queryKey: ['goal-logs', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),
       ]);
     },
@@ -145,6 +160,7 @@ export function useGoalMutations() {
     onSuccess: async (goalId) => {
       Promise.all([
         queryClient.removeQueries({ queryKey: ['goal', goalId] }),
+        queryClient.removeQueries({ queryKey: ['goal-logs', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),
       ]);
     },

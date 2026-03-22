@@ -7,6 +7,7 @@ import type {
   GoalResponseDTO,
   GoalUpdateDTO,
   GoalProgressLogDTO,
+  ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type { GoalDocument } from '../models/goal.model.js';
 
@@ -113,6 +114,17 @@ export interface IGoalService {
   ): Promise<GoalResponseDTO[]>;
 
   /**
+   * Returns all the progress logs for a specific goal.
+   * @param goalId - The goal ID to be searched for.
+   * @param userId - The owner ID to ensure authorization.
+   * @returns An array of progress logs.
+   */
+  getGoalProgressLogs(
+    goalId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<ProgressLogResponseDTO[]>;
+
+  /**
    * Updates a user goal.
    * @param goalId - The goal ID to be searched for.
    * @param newData - The data to be updated.
@@ -161,7 +173,6 @@ export interface IGoalCompletionService {
   /**
    * Removes an user progress log of a goal, searching for its ID.
    * @param progressLogId - The progress log ID to be searched for.
-   * @param goalId - The goal ID of the log.
    * @param userId - The owner ID to ensure authorization.
    * @returns The updated sanitized goal data.
    * @throws *`AppServerError`* If:
@@ -169,7 +180,6 @@ export interface IGoalCompletionService {
    */
   removeProgressLog(
     progressLogId: EntityIdDTO,
-    goalId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO>;
 }
@@ -219,7 +229,20 @@ export interface IGoalController {
   ): Promise<HTTPResponse<GoalResponseDTO[]>>;
 
   /**
-   * Adds a progress log (value increment) to a specific goal for a authenticated user.
+   * Returns all progress logs of a specific goal for the authenticated user.
+   * @param req The request object containing the *`goalId`* in the params and the
+   * authenticated *`userId`*.
+   * @returns The HTTP response with:
+   * - 200 (Ok): On success, containing an array of sanitized progress logs.
+   * - 400 (Bad Request): On failure, if the goal ID format is invalid.
+   * - 404 (Not found): On failure, the goal was not found or unauthorized.
+   */
+  getGoalProgressLogs(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ProgressLogResponseDTO[]>>;
+
+  /**
+   * Adds a progress log (value increment) to a specific goal for the authenticated user.
    * @param req - The request object containing the *`goalId`* in the params, the progress
    * data in the body, and the authenticated *`userId`*.
    * @returns The HTTP response with:
@@ -235,7 +258,7 @@ export interface IGoalController {
   >;
 
   /**
-   * Removes a progress log of a specific goal for a authenticated user.
+   * Removes a progress log of a specific goal for the authenticated user.
    * @param req - The request object containing the *`progressLogId`* in the params, and the
    * authenticated *`userId`*.
    * @returns The HTTP response with:

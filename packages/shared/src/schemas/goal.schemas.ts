@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { EntityIdSchema } from './id.schemas.js';
-import { differenceInDays, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 
 extendZodWithOpenApi(z);
 
@@ -55,7 +55,7 @@ const GoalBaseSchema = z.object({
       ' property of the setted habit.',
   }),
 
-  deadline: z
+  deadline: z.coerce
     .date()
     .nullable()
     .transform((val) => {
@@ -255,7 +255,7 @@ export const GoalProgressLogSchema = z.object({
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
 
-  date: z
+  date: z.coerce
     .date()
     .transform((val) => {
       const date = val.toISOString().split('T')[0];
@@ -264,7 +264,7 @@ export const GoalProgressLogSchema = z.object({
     .refine(
       (val) => {
         const today = new Date();
-        if (differenceInDays(startOfDay(today), startOfDay(val)) > 0) {
+        if (startOfDay(today).getTime() < startOfDay(val).getTime()) {
           return false;
         }
 
@@ -293,6 +293,11 @@ export const GoalResponseSchema = GoalBaseSchema.extend({
   id: EntityIdSchema.openapi({
     description: 'Goal ID.',
     readOnly: true,
+  }),
+
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
 
   currentValue: z

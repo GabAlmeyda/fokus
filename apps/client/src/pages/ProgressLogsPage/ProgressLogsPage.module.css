@@ -1,0 +1,76 @@
+.dialog__confirm {
+  background-color: rgb(238, 29, 29);
+}
+
+.logs {
+  padding: 1rem;
+}
+
+.logs__goBack {
+  display: inline-block;
+
+  padding-block: .5rem;
+  margin-bottom: 3rem;
+}
+
+.goal__title {
+  min-height: 60px;
+}
+
+.goal__title p {
+  margin-bottom: -.3rem;
+
+  color: var(--text-secondary);
+}
+
+.goal__title strong {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.goal__progress {
+  margin-top: .5rem;
+}
+
+.goal__progress>div {
+  position: relative;
+
+  border-radius: 5px;
+
+  height: 5px;
+  width: 100%;
+
+  background-color: var(--bg-muted);
+}
+
+.goal__progress>div span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  display: inline-block;
+
+  height: 100%;
+  max-width: 250px;
+
+  border-radius: 5px;
+
+  background-color: var(--accent-primary);
+}
+
+.goal__progress>span {
+  color: var(--text-secondary);
+  font-size: .9rem;
+}
+
+.logs__goal hr {
+  margin-bottom: 1rem;
+  margin-top: .3rem;
+}
+
+.logs__items {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}

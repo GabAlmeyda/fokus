@@ -5,7 +5,6 @@ import Button from '../Button/Button';
 interface DialogProps {
   title: string;
   message: string;
-  type: 'warning' | 'alert';
   alertBtnText?: string;
   onClick: (confirmation: boolean) => void;
   classNames?: {
@@ -18,14 +17,12 @@ interface DialogProps {
 export default function Dialog({
   title,
   message,
-  type,
   alertBtnText,
   onClick,
   classNames = {},
 }: DialogProps): JSX.Element {
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const isAlert = type === 'alert';
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -42,7 +39,7 @@ export default function Dialog({
     };
   }, []);
 
-  const handleClick = (confirmation: boolean) => {
+  const handleClick = (confirmation: boolean) => {  
     const dialog = dialogRef.current;
     if (!dialog) return;
 
@@ -54,7 +51,7 @@ export default function Dialog({
   return (
     <dialog
       className={`${styles.dialog} ${classNames.root ?? ''}`}
-      aria-live={type === 'warning' ? 'polite' : 'assertive'}
+      aria-live="assertive"
       ref={dialogRef}
       onCancel={(event) => {
         if (isExecuting) {
@@ -76,35 +73,25 @@ export default function Dialog({
       </div>
 
       <div className={styles.dialog__btns}>
-        {isAlert ? (
-          <>
-            <Button
-              onClick={() => handleClick(false)}
-              className={classNames.cancel ?? ''}
-              isSmall
-              isDisabled={isExecuting}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={() => handleClick(true)}
-              className={classNames.confirm ?? ''}
-              isSmall
-              isDisabled={isExecuting}
-            >
-              {alertBtnText}
-            </Button>
-          </>
-        ) : (
+        <>
+          <Button
+            onClick={() => handleClick(false)}
+            className={classNames.cancel ?? ''}
+            isSmall
+            variant='ghost-inverse'
+            isDisabled={isExecuting}
+          >
+            Cancelar
+          </Button>
           <Button
             onClick={() => handleClick(true)}
             className={classNames.confirm ?? ''}
             isSmall
             isDisabled={isExecuting}
           >
-            Confirmar
+            {alertBtnText}
           </Button>
-        )}
+        </>
       </div>
     </dialog>
   );

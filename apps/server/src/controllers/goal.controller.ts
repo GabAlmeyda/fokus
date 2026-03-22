@@ -12,6 +12,7 @@ import {
   GoalProgressLogSchema,
   type GoalProgressLogDTO,
   type EntityIdDTO,
+  type ProgressLogResponseDTO,
 } from '@fokus/shared';
 import type {
   IGoalCompletionService,
@@ -71,11 +72,24 @@ export class GoalController implements IGoalController {
         habitId: req.query?.habitId,
         deadlineType: req.query?.deadlineType,
       });
-
       const userId = EntityIdSchema.parse(req.userId);
 
       const goals = await this.goalService.findByFilter(filter, userId);
       return { statusCode: HTTPStatusCode.OK, body: goals };
+    } catch (err) {
+      return formatHTTPErrorResponse(err);
+    }
+  }
+
+  async getGoalProgressLogs(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<ProgressLogResponseDTO[]>> {
+    try {
+      const goalId = EntityIdSchema.parse(req.params?.goalId);
+      const userId = EntityIdSchema.parse(req.userId);
+
+      const logs = await this.goalService.getGoalProgressLogs(goalId, userId);
+      return { statusCode: HTTPStatusCode.OK, body: logs };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
@@ -106,12 +120,10 @@ export class GoalController implements IGoalController {
   ): Promise<HTTPResponse<GoalResponseDTO>> {
     try {
       const progressLogId = EntityIdSchema.parse(req.params?.progressLogId);
-      const goalId = EntityIdSchema.parse(req.params?.goalId);
       const userId = EntityIdSchema.parse(req.userId);
 
       const goal = await this.goalCompletionService.removeProgressLog(
         progressLogId,
-        goalId,
         userId,
       );
       return { statusCode: HTTPStatusCode.OK, body: goal };
