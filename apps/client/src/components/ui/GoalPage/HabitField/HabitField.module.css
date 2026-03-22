@@ -187,7 +187,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(-35px - .5rem);
+  bottom: -25px;
 
   padding: .5rem;
   padding-top: 0;

@@ -1,13 +1,13 @@
 import { type JSX } from 'react';
 import { format } from 'date-fns';
-import type { GoalCreateDTO, GoalResponseDTO } from '@fokus/shared';
+import type { GoalFormDTO, GoalResponseDTO } from '@fokus/shared';
 import styles from './Goal.module.css';
 import FokusIcon from '../Icon/Icon';
 import { Link } from 'react-router-dom';
 import { APP_URLS } from '../../../helpers/app.helpers';
 
 interface GoalProps {
-  goal: Omit<GoalCreateDTO, 'userId'> & {
+  goal: GoalFormDTO & {
     isCompleted: GoalResponseDTO['isCompleted'];
     currentValue: number;
     id: string;

@@ -198,7 +198,7 @@ export const HabitCompletionLogSchema = z
   .object({
     habitId: EntityIdSchema,
 
-    date: z.coerce
+    date: z
       .date()
       .transform((val) => {
         const date = val.toISOString().split('T')[0];
@@ -216,10 +216,8 @@ export const HabitCompletionLogSchema = z
         { error: () => ({ message: 'Data não pode ser no futuro.' }) },
       )
       .openapi({
-        description:
-          "Date of the check/uncheck. A valid 'Date' \n" +
-          'object or a valid string to be transformed.',
-        example: '2025-11-02',
+        description: 'Date of the check/uncheck, a valid Date object',
+        example: '2025-11-02T12:00:00Z',
       }),
   })
   .openapi('HabitCheck');
@@ -245,16 +243,13 @@ export const HabitResponseSchema = HabitBaseSchema.extend({
     readOnly: true,
   }),
 
-  streak: z.coerce
-    .number()
-    .min(0, 'Sequência deve ser maior ou igual a 0.')
-    .openapi({
-      description: 'Current streak days of the habit.',
-      example: 17,
-      readOnly: true,
-    }),
+  streak: z.number().min(0, 'Sequência deve ser maior ou igual a 0.').openapi({
+    description: 'Current streak days of the habit.',
+    example: 17,
+    readOnly: true,
+  }),
 
-  bestStreak: z.coerce
+  bestStreak: z
     .number()
     .min(0, 'Melhor sequência deve ser maior ou igual a 0.')
     .openapi({

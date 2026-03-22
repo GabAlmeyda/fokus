@@ -23,6 +23,8 @@
 .habit__preview {
   margin-top: 3rem;
   user-select: none;
+  pointer-events: none;
+  cursor: default;
 }
 
 .preview__content {

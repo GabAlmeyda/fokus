@@ -6,11 +6,6 @@ import { differenceInDays, startOfDay } from 'date-fns';
 extendZodWithOpenApi(z);
 
 const GoalBaseSchema = z.object({
-  userId: EntityIdSchema.openapi({
-    description: 'Owner ID.',
-    example: '65f2a1b8c9d0e1f2a3b4c5d6',
-  }),
-
   categoryId: EntityIdSchema.nullable().openapi({
     description: 'Optional category ID.',
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
@@ -31,7 +26,7 @@ const GoalBaseSchema = z.object({
     })
     .openapi({ description: 'Goal type.', example: 'quantitative' }),
 
-  targetValue: z.coerce
+  targetValue: z
     .number()
     .min(1, 'Valor mínimo para o campo é 1.')
     .openapi({
@@ -60,7 +55,7 @@ const GoalBaseSchema = z.object({
       ' property of the setted habit.',
   }),
 
-  deadline: z.coerce
+  deadline: z
     .date()
     .nullable()
     .transform((val) => {
@@ -73,9 +68,8 @@ const GoalBaseSchema = z.object({
     })
     .openapi({
       description:
-        "Optional deadline to complete the goal. A valid 'Date' \n" +
-        " object or a string in format 'YYYY-MM-DD'.",
-      example: '2026-11-02',
+        'Optional deadline to complete the goal, a valid Date object.',
+      example: '2026-11-02T12:00:00Z',
     }),
 
   color: z
@@ -222,6 +216,10 @@ export const GoalFilterSchema = z
 export type GoalFilterDTO = z.infer<typeof GoalFilterSchema>;
 
 export const GoalCreateSchema = GoalBaseSchema.extend({
+  userId: EntityIdSchema.openapi({
+    description: 'Owner ID.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
   categoryId: GoalBaseSchema.shape.categoryId
     .default(null)
     .openapi({ default: 'null' }),
@@ -242,8 +240,11 @@ export const GoalCreateSchema = GoalBaseSchema.extend({
   .openapi('GoalCreate');
 export type GoalCreateDTO = z.infer<typeof GoalCreateSchema>;
 
-export const GoalUpdateSchema = GoalBaseSchema.omit({ userId: true })
-  .partial()
+export const GoalFormSchema =
+  GoalBaseSchema.partial().superRefine(goalRefinement);
+export type GoalFormDTO = z.infer<typeof GoalFormSchema>;
+
+export const GoalUpdateSchema = GoalBaseSchema.partial()
   .superRefine(goalRefinement)
   .openapi('GoalUpdate');
 export type GoalUpdateDTO = z.infer<typeof GoalUpdateSchema>;
@@ -254,7 +255,7 @@ export const GoalProgressLogSchema = z.object({
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
 
-  date: z.coerce
+  date: z
     .date()
     .transform((val) => {
       const date = val.toISOString().split('T')[0];
@@ -272,18 +273,16 @@ export const GoalProgressLogSchema = z.object({
       { message: 'Data não pode ser no futuro.' },
     )
     .openapi({
-      description:
-        "Date of the progress log, a valid 'Date' object \n " +
-        " or a string in format 'YYYY-MM-DD'.",
-      example: '2026-12-02',
+      description: "Date of the progress log, a valid 'Date' object",
+      example: '2026-12-02T12:00:00Z',
     }),
 
-  value: z.coerce
+  value: z
     .number()
     .min(1, 'Valor mínimo é 1.')
     .openapi({ description: 'The value of the progress.', example: 100 }),
 
-  userId: GoalBaseSchema.shape.userId.openapi({
+  userId: GoalCreateSchema.shape.userId.openapi({
     description: 'Owner ID',
     example: '65f2a1b8c9d0e1f2a3b4c5d6',
   }),
@@ -296,7 +295,7 @@ export const GoalResponseSchema = GoalBaseSchema.extend({
     readOnly: true,
   }),
 
-  currentValue: z.coerce
+  currentValue: z
     .number()
     .min(0, 'Valor deve ser maior ou igual a 0.')
     .openapi({

@@ -171,11 +171,15 @@ export default function HabitPage() {
             </Button>
           </span>
 
-          <div className={styles.habit__preview}>
+          <div
+            className={styles.habit__preview}
+            aria-hidden="true"
+            tabIndex={-1}
+          >
             <p>Pré-visualização</p>
             <Habit
               habit={{
-                ...(formData as HabitFormDTO),
+                ...formData,
                 isCompleted: false,
               }}
               onPreviewClick={() => {}}

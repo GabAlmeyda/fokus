@@ -6,23 +6,31 @@ import LoginPage from '../pages/LoginPage/LoginPage';
 import HomePage from '../pages/HomePage/HomePage';
 import HabitPage from '../pages/HabitPage/HabitPage';
 import GoalPage from '../pages/GoalPage/GoalPage';
+import GlobalErrorFallback from '../components/layouts/GlobalFallbackError/GlobalFallbackError';
 
 export const router = createBrowserRouter([
   {
-    path: '/landing-page',
-    element: <LandingPage />,
-  },
-  {
-    path: '/register',
-    element: <RegisterPage />,
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
+    path: '/',
+    errorElement: <GlobalErrorFallback />,
+    children: [
+      {
+        path: '/landing-page',
+        element: <LandingPage />,
+      },
+      {
+        path: '/register',
+        element: <RegisterPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+    ],
   },
   // Protected routes
   {
     element: <ProtectedRoute />,
+    errorElement: <GlobalErrorFallback />,
     children: [
       {
         path: '/app',
@@ -30,12 +38,12 @@ export const router = createBrowserRouter([
       },
       {
         path: '/app/habits/:habitId',
-        element: <HabitPage />
+        element: <HabitPage />,
       },
       {
         path: '/app/goals/:goalId',
-        element: <GoalPage />
-      }
+        element: <GoalPage />,
+      },
     ],
   },
   {

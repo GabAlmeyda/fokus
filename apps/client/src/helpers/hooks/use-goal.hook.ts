@@ -1,7 +1,7 @@
 import type {
   EntityIdDTO,
-  GoalCreateDTO,
   GoalFilterDTO,
+  GoalFormDTO,
   GoalProgressLogDTO,
   GoalResponseDTO,
   GoalUpdateDTO,
@@ -22,7 +22,13 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       const response = await api.get(`/goals/${query.goalId}`, {
         withCredentials: true,
       });
-      return response.data;
+      
+      const data = response.data;
+      if (data.deadline) {
+        data.deadline = new Date(data.deadline);
+      }
+
+      return data;
     },
     refetchOnWindowFocus: false,
     enabled: !!query.goalId && query.goalId !== 'new',
@@ -50,7 +56,7 @@ export function useGoalMutations() {
   const createMutation = useMutation<
     GoalResponseDTO,
     HTTPErrorResponse,
-    Omit<GoalCreateDTO, 'userId'>
+    GoalFormDTO
   >({
     mutationFn: async (data) => {
       const response = await api.post('/goals', data, {

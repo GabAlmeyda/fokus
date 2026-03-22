@@ -7,17 +7,15 @@ import {
   type UseFormRegister,
   type UseFormSetValue,
 } from 'react-hook-form';
-import type { GoalCreateDTO } from '@fokus/shared';
+import type { GoalFormDTO } from '@fokus/shared';
 import FormErrorMessage from '../../../common/FormErrorMessage/FormErrorMessage';
-
-type Goal = Omit<GoalCreateDTO, 'userId'>;
 
 interface TargetValueFieldProps {
   type: 'qualitative' | 'quantitative';
-  register: UseFormRegister<Goal>;
-  setValue: UseFormSetValue<Goal>;
-  errors: FieldErrors<Goal>;
-  clearErrors: UseFormClearErrors<Goal>;
+  register: UseFormRegister<GoalFormDTO>;
+  setValue: UseFormSetValue<GoalFormDTO>;
+  errors: FieldErrors<GoalFormDTO>;
+  clearErrors: UseFormClearErrors<GoalFormDTO>;
   className?: string;
 }
 
@@ -78,7 +76,7 @@ export default function TargetValueField({
             : 'Ativar progresso para o hábito'
         }
       >
-        <div aria-hidden='true'></div>
+        <div aria-hidden="true"></div>
       </button>
 
       <div
@@ -90,7 +88,9 @@ export default function TargetValueField({
       >
         <div className={styles.typeToggle__values}>
           <Input
-            {...register('targetValue')}
+            {...register('targetValue', {
+              setValueAs: (v) => (v === '' ? undefined : Number(v)),
+            })}
             onKeyDown={handleTVKeyDown}
             type="number"
             inputMode="numeric"

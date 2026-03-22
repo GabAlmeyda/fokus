@@ -2,14 +2,12 @@ import ReactQueryProvider from './providers/ReactQueryProvider';
 import ThemeProvider from './providers/ThemeProvider';
 import AppRouterProvider from './providers/AppRouterProvider';
 
-function App() {
+export default function App() {
   return (
     <ReactQueryProvider>
       <ThemeProvider>
-        <AppRouterProvider/>
+        <AppRouterProvider />
       </ThemeProvider>
     </ReactQueryProvider>
   );
 }
-
-export default App;

@@ -1,0 +1,47 @@
+.fallback {
+  width: 100%;
+
+  margin-top: 5rem;
+
+  text-align: center;
+}
+
+.fallback h1 {
+  margin-bottom: 1rem;
+}
+
+.fallback p span {
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+.fallback__btns {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  max-width: 350px;
+
+  margin-inline: auto;
+  margin-top: 2rem;
+}
+
+.fallback__btns a {
+  padding: .5rem .8rem;
+  border: none;
+  border-radius: 8px;
+
+  background-color: var(--accent-primary);
+
+  color: var(--white-clr);
+  font-weight: 500;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.fallback__btns a:hover {
+  filter: brightness(.9);
+}
+.fallback__btns a:active {
+  filter: brightness(.8);
+}
