@@ -7,10 +7,10 @@
   width: 100%;
 }
 
-.card_isReverse {
+.card.reverse {
   flex-direction: row-reverse;
 }
-.card_isReverse .card__content {
+.card.reverse .card__content {
   text-align: right;
 }
 

@@ -31,6 +31,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
 
       return data;
     },
+    retry: 2,
     refetchOnWindowFocus: false,
     enabled: !!query.goalId && query.goalId !== 'new',
   });
@@ -44,6 +45,7 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       });
       return response.data;
     },
+    retry: 2,
     refetchOnWindowFocus: false,
     enabled: !!query,
   });
@@ -56,8 +58,9 @@ export function useGoalQueries(query: UseGoalQueriesParams) {
       });
       return response.data;
     },
+    retry: 2,
     refetchOnWindowFocus: false,
-    enabled: !!query.goalId,
+    enabled: !!query.goalId && query.goalId !== 'new',
   });
 
   return { idQuery, filterQuery, logsQuery };
@@ -96,8 +99,7 @@ export function useGoalMutations() {
       );
       return response.data;
     },
-    onSuccess: async (_, variables) => {
-      const { goalId } = variables;
+    onSuccess: async (_, { goalId }) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goal-logs', goalId] }),
@@ -117,8 +119,7 @@ export function useGoalMutations() {
       });
       return response.data;
     },
-    onSuccess: async (_, variables) => {
-      const { goalId } = variables;
+    onSuccess: async (_, { goalId }) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),
@@ -140,8 +141,7 @@ export function useGoalMutations() {
       );
       return response.data;
     },
-    onSuccess: async (_, variables) => {
-      const { goalId } = variables;
+    onSuccess: async (_, { goalId }) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['goal', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goal-logs', goalId] }),
@@ -158,7 +158,7 @@ export function useGoalMutations() {
       return response.data;
     },
     onSuccess: async (goalId) => {
-      Promise.all([
+      await Promise.all([
         queryClient.removeQueries({ queryKey: ['goal', goalId] }),
         queryClient.removeQueries({ queryKey: ['goal-logs', goalId] }),
         queryClient.invalidateQueries({ queryKey: ['goals'] }),

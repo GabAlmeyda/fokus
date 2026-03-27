@@ -3,7 +3,7 @@ import { MdNavigateNext } from 'react-icons/md';
 import { MdNavigateBefore } from 'react-icons/md';
 import { addDays, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import type { HabitFilterDTO } from '@fokus/shared';
+import type { HabitFilterDTO, HTTPErrorResponse } from '@fokus/shared';
 import styles from './HabitsView.module.css';
 import {
   generateHeaderDateString,
@@ -15,6 +15,8 @@ import {
 } from '../../../../helpers/hooks/use-habit.hook';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 import Habit from '../../../common/Habit/Habit';
+import Button from '../../../common/Button/Button';
+import Spinner from '../../../common/Spinner/Spinner';
 
 const weekDaysMap: Record<number, HabitFilterDTO['weekDay']> = {
   0: 'dom',
@@ -26,7 +28,13 @@ const weekDaysMap: Record<number, HabitFilterDTO['weekDay']> = {
   6: 'sab',
 };
 
-export default function HabitsView(): JSX.Element {
+interface HabitsViewProps {
+  onReqError: (error: HTTPErrorResponse, action: 'check' | 'uncheck') => void;
+}
+
+export default function HabitsView({
+  onReqError,
+}: HabitsViewProps): JSX.Element {
   const navigate = useNavigate();
   const checkMutation = useHabitMutations().checkMutation;
   const uncheckMutation = useHabitMutations().uncheckMutation;
@@ -35,7 +43,13 @@ export default function HabitsView(): JSX.Element {
     return format(day, 'yyyy-MM-dd');
   });
   const dateObj = new Date(selectedDay + 'T12:00:00Z');
-  const { data: habits, isFetching } = useHabitQueries({
+  const {
+    data: habits,
+    isFetching,
+    isFetched,
+    error,
+    refetch,
+  } = useHabitQueries({
     filter: {
       weekDay: weekDaysMap[dateObj.getDay()],
     },
@@ -61,12 +75,20 @@ export default function HabitsView(): JSX.Element {
 
   const onHabitCheckClick = (habitId: string) => {
     const date = new Date(selectedDay + 'T12:00:00Z');
-    checkMutation.mutate({ habitId, date });
+    checkMutation.mutate(
+      { habitId, date },
+      {
+        onError: (error) => onReqError(error, 'check'),
+      },
+    );
   };
 
   const onHabitUncheckClick = (habitId: string) => {
     const date = new Date(selectedDay + 'T12:00:00Z');
-    uncheckMutation.mutate({ habitId, date });
+    uncheckMutation.mutate(
+      { habitId, date },
+      { onError: (error) => onReqError(error, 'uncheck') },
+    );
   };
 
   return (
@@ -99,7 +121,29 @@ export default function HabitsView(): JSX.Element {
       </div>
 
       <div className={styles.habits}>
-        {!!habits?.length ? (
+        {!isFetching && error && (
+          <div className={styles.habits__msg}>
+            <p>Erro ao tentar retornar seus hábitos</p>
+            <Button onClick={() => refetch()}>Tentar novamente</Button>
+          </div>
+        )}
+
+        {isFetching && !habits && <Spinner />}
+
+        {isFetched && !isFetching && !error && !habits?.length && (
+          <div className={styles.habits__msg}>
+            <p>Nenhum hábito encontrado.</p>
+            <Button
+              onClick={() => {
+                navigate(`${APP_URLS.habits}/new`);
+              }}
+            >
+              Adicione um novo hábito
+            </Button>
+          </div>
+        )}
+
+        {!!habits?.length && (
           <>
             <div className={styles.habits__completed}>
               {habits
@@ -129,8 +173,6 @@ export default function HabitsView(): JSX.Element {
               ))}
             </div>
           </>
-        ) : (
-          isFetching && <div className={styles.habits__spinner}></div>
         )}
       </div>
     </>

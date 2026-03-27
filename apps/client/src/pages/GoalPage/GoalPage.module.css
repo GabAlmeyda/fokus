@@ -6,11 +6,30 @@
   margin-inline: auto;
 }
 
+.goal__error {
+  width: 100%;
+  max-width: 1080px;
+
+  margin-inline: auto;
+}
+
+.error__msg {
+  margin-top: 5rem;
+
+  text-align: center;
+}
+
+.error__msg p {
+  margin-bottom: 1rem;
+  color: var(--white-clr);
+}
+
 .goal * {
   color: #060806;
 }
 
-.goal__goBack {
+.goal__goBack,
+.skeleton__goBack {
   display: inline-block;
 
   margin-top: 1rem;
@@ -117,23 +136,116 @@
 }
 
 .deleteBtn {
-  background-color: rgb(228, 11, 11);
+  background-color: rgb(238, 29, 29);
 
   color: #ececec;
 }
 
-.deleteBtn__root * {
-  color: var(--white-clr);
+.deleteBtn__root {
+  background-color: #2d3a31!important;
+}
+
+.deleteBtn__root h2,
+.deleteBtn__root hr,
+.deleteBtn__root p {
+  color: var(--white-clr)!important;
 }
 
 .deleteBtn__cancel {
-  border: 2px solid #a4dbb6;
+  border: 2px solid #ececec;
 
   background-color: transparent;
 
-  color: #a4dbb6;
+  color: #ececec;
 }
 
 .deleteBtn__confirm {
   background-color: rgb(238, 29, 29);
+}
+
+
+
+/* GOAL SKELETON */
+.goal__skeleton {
+  max-width: 1080px;
+  
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.goal__skeleton div:not(.skeleton__form) {
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  position: relative;
+
+  margin-inline: auto;
+  border-radius: 5px;
+
+  background-color: #2d3a31;
+}
+.goal__skeleton div:not(.skeleton__form)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.skeleton__previewTittle {
+  height: 25px;
+
+  margin-bottom: .5rem;
+  margin-top: 3rem;
+}
+
+.skeleton__previewCard {
+  height: 130px;
+
+  margin-bottom: 5rem;
+}
+
+.skeleton__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  max-width: 400px;
+
+  margin-top: 3rem;
+  margin-inline: auto;
+}
+
+.formSkeleton__title {
+  height: 45px;
+}
+
+.formSkeleton__color {
+  height: 35px;
+}
+
+.formSkeleton__targetValue,
+.formSkeleton__category,
+.formSkeleton__deadline,
+.formSkeleton__habit {
+  height: 40px;
+}
+
+@media screen and (min-width: 750px) {
+  .goal__skeleton {
+    padding-inline: 2rem;
+  }
 }

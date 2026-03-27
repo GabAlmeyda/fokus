@@ -5,12 +5,16 @@ import FokusIcon from '../../../common/Icon/Icon';
 interface CategoryFieldProps {
   value?: string | null;
   categoriesMap: Record<string, string>;
+  isFetching: boolean;
+  isError: boolean;
   onChange: (category: string | null) => void;
 }
 
 export default function CategoryField({
   value,
   categoriesMap,
+  isFetching,
+  isError,
   onChange,
 }: CategoryFieldProps): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -74,21 +78,33 @@ export default function CategoryField({
         >
           Nenhuma
         </button>
-        {Object.entries(categoriesMap).map(([categoryId, name]) => (
-          <button
-            type="button"
-            onClick={() => {
-              onChange(categoryId);
-              setIsOpen(false);
-            }}
-            className={value === categoryId ? styles.active : ''}
-            role="option"
-            key={`category-${categoryId}`}
-            aria-selected={value === categoryId}
-          >
-            {name}
-          </button>
-        ))}
+        {(() => {
+          if (isFetching) {
+            return Array.from({ length: 5 }).map(() => (
+              <div className={styles.category__skeleton}></div>
+            ));
+          }
+
+          if (isError) {
+            return <p className={styles.category__errorMsg}>Erro ao retornar suas categorias.</p>;
+          }
+
+          return Object.entries(categoriesMap).map(([categoryId, name]) => (
+            <button
+              type="button"
+              onClick={() => {
+                onChange(categoryId);
+                setIsOpen(false);
+              }}
+              className={value === categoryId ? styles.active : ''}
+              role="option"
+              key={`category-${categoryId}`}
+              aria-selected={value === categoryId}
+            >
+              {name}
+            </button>
+          ));
+        })()}
       </div>
     </div>
   );

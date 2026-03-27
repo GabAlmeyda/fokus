@@ -194,10 +194,7 @@ export default function RegisterPage(): JSX.Element {
           <div className={styles.register__login}>
             <p>Já possui uma conta?</p>
             <div className={styles.login__btn}>
-              <Button
-                variant="ghost-inverse"
-                onClick={() => navigate(APP_URLS.login)}
-              >
+              <Button variant="ghost-inverse" isLink to={APP_URLS.login}>
                 Conecte-se agora
               </Button>
             </div>

@@ -122,25 +122,14 @@
   text-align: center;
 }
 
-.goals__spinner {
-  height: 40px;
-  width: 40px;
-
-  border-radius: 50%;
-  border: 4px solid var(--bg-inverse);
-  border-top-color: var(--accent-primary);
-  margin-inline: auto;
+.goals__msg {
   margin-top: 3rem;
 
-  background-color: transparent;
-
-  animation: spin .9s ease-out infinite;
+  text-align: center;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.goals__msg p {
+  margin-bottom: 1rem;
 }
 
 @media screen and (min-width: 750px) {

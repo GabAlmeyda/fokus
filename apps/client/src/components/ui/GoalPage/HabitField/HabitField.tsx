@@ -8,12 +8,16 @@ interface HabitFieldProps {
     string,
     { title: string; color: string; unitOfMeasure: string }
   >;
+  isFetching: boolean;
+  isError: boolean;
   onChange: (habitId: string | null, unitOfMeasure: string | null) => void;
 }
 
 export default function HabitField({
   value,
   habitsMap,
+  isFetching,
+  isError,
   onChange,
 }: HabitFieldProps): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -83,29 +87,45 @@ export default function HabitField({
         >
           <span className={styles.habit__title}>Nenhum</span>
         </button>
-        {Object.entries(habitsMap).map(([habitId, habit]) => (
-          <button
-            type="button"
-            onClick={() => {
-              onChange(habitId, habit.unitOfMeasure);
-              setIsOpen(false);
-            }}
-            className={value === habitId ? styles.active : ''}
-            role="option"
-            key={`habit-${habitId}`}
-            aria-selected={value === habitId}
-          >
-            <span
-              className={styles.habit__color}
-              style={{ backgroundColor: habit['color'] }}
-              aria-hidden="true"
-            ></span>
-            <span className={styles.habit__title}>{habit['title']}</span>
-            <span className={styles.habit__unitOfMeasure}>
-              Unidade: {habit['unitOfMeasure']}
-            </span>
-          </button>
-        ))}
+        {(() => {
+          if (isFetching) {
+            return Array.from({ length: 2 }).map(() => (
+              <div className={styles.habit__skeleton}></div>
+            ));
+          }
+
+          if (isError) {
+            return (
+              <p className={styles.habit__errorMsg}>
+                Erro ao retornar seus hábitos.
+              </p>
+            );
+          }
+
+          return Object.entries(habitsMap).map(([habitId, habit]) => (
+            <button
+              type="button"
+              onClick={() => {
+                onChange(habitId, habit.unitOfMeasure);
+                setIsOpen(false);
+              }}
+              className={value === habitId ? styles.active : ''}
+              role="option"
+              key={`habit-${habitId}`}
+              aria-selected={value === habitId}
+            >
+              <span
+                className={styles.habit__color}
+                style={{ backgroundColor: habit['color'] }}
+                aria-hidden="true"
+              ></span>
+              <span className={styles.habit__title}>{habit['title']}</span>
+              <span className={styles.habit__unitOfMeasure}>
+                Unidade: {habit['unitOfMeasure']}
+              </span>
+            </button>
+          ));
+        })()}
       </div>
       <span
         style={{ display: isOpen ? 'block' : 'none' }}

@@ -25,7 +25,6 @@ import WeekDaysField from '../../components/ui/HabitPage/WeekDaysField/WeekDaysF
 import { useEffect, useMemo, useState } from 'react';
 import { parseHabit } from '../../helpers/session-parse.helpers';
 import Dialog from '../../components/common/Dialog/Dialog';
-import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 import Toast from '../../components/common/Toast/Toast';
 
@@ -42,11 +41,16 @@ const defaultHabit: HabitFormDTO = {
 const date = new Date();
 
 export default function HabitPage() {
-  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { habitId } = useParams<{ habitId: string }>();
-  const { data: habit } = useHabitQueries({
+  const {
+    data: habit,
+    isFetching,
+    refetch,
+    error,
+  } = useHabitQueries({
     habitId,
     selectedDate: date,
   }).idQuery;
@@ -86,17 +90,25 @@ export default function HabitPage() {
   }, [formData]);
 
   useEffect(() => {
+    if (error?.statusCode === HTTPStatusCode.NOT_FOUND) {
+      setToastMsg('O hábito selecionado não foi encontrado.');
+    } else if (error) {
+      setToastMsg('Erro ao tentar retornar os dados do hábito.');
+    }
+  }, [error]);
+
+  useEffect(() => {
     let timerId = undefined;
-    if (isToastOpen) {
-      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    if (toastMsg) {
+      timerId = setTimeout(() => setToastMsg(null), 5000);
     }
 
     return () => {
       if (timerId) clearTimeout(timerId);
     };
-  }, [isToastOpen]);
+  }, [toastMsg]);
 
-  const handleFormSubmit = async (data: HabitFormDTO) => {
+  const handleFormSubmit = (data: HabitFormDTO) => {
     if ((data.weekDays ?? []).length === 0) {
       setError('weekDays', {
         message: 'Ao menos um dia da semana precisa ser escolhido.',
@@ -105,11 +117,11 @@ export default function HabitPage() {
     }
 
     if (habitId === 'new') {
-      await createMutation.mutateAsync(data, {
+      createMutation.mutate(data, {
         onSuccess: () => {
+          navigate(APP_URLS.home);
           sessionStorage.removeItem('habit-data-new');
           sessionStorage.removeItem('habit-data-update');
-          navigate(APP_URLS.home);
         },
         onError: (err) => {
           if (err.statusCode === HTTPStatusCode.CONFLICT) {
@@ -117,11 +129,11 @@ export default function HabitPage() {
             return;
           }
 
-          setIsToastOpen(true);
+          setToastMsg('Erro ao tentar criar o hábito.');
         },
       });
     } else {
-      await updateMutation.mutateAsync(
+      updateMutation.mutate(
         {
           habitId: habitId!,
           data,
@@ -133,42 +145,84 @@ export default function HabitPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
-          onError: () => setIsToastOpen(true),
+          onError: () => setToastMsg('Erro ao tentar atualizar o hábito.'),
         },
       );
     }
   };
 
-  const handleDeleteConfirmation = async (confirmation: boolean) => {
+  const handleDeleteConfirmation = (confirmation: boolean) => {
     if (!confirmation) {
       setIsDialogOpen(false);
       return;
     }
 
-    await deleteMutation.mutateAsync(habitId!, {
+    deleteMutation.mutate(habitId!, {
       onSuccess: () => {
         sessionStorage.removeItem('habit-data-new');
         sessionStorage.removeItem('habit-data-update');
-        setIsDialogOpen(false);
-        navigate(APP_URLS.home);
+        navigate(APP_URLS.home, { replace: true });
       },
-      onError: () => setIsToastOpen(true),
-      onSettled: () => setIsDialogOpen(false),
+      onError: () => setToastMsg('Erro ao tentar deletar o hábito.'),
     });
   };
+
+  if (habitId !== 'new' && isFetching) {
+    return (
+      <PageView customBgColor="#101b14">
+        <main>
+          <HabitPageFormSkeleton />
+        </main>
+      </PageView>
+    );
+  }
+
+  if (habitId !== 'new' && error) {
+    return (
+      <PageView customBgColor="#101b14">
+        <main className={styles.habit__error}>
+          {toastMsg && (
+            <Toast
+              isOpen={!!toastMsg}
+              onClick={() => setToastMsg(null)}
+              message={toastMsg}
+              bgColor="#f73838ff"
+              ariaLive="assertive"
+            />
+          )}
+          <span className={styles.habit__goBack}>
+            <Button
+              variant="ghost-inverse"
+              isLink
+              to={APP_URLS.home}
+              isSmall
+              className={styles.goBack__btn}
+            >
+              Voltar
+            </Button>
+          </span>
+          <div className={styles.error__msg}>
+            <p>Erro ao tentar retornar seu hábito.</p>
+            <Button onClick={() => refetch()}>Tentar novamente</Button>
+          </div>
+        </main>
+      </PageView>
+    );
+  }
 
   return (
     <PageView customBgColor="#101b14">
       <main>
-        {isToastOpen && (
+        {toastMsg && (
           <Toast
-            isOpen={isToastOpen}
-            onClick={() => setIsToastOpen(false)}
-            message="Erro ao tentar realizar a ação."
+            isOpen={!!toastMsg}
+            onClick={() => setToastMsg(null)}
+            message={toastMsg}
             bgColor="#f73838ff"
             ariaLive="assertive"
           />
         )}
+
         {isDialogOpen && (
           <Dialog
             title="Deletar hábito"
@@ -182,14 +236,12 @@ export default function HabitPage() {
             }}
           />
         )}
-        {createMutation.isPending && (
-          <LoadingOverlay message="Criando hábito. Só um momento..." />
-        )}
         <section className={styles.habit}>
           <span className={styles.habit__goBack}>
             <Button
-              onClick={() => navigate(APP_URLS.home)}
               variant="ghost-inverse"
+              isLink
+              to={APP_URLS.home}
               isSmall
               className={styles.goBack__btn}
             >
@@ -344,5 +396,33 @@ export default function HabitPage() {
       </main>
       <Footer customBgColor="#101b14" />
     </PageView>
+  );
+}
+
+function HabitPageFormSkeleton() {
+  return (
+    <div className={styles.habit__skeleton}>
+      <span className={styles.skeleton__goBack}>
+        <Button
+          variant="ghost-inverse"
+          isLink
+          to={APP_URLS.home}
+          isSmall
+          className={styles.goBack__btn}
+        >
+          Voltar
+        </Button>
+      </span>
+      <div className={styles.skeleton__previewTittle}></div>
+      <div className={styles.skeleton__previewCard}></div>
+      <div className={styles.skeleton__form}>
+        <div className={styles.formSkeleton__title}></div>
+        <div className={styles.formSkeleton__color}></div>
+        <div className={styles.formSkeleton__icon}></div>
+        <div className={styles.formSkeleton__progressImpact}></div>
+        <div className={styles.formSkeleton__reminder}></div>
+        <div className={styles.formSkeleton__weekdays}></div>
+      </div>
+    </div>
   );
 }

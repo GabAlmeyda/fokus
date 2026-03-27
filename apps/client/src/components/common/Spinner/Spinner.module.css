@@ -10,7 +10,7 @@
 
   background-color: transparent;
 
-  animation: spin .9s ease-out infinite;
+  animation: spin .6s ease-in-out infinite;
 }
 
 @keyframes spin {

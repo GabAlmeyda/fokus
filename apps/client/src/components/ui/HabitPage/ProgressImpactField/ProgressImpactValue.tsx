@@ -83,7 +83,7 @@ export default function ProgressImpactField({
             : 'Ativar progresso para o hábito'
         }
       >
-        <div aria-hidden='true'></div>
+        <div aria-hidden="true"></div>
       </button>
 
       <div
@@ -95,7 +95,9 @@ export default function ProgressImpactField({
       >
         <div className={styles.progressImpact__values}>
           <Input
-            {...register('progressImpactValue')}
+            {...register('progressImpactValue', {
+              setValueAs: (v) => (v === '' ? undefined : Number(v)),
+            })}
             onKeyDown={handlePIVKeyDown}
             type="number"
             inputMode="numeric"

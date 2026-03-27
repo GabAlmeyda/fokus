@@ -1,6 +1,5 @@
 import type { JSX } from 'react';
 import styles from './FeatureCard.module.css';
-import clsx from 'clsx';
 
 interface FeatureCardProps {
   image: string;
@@ -16,7 +15,7 @@ export default function FeatureCard({
   isReverse,
 }: FeatureCardProps): JSX.Element {
   return (
-    <div className={clsx(styles.card, [{ [styles['card_isReverse']]: isReverse }])}>
+    <div className={`${styles.card} ${isReverse ? styles.reverse : ''}`}>
       <div className={styles.card__img}>
         <img src={image} alt={title} />
       </div>

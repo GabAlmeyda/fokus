@@ -23,7 +23,7 @@ export function useCategoryQueries(query: UseCategoryQueriesParams) {
       return response.data;
     },
     refetchOnWindowFocus: false,
-    retry: 3,
+    retry: 2,
     enabled: !!query.categoryId,
   });
 
@@ -37,7 +37,7 @@ export function useCategoryQueries(query: UseCategoryQueriesParams) {
       return response.data;
     },
     refetchOnWindowFocus: false,
-    retry: 3,
+    retry: 2,
     enabled: !!query,
   });
 

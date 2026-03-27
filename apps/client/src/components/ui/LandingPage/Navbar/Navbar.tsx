@@ -2,12 +2,9 @@ import type { JSX } from 'react';
 import { FaLeaf } from 'react-icons/fa';
 import styles from './Navbar.module.css';
 import Button from '../../../common/Button/Button';
-import { useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 
 export default function Navbar(): JSX.Element {
-  const navigate = useNavigate();
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbar__logo}>
@@ -16,13 +13,12 @@ export default function Navbar(): JSX.Element {
       </div>
 
       <div className={styles.navbar__btns}>
-        <Button
-          variant="ghost-primary"
-          onClick={() => navigate(APP_URLS.login)}
-        >
+        <Button variant="ghost-primary" isLink to={APP_URLS.login}>
           Conecte-se
         </Button>
-        <Button onClick={() => navigate(APP_URLS.register)}>Cadastre-se</Button>
+        <Button isLink to={APP_URLS.register}>
+          Cadastre-se
+        </Button>
       </div>
     </nav>
   );

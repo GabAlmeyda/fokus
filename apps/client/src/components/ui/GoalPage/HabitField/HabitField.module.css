@@ -117,7 +117,8 @@
   border: 2px solid #86b395;
 }
 
-.habitField__items>button {
+.habitField__items>button,
+.habitField__items>.habit__skeleton {
   position: relative;
 
   display: flex;
@@ -197,4 +198,51 @@
 
   font-size: .8rem;
   color: #333a33;
+}
+
+
+
+/* HABIT ERROR */
+.habit__errorMsg {
+  position: absolute;
+  bottom: .5rem;
+
+  color: rgb(238, 29, 29);
+  font-size: .9rem;
+}
+
+
+
+/* HABIT SKELETON */
+.habit__skeleton {
+  overflow: hidden;
+  position: relative;
+
+  height: 30px;
+  width: 100%;
+
+  margin-inline: auto;
+  border-radius: 5px;
+
+  background-color: rgb(109, 143, 120)!important;
+}
+.habit__skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(154, 189, 165, 0.5),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
 }

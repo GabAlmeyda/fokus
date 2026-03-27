@@ -1,5 +1,4 @@
 import { useEffect, type JSX } from 'react';
-import { useNavigate } from 'react-router-dom';
 import notificationImage from '../../assets/notification-img.png';
 import organizationImage from '../../assets/organization-img.png';
 import routineImage from '../../assets/routine-img.png';
@@ -14,14 +13,12 @@ import PageView from '../../components/layouts/PageView/PageView';
 import Footer from '../../components/layouts/Footer/Footer';
 
 export default function LandingPage(): JSX.Element {
-  const navigate = useNavigate();
-  
   useEffect(() => {
     document.title = 'Fokus - Landing Page';
   }, []);
 
   return (
-    <PageView cssBgType='primary'>
+    <PageView cssBgType="primary">
       <Navbar />
       <main>
         <section className={styles.hero}>
@@ -33,16 +30,10 @@ export default function LandingPage(): JSX.Element {
             </h2>
 
             <div className={styles.hero__btns}>
-              <Button
-                variant="primary"
-                onClick={() => navigate(APP_URLS.register)}
-              >
+              <Button variant="primary" isLink to={APP_URLS.register}>
                 Crie agora sua conta
               </Button>
-              <Button
-                variant="ghost-inverse"
-                onClick={() => navigate(APP_URLS.login)}
-              >
+              <Button variant="ghost-inverse" isLink to={APP_URLS.login}>
                 Conecte-se agora
               </Button>
             </div>
@@ -113,7 +104,7 @@ export default function LandingPage(): JSX.Element {
             </div>
 
             <div className={styles.cta__btn}>
-              <Button onClick={() => navigate(APP_URLS.register)}>
+              <Button isLink to={APP_URLS.register}>
                 Crie agora sua conta
               </Button>
             </div>
@@ -122,7 +113,7 @@ export default function LandingPage(): JSX.Element {
           <img src={ctaImage} alt="" className={styles.cta__img} />
         </section>
       </main>
-      <Footer customBgColor='var(--bg-inverse)' />
+      <Footer customBgColor="var(--bg-inverse)" />
     </PageView>
   );
 }

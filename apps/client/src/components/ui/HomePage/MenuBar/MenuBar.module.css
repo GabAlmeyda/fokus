@@ -273,11 +273,11 @@
   color: var(--black-clr);
 }
 
-.theme__toggle>span.theme_selected {
+.theme__toggle>span.selected {
   background-color: var(--accent-primary);
 }
 
-.theme__toggle>span.theme_selected * {
+.theme__toggle>span.selected * {
   color: var(--white-clr);
 }
 

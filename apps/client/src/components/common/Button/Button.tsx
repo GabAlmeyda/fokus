@@ -1,34 +1,53 @@
 import type React from 'react';
 import type { ButtonHTMLAttributes, JSX } from 'react';
-import clsx from 'clsx';
 import styles from './Button.module.css';
+import { Link } from 'react-router-dom';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'ghost-primary' | 'inverse' | 'ghost-inverse';
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   customColor?: string;
+  variant?: 'primary' | 'ghost-primary' | 'inverse' | 'ghost-inverse';
   isSmall?: boolean;
   isDisabled?: boolean;
   children: React.ReactNode;
-}
+} & ({ isLink: true; to: string } | { isLink?: false; to?: never });
 
 export default function Button({
-  variant,
-  isSmall = false,
   customColor,
-  isDisabled,
+  variant,
+  isLink = false,
+  isSmall = false,
+  isDisabled = false,
+  to,
   children,
   ...props
 }: ButtonProps): JSX.Element {
+  if (isLink) {
+    return (
+      <Link
+        to={to!}
+        className={`
+          ${styles.btn} 
+          ${variant ? styles[variant] : ''} 
+          ${isSmall ? styles.small : ''} 
+          ${props['className']}
+        `}
+        style={customColor ? { backgroundColor: customColor } : undefined}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <button
       {...props}
-      className={clsx(
-        styles.btn,
-        variant && styles[`btn_${variant}`],
-        isDisabled && styles['btn_disabled'],
-        isSmall && styles['btn_small'],
-        props['className'],
-      )}
+      className={`
+        ${styles.btn}
+        ${variant ? styles[variant] : ''} 
+        ${isDisabled ? styles.disabled : ''} 
+        ${isSmall ? styles.small : ''} 
+        ${props['className']}
+      `}
       style={customColor ? { backgroundColor: customColor } : undefined}
       disabled={isDisabled}
     >

@@ -131,10 +131,7 @@ export default function LoginPage(): JSX.Element {
           <div className={styles.login__register}>
             <p>Ainda não possui uma conta?</p>
             <div className={styles.register__btn}>
-              <Button
-                variant="ghost-inverse"
-                onClick={() => navigate(APP_URLS.register)}
-              >
+              <Button variant="ghost-inverse" isLink to={APP_URLS.register}>
                 Crie sua conta agora
               </Button>
             </div>

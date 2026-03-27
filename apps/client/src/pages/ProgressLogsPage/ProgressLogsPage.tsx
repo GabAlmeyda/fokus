@@ -1,6 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PageView from '../../components/layouts/PageView/PageView';
-import btnStyles from '../../components/common/Button/Button.module.css';
 import styles from './ProgressLogsPage.module.css';
 import { APP_URLS } from '../../helpers/app.helpers';
 import {
@@ -12,6 +11,7 @@ import ProgressLog from '../../components/ui/ProgressLogsPage/ProgressLog/Progre
 import { useEffect, useState } from 'react';
 import Dialog from '../../components/common/Dialog/Dialog';
 import Toast from '../../components/common/Toast/Toast';
+import Button from '../../components/common/Button/Button';
 
 export default function ProgressLogsPage() {
   const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
@@ -59,14 +59,14 @@ export default function ProgressLogsPage() {
     };
   }, [isToastOpen]);
 
-  const handleDeleteClick = async (confirmation: boolean) => {
+  const handleDeleteClick = (confirmation: boolean) => {
     if (!confirmation) {
       setOpenLogId(null);
       setIsDialogOpen(false);
       return;
     }
 
-    await removeLogMutation.mutateAsync(
+    removeLogMutation.mutate(
       {
         progressLogId: openLogId!,
         goalId: goal!.id,
@@ -106,12 +106,15 @@ export default function ProgressLogsPage() {
         )}
         <section className={styles.logs}>
           <span className={styles.logs__goBack}>
-            <Link
+            <Button
+              variant="ghost-inverse"
+              isLink
               to={APP_URLS.home}
-              className={`${btnStyles.btn} ${btnStyles['btn_ghost-inverse']}`}
+              isSmall
+              className={styles.goBack__btn}
             >
               Voltar
-            </Link>
+            </Button>
           </span>
           <div className={styles.logs__goal}>
             <div className={styles.goal__title}>

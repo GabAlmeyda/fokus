@@ -1,4 +1,4 @@
-import { useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './GoalsView.module.css';
 import FokusIcon from '../../../common/Icon/Icon';
@@ -7,14 +7,30 @@ import { useGoalQueries } from '../../../../helpers/hooks/use-goal.hook';
 import Goal from '../../../common/Goal/Goal';
 import Button from '../../../common/Button/Button';
 import { APP_URLS } from '../../../../helpers/app.helpers';
+import Spinner from '../../../common/Spinner/Spinner';
+import type { HTTPErrorResponse } from '@fokus/shared';
 
-export default function GoalsView(): JSX.Element {
+interface GoalsViewProps {
+  onCategoryReqError: (error: HTTPErrorResponse) => void;
+}
+
+export default function GoalsView({
+  onCategoryReqError,
+}: GoalsViewProps): JSX.Element {
   const navigate = useNavigate();
-  const { data: categories, isFetched } = useCategoryQueries({}).filterQuery;
+  const { data: categories, error: categoryError } = useCategoryQueries(
+    {},
+  ).filterQuery;
   const categoriesMap: Record<string, string> = {};
   categories?.forEach((c) => (categoriesMap[c.id] = c.name));
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const { data: retGoals } = useGoalQueries({
+  const {
+    data: retGoals,
+    isFetching,
+    isFetched,
+    error,
+    refetch,
+  } = useGoalQueries({
     filter: {
       categoryId: !['all', 'no-tag'].includes(activeCategory)
         ? activeCategory
@@ -25,6 +41,12 @@ export default function GoalsView(): JSX.Element {
     activeCategory === 'no-tag'
       ? retGoals?.filter((g) => !g.categoryId)
       : retGoals;
+
+  useEffect(() => {
+    if (categoryError) {
+      onCategoryReqError(categoryError);
+    }
+  }, [categoryError]);
 
   const handleCategoryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const query = (event.currentTarget as HTMLElement).dataset[
@@ -73,7 +95,29 @@ export default function GoalsView(): JSX.Element {
       </div>
 
       <div className={styles.goals} id="goals">
-        {goals?.length || 0 > 0 ? (
+        {!isFetching && error && (
+          <div className={styles.goals__msg}>
+            <p>Erro ao tentar retornar suas metas</p>
+            <Button onClick={() => refetch()}>Tentar novamente</Button>
+          </div>
+        )}
+
+        {isFetching && !goals && <Spinner />}
+
+        {isFetched && isFetching && !error && !goals?.length && (
+          <div className={styles.goals__msg}>
+            <p>Nenhuma meta encontrada.</p>
+            <Button
+              onClick={() => {
+                navigate(`${APP_URLS.goals}/new`);
+              }}
+            >
+              Adicione uma nova meta
+            </Button>
+          </div>
+        )}
+
+        {!!goals?.length && (
           <>
             <div className={styles.goals__completed}>
               {goals
@@ -104,23 +148,6 @@ export default function GoalsView(): JSX.Element {
                 ))}
             </div>
           </>
-        ) : (
-          <div className={styles.goals_loadingOrFetched}>
-            {isFetched && goals?.length === 0 ? (
-              <>
-                <span>Nenhuma meta encontrada</span>
-                <Button
-                  onClick={() => {
-                    navigate(`${APP_URLS.goals}/new`);
-                  }}
-                >
-                  Adicione uma nova meta
-                </Button>
-              </>
-            ) : (
-              <div className={styles.goals__spinner}></div>
-            )}
-          </div>
         )}
       </div>
     </div>

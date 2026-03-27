@@ -10,7 +10,11 @@ import {
 import { APP_URLS } from '../../helpers/app.helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { GoalFormSchema, type GoalFormDTO } from '@fokus/shared';
+import {
+  GoalFormSchema,
+  HTTPStatusCode,
+  type GoalFormDTO,
+} from '@fokus/shared';
 import ColorPicker from '../../components/common/ColorPicker/ColorPicker';
 import Footer from '../../components/layouts/Footer/Footer';
 import TargetValueField from '../../components/ui/GoalPage/TargetValueField/TargetValueField';
@@ -23,6 +27,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { parseGoal } from '../../helpers/session-parse.helpers';
 import Dialog from '../../components/common/Dialog/Dialog';
 import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
+import Toast from '../../components/common/Toast/Toast';
 
 const defaultGoal: GoalFormDTO = {
   title: 'Título',
@@ -37,11 +42,16 @@ const defaultGoal: GoalFormDTO = {
 const selectedDate = new Date();
 
 export default function GoalPage() {
-  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { goalId } = useParams<{ goalId: string }>();
-  const { data: goal } = useGoalQueries({ goalId }).idQuery;
+  const {
+    data: goal,
+    isFetching: goalIsFetching,
+    refetch: goalRefetch,
+    error: goalError,
+  } = useGoalQueries({ goalId }).idQuery;
   const createMutation = useGoalMutations().createMutation;
   const updateMutation = useGoalMutations().updateMutation;
   const deleteMutation = useGoalMutations().deleteMutation;
@@ -50,10 +60,18 @@ export default function GoalPage() {
       ? GoalFormSchema.parse(goal)
       : (parseGoal(goalId!) ?? defaultGoal);
   }, [goal, goalId]);
-  const { data: categories } = useCategoryQueries({}).filterQuery;
+  const {
+    data: categories,
+    isFetching: categoryIsFetching,
+    isError: categoryIsError,
+  } = useCategoryQueries({}).filterQuery;
   const categoriesMap: Record<string, string> = {};
   categories?.forEach((c) => (categoriesMap[c.id] = c.name));
-  const { data: habits } = useHabitQueries({ selectedDate }).filterQuery;
+  const {
+    data: habits,
+    isFetching: habitIsFetching,
+    isError: habitIsError,
+  } = useHabitQueries({ selectedDate }).filterQuery;
   const habitsMap: Record<
     string,
     { title: string; color: string; unitOfMeasure: string }
@@ -74,9 +92,10 @@ export default function GoalPage() {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
     clearErrors,
   } = useForm<GoalFormDTO>({
-    resolver: zodResolver(GoalFormSchema),
+    resolver: zodResolver(GoalFormSchema as any),
     defaultValues: initialGoal,
     values: initialGoal,
   });
@@ -102,27 +121,34 @@ export default function GoalPage() {
 
   useEffect(() => {
     let timerId = undefined;
-    if (isToastOpen) {
-      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    if (toastMsg) {
+      timerId = setTimeout(() => setToastMsg(null), 5000);
     }
 
     return () => {
       if (timerId) clearTimeout(timerId);
     };
-  }, [isToastOpen]);
+  }, [toastMsg]);
 
-  const handleFormSubmit = async (data: GoalFormDTO) => {
+  const handleFormSubmit = (data: GoalFormDTO) => {
     if (goalId === 'new') {
-      await createMutation.mutateAsync(data, {
+      createMutation.mutate(data, {
         onSuccess: () => {
+          navigate(APP_URLS.home);
           sessionStorage.removeItem('habit-data-new');
           sessionStorage.removeItem('habit-data-update');
-          navigate(APP_URLS.home);
         },
-        onError: () => setIsToastOpen(true),
+        onError: (err) => {
+          if (err.statusCode === HTTPStatusCode.CONFLICT) {
+            setError('title', { message: 'Título já registrado.' });
+            return;
+          }
+
+          setToastMsg('Erro ao tentar criar a meta.');
+        },
       });
     } else {
-      await updateMutation.mutateAsync(
+      updateMutation.mutate(
         { goalId: goalId!, newData: data },
         {
           onSuccess: () => {
@@ -130,7 +156,7 @@ export default function GoalPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
-          onError: () => setIsToastOpen(true),
+          onError: () => setToastMsg('Erro ao tentar atualizar a meta.'),
         },
       );
     }
@@ -143,23 +169,64 @@ export default function GoalPage() {
     }
   };
 
-  const handleDeleteConfirmation = async (confirmation: boolean) => {
+  const handleDeleteConfirmation = (confirmation: boolean) => {
     if (!confirmation) {
       setIsDialogOpen(false);
       return;
     }
 
-    await deleteMutation.mutateAsync(goalId!, {
+    deleteMutation.mutate(goalId!, {
       onSuccess: () => {
         sessionStorage.removeItem('goal-data-new');
         sessionStorage.removeItem('goal-data-update');
-        setIsDialogOpen(false);
-        navigate(APP_URLS.home);
+        navigate(APP_URLS.home, { replace: true });
       },
-      onError: () => setIsToastOpen(true),
-      onSettled: () => setIsDialogOpen(false),
+      onError: () => setToastMsg('Erro ao tentar deletar a meta.'),
     });
   };
+
+  if (goalId !== 'new' && goalIsFetching) {
+    return (
+      <PageView customBgColor="#101b14">
+        <main>
+          <GoalPageFormSkeleton />
+        </main>
+      </PageView>
+    );
+  }
+
+  if (goalId !== 'new' && goalError) {
+    return (
+      <PageView customBgColor="#101b14">
+        <main className={styles.goal__error}>
+          {toastMsg && (
+            <Toast
+              isOpen={!!toastMsg}
+              onClick={() => setToastMsg(null)}
+              message={toastMsg}
+              bgColor="#f73838ff"
+              ariaLive="assertive"
+            />
+          )}
+          <span className={styles.goal__goBack}>
+            <Button
+              variant="ghost-inverse"
+              isLink
+              to={APP_URLS.home}
+              isSmall
+              className={styles.goBack__btn}
+            >
+              Voltar
+            </Button>
+          </span>
+          <div className={styles.error__msg}>
+            <p>Erro ao tentar retornar sua meta.</p>
+            <Button onClick={() => goalRefetch()}>Tentar novamente</Button>
+          </div>
+        </main>
+      </PageView>
+    );
+  }
 
   return (
     <PageView customBgColor="#101b14">
@@ -183,8 +250,9 @@ export default function GoalPage() {
         <section className={styles.goal}>
           <span className={styles.goal__goBack}>
             <Button
-              onClick={() => navigate(APP_URLS.home)}
               variant="ghost-inverse"
+              isLink
+              to={APP_URLS.home}
               isSmall
               className={styles.goBack__btn}
             >
@@ -265,6 +333,8 @@ export default function GoalPage() {
                   <CategoryField
                     value={field.value}
                     onChange={field.onChange}
+                    isFetching={categoryIsFetching}
+                    isError={categoryIsError}
                     categoriesMap={categoriesMap}
                   />
                 )}
@@ -293,11 +363,13 @@ export default function GoalPage() {
                 render={({ field }) => (
                   <HabitField
                     value={field.value}
+                    habitsMap={habitsMap}
+                    isFetching={habitIsFetching}
+                    isError={habitIsError}
                     onChange={(habitId, unitOfMeasure) => {
                       handleHabitFieldChange(unitOfMeasure);
                       field.onChange(habitId);
                     }}
-                    habitsMap={habitsMap}
                   />
                 )}
               />
@@ -339,5 +411,33 @@ export default function GoalPage() {
       </main>
       <Footer customBgColor="#101b14" />
     </PageView>
+  );
+}
+
+function GoalPageFormSkeleton() {
+  return (
+    <div className={styles.goal__skeleton}>
+      <span className={styles.skeleton__goBack}>
+        <Button
+          variant="ghost-inverse"
+          isLink
+          to={APP_URLS.home}
+          isSmall
+          className={styles.goBack__btn}
+        >
+          Voltar
+        </Button>
+      </span>
+      <div className={styles.skeleton__previewTittle}></div>
+      <div className={styles.skeleton__previewCard}></div>
+      <div className={styles.skeleton__form}>
+        <div className={styles.formSkeleton__title}></div>
+        <div className={styles.formSkeleton__color}></div>
+        <div className={styles.formSkeleton__targetValue}></div>
+        <div className={styles.formSkeleton__category}></div>
+        <div className={styles.formSkeleton__deadline}></div>
+        <div className={styles.formSkeleton__habit}></div>
+      </div>
+    </div>
   );
 }

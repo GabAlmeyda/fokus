@@ -1,7 +1,6 @@
 import { useEffect, useState, type JSX } from 'react';
 import styles from './MenuBar.module.css';
 import Button from '../../../common/Button/Button';
-import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 import {
@@ -60,10 +59,7 @@ export default function MenuBar(): JSX.Element {
         </button>
 
         <nav
-          className={clsx(
-            styles.navigation,
-            activeSidebar === 'navigation' && styles.open,
-          )}
+          className={`${styles.navigation} ${activeSidebar === 'navigation' ? styles.open : ''}`}
           data-sidebar="profile"
         >
           <div className={styles.l_menubar__goBack}>
@@ -113,10 +109,7 @@ export default function MenuBar(): JSX.Element {
         </button>
 
         <div
-          className={clsx(
-            styles.aside,
-            activeSidebar === 'aside' && styles.open,
-          )}
+          className={`${styles.aside} ${activeSidebar === 'aside' ? styles.open : ''}`}
         >
           <div className={styles.l_menubar__goBack}>
             <Button
@@ -145,16 +138,12 @@ export default function MenuBar(): JSX.Element {
                 onClick={handleToggleThemeClick}
               >
                 <span
-                  className={clsx(
-                    user?.themeMode === 'light' && styles.theme_selected,
-                  )}
+                  className={user?.themeMode === 'light' ? styles.selected : ''}
                 >
                   <FokusIcon iconKey="sun" />
                 </span>
                 <span
-                  className={clsx(
-                    user?.themeMode === 'dark' && styles.theme_selected,
-                  )}
+                  className={user?.themeMode === 'dark' ? styles.selected : ''}
                 >
                   <FokusIcon iconKey="moon" />
                 </span>

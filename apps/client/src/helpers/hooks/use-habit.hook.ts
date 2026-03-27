@@ -25,7 +25,7 @@ export function useHabitQueries(query: UseHabitsQueriesParams) {
       });
       return response.data;
     },
-    retry: 3,
+    retry: 2,
     refetchOnWindowFocus: false,
     enabled: !!query.habitId && query.habitId !== 'new',
   });
@@ -39,7 +39,7 @@ export function useHabitQueries(query: UseHabitsQueriesParams) {
       });
       return response.data;
     },
-    retry: 3,
+    retry: 2,
     refetchOnWindowFocus: false,
     enabled: !!query,
   });
@@ -145,8 +145,10 @@ export function useHabitMutations() {
       return response.data;
     },
     onSuccess: async (_, habitId) => {
-      queryClient.removeQueries({ queryKey: ['habit', habitId] });
-      await queryClient.invalidateQueries({ queryKey: ['habits'] });
+      await Promise.all([
+        queryClient.removeQueries({ queryKey: ['habit', habitId], exact: false }),
+        queryClient.invalidateQueries({ queryKey: ['habits'] }),
+      ]);
     },
   });
 
