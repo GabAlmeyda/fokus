@@ -5,5 +5,5 @@ export const APP_URLS = {
   home: '/app',
   habits: '/app/habits',
   goals: '/app/goals',
-  base: 'http://localhost:5173'
+  base: 'https://fokus-dev.vercel.app/'
 }
