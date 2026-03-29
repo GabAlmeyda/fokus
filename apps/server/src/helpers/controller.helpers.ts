@@ -41,6 +41,7 @@ export function setTokens(
     httpOnly: true,
     sameSite: 'none',
     secure: true,
+    partitioned: true,
     maxAge: 1000 * 60 * 15, // 15 minutes
     path: '/',
   });
@@ -48,6 +49,7 @@ export function setTokens(
     httpOnly: true,
     sameSite: 'none',
     secure: true,
+    partitioned: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
@@ -55,6 +57,7 @@ export function setTokens(
   res.cookie('XSRF-TOKEN', id, {
     httpOnly: false,
     secure: true,
+    partitioned: true,
     sameSite: 'none',
     path: '/',
   });
