@@ -6,7 +6,6 @@ import {
   HTTPStatusCode,
   type HTTPErrorResponse,
 } from '@fokus/shared';
-import { env } from '../config/env.config.js';
 import { AppServerError } from './errors/app-server.errors.js';
 
 export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {
@@ -38,19 +37,17 @@ export function setTokens(
   res: Response,
   tokens: { accessToken: string; refreshToken: string },
 ) {
-  const isProduction = env.NODE_ENV === 'production';
-
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,
     sameSite: 'none',
-    secure: isProduction,
+    secure: true,
     maxAge: 1000 * 60 * 15, // 15 minutes
     path: '/',
   });
   res.cookie('refresh_token', tokens.refreshToken, {
     httpOnly: true,
     sameSite: 'none',
-    secure: isProduction,
+    secure: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
