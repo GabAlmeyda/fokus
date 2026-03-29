@@ -91,7 +91,7 @@ export default function RegisterPage(): JSX.Element {
               <span className={styles.register__formError}>
                 <FormErrorMessage
                   id="form-error"
-                  isHidden={!!errors.root}
+                  isHidden={!errors.root}
                   message={errors.root.message}
                 />
               </span>
@@ -117,7 +117,7 @@ export default function RegisterPage(): JSX.Element {
                   {errors.name && (
                     <FormErrorMessage
                       id="name-error"
-                      isHidden={!!errors.name}
+                      isHidden={!errors.name}
                       message={errors.name.message}
                     />
                   )}
@@ -136,7 +136,7 @@ export default function RegisterPage(): JSX.Element {
                   {errors.email && (
                     <FormErrorMessage
                       id="email-error"
-                      isHidden={!!errors.email}
+                      isHidden={!errors.email}
                       message={errors.email.message}
                     />
                   )}
@@ -155,7 +155,7 @@ export default function RegisterPage(): JSX.Element {
                   {errors.password && (
                     <FormErrorMessage
                       id="password-error"
-                      isHidden={!!errors.password}
+                      isHidden={!errors.password}
                       message={errors.password.message}
                     />
                   )}
@@ -174,7 +174,7 @@ export default function RegisterPage(): JSX.Element {
                   {errors.confirmPassword && (
                     <FormErrorMessage
                       id="confirm-password-error"
-                      isHidden={!!errors.confirmPassword}
+                      isHidden={!errors.confirmPassword}
                       message={errors.confirmPassword.message}
                     />
                   )}

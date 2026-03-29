@@ -66,7 +66,7 @@ export default function LoginPage(): JSX.Element {
               <span className={styles.login__formError}>
                 <FormErrorMessage
                   id="form-error"
-                  isHidden={!!errors.root}
+                  isHidden={!errors.root}
                   message={errors.root.message}
                 />
               </span>
@@ -92,7 +92,7 @@ export default function LoginPage(): JSX.Element {
                   {errors.email && (
                     <FormErrorMessage
                       id="email-error"
-                      isHidden={!!errors.email}
+                      isHidden={!errors.email}
                       message={errors.email.message}
                     />
                   )}
@@ -111,7 +111,7 @@ export default function LoginPage(): JSX.Element {
                   {errors.password && (
                     <FormErrorMessage
                       id="password-error"
-                      isHidden={!!errors.password}
+                      isHidden={!errors.password}
                       message={errors.password.message}
                     />
                   )}
