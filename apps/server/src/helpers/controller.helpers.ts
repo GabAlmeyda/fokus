@@ -42,14 +42,14 @@ export function setTokens(
 
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: 'none',
     secure: isProduction,
     maxAge: 1000 * 60 * 15, // 15 minutes
     path: '/',
   });
   res.cookie('refresh_token', tokens.refreshToken, {
     httpOnly: true,
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: 'none',
     secure: isProduction,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
@@ -58,7 +58,7 @@ export function setTokens(
   res.cookie('XSRF-TOKEN', id, {
     httpOnly: false,
     secure: true,
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: 'none',
     path: '/',
   });
 }
