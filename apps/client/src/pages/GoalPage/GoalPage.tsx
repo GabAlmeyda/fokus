@@ -1,4 +1,4 @@
-import styles from './Goalpage.module.css';
+import styles from './GoalPage.module.css';
 import Button from '../../components/common/Button/Button';
 import PageView from '../../components/layouts/PageView/PageView';
 import Goal from '../../components/common/Goal/Goal';
