@@ -123,7 +123,7 @@ export default function HabitsView({
       <div className={styles.habits}>
         {!isFetching && error && (
           <div className={styles.habits__msg}>
-            <p>Erro ao tentar retornar seus hábitos</p>
+            <p className={styles.error}>Erro ao tentar retornar seus hábitos</p>
             <Button onClick={() => refetch()}>Tentar novamente</Button>
           </div>
         )}

@@ -19,7 +19,7 @@ import ColorPicker from '../../components/common/ColorPicker/ColorPicker';
 import { type FokusIconKey } from '../../components/common/Icon/Icon';
 import IconPickerField from '../../components/ui/HabitPage/IconPickerField/IconPickerField';
 import Footer from '../../components/layouts/Footer/Footer';
-import ProgressImpactField from '../../components/ui/HabitPage/ProgressImpactField/ProgressImpactValue';
+import ProgressImpactField from '../../components/ui/HabitPage/ProgressImpactField/ProgressImpactField';
 import ReminderField from '../../components/ui/HabitPage/ReminderField/ReminderField';
 import WeekDaysField from '../../components/ui/HabitPage/WeekDaysField/WeekDaysField';
 import { useEffect, useMemo, useState } from 'react';
@@ -27,6 +27,7 @@ import { parseHabit } from '../../helpers/session-parse.helpers';
 import Dialog from '../../components/common/Dialog/Dialog';
 import FormErrorMessage from '../../components/common/FormErrorMessage/FormErrorMessage';
 import Toast from '../../components/common/Toast/Toast';
+import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
 
 const defaultHabit: HabitFormDTO = {
   title: 'Título',
@@ -213,16 +214,6 @@ export default function HabitPage() {
   return (
     <PageView customBgColor="#101b14">
       <main>
-        {toastMsg && (
-          <Toast
-            isOpen={!!toastMsg}
-            onClick={() => setToastMsg(null)}
-            message={toastMsg}
-            bgColor="#f73838ff"
-            ariaLive="assertive"
-          />
-        )}
-
         {isDialogOpen && (
           <Dialog
             title="Deletar hábito"
@@ -235,6 +226,9 @@ export default function HabitPage() {
               confirm: styles.deleteBtn__confirm,
             }}
           />
+        )}
+        {createMutation.isPending && (
+          <LoadingOverlay message="Criando hábito. Só um momento..." />
         )}
         <section className={styles.habit}>
           <span className={styles.habit__goBack}>

@@ -1,0 +1,192 @@
+.newLog {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 2000;
+  overflow-y: scroll;
+
+  height: 100%;
+  width: 100%;
+
+  padding: 1rem;
+
+  background-color: #101b14;
+}
+
+.newLog__goBack {
+  display: inline-block;
+
+  padding-block: .5rem;
+  margin-bottom: 3rem;
+}
+
+.newLog h2 {
+  color: #ececec;
+  text-wrap: auto;
+  text-align: center;
+}
+
+.newLog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  max-width: 400px;
+
+  margin-top: 2rem;
+  margin-inline: auto;
+
+  text-align: center;
+}
+
+.newLog__form>div:not(.form__btn) {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  min-width: 288px;
+
+  padding: .5rem;
+  border-radius: 10px;
+
+  background-color: #a4dbb6;
+}
+
+.newLog__form label {
+  color: #060806;
+  font-size: .9rem;
+  text-align: left;
+}
+
+.newLog__form label[for='log-date'] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.newLog__form label[for='log-date'] svg {
+  font-size: 1.2rem;
+}
+
+.newLog__form label[for='log-date'] span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+
+  font-style: italic;
+}
+
+.form__btn {
+  margin-top: 5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .newLog {
+    right: 0;
+    width: 350px;
+
+    padding-inline: 2rem;
+  }
+
+  ._newLog__shadow {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1999;
+
+    background-color: rgba(0, 0, 0, 0.616);
+    user-select: none;
+  }
+}
+
+
+
+/* REACT DAY PICKER */
+.date__container {
+  border-radius: 5px;
+
+  background-color: #6fb186;
+}
+
+.date__months {
+  position: relative;
+  width: 100%;
+}
+
+.date__nav {
+  position: absolute;
+  right: 0;
+  top: .3rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.date__monthCaption {
+  border-radius: 5px 5px 0 0;
+  padding: .3rem;
+  background-color: #189631;
+}
+
+.date__monthCaption * {
+  font-weight: 600;
+}
+
+.date__monthGrid {
+  width: 100%;
+}
+
+.date__container thead tr th {
+  text-align: center;
+  font-weight: 600;
+}
+
+.date__weeks {
+  width: 100%;
+}
+
+.date__weeks tr {
+  height: 31px;
+  width: 100%;
+}
+
+.date__weeks tr td {
+  height: 31px;
+  width: 31px;
+  aspect-ratio: 1 / 1;
+}
+
+.date__day {
+  width: 31px;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 50px;
+}
+
+.date__day:not(.date__selected, .date__today):hover {
+  background-color: #60a076;
+}
+
+.date__day button {
+  margin-inline: auto;
+}
+
+.date__today {
+  background-color: #60d88a;
+}
+
+.date__selected {
+  background-color: var(--accent-primary);
+
+  font-weight: 600;
+}
+
+.date__disabled {
+  background-color: #60a076;
+
+  color: #333a33;
+}

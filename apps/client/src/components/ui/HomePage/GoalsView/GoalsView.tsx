@@ -97,14 +97,14 @@ export default function GoalsView({
       <div className={styles.goals} id="goals">
         {!isFetching && error && (
           <div className={styles.goals__msg}>
-            <p>Erro ao tentar retornar suas metas</p>
+            <p className={styles.error}>Aconteceu um erro ao tentar retornar suas metas</p>
             <Button onClick={() => refetch()}>Tentar novamente</Button>
           </div>
         )}
 
         {isFetching && !goals && <Spinner />}
 
-        {isFetched && isFetching && !error && !goals?.length && (
+        {isFetched && !isFetching && !error && !goals?.length && (
           <div className={styles.goals__msg}>
             <p>Nenhuma meta encontrada.</p>
             <Button

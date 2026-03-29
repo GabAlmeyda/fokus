@@ -19,9 +19,7 @@ export default function ProgressLog({
   onToggle,
   onDeleteClick,
 }: ProgressLogsProps) {
-  useEffect(() => {
-    
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <div className={styles.log}>
@@ -47,9 +45,9 @@ export default function ProgressLog({
           </span>
         </p>
 
-        {!!log.habitId && (
-          <p className={styles.content__habitId}>Meta atualizada por hábito.</p>
-        )}
+        <p className={styles.content__habitId}>
+          {!!log.habitId ? 'Meta atualizada por hábito' : 'Registro manual'}
+        </p>
 
         <div className={styles.log__menu}>
           <button
@@ -66,10 +64,10 @@ export default function ProgressLog({
           >
             <FokusIcon iconKey="menu" aria-hidden="true" />
           </button>
-  
+
           <div
             className={styles.menu__list}
-            style={{display: isOpen ? 'block' : 'none'}}
+            style={{ display: isOpen ? 'block' : 'none' }}
             id="menu"
             aria-hidden={!isOpen}
             role="menu"

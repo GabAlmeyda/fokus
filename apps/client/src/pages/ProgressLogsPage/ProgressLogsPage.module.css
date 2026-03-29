@@ -1,9 +1,16 @@
+/* DIALOG */
 .dialog__confirm {
   background-color: rgb(238, 29, 29);
 }
 
+
+
+/* LOGS */
 .logs {
+  max-width: 1080px;
+
   padding: 1rem;
+  margin-inline: auto;
 }
 
 .logs__goBack {
@@ -11,6 +18,12 @@
 
   padding-block: .5rem;
   margin-bottom: 3rem;
+}
+
+.logs__goal {
+  max-width: 800px;
+
+  margin-inline: auto;
 }
 
 .goal__title {
@@ -23,12 +36,19 @@
   color: var(--text-secondary);
 }
 
+.goal__title p.error {
+  font-size: .9rem;
+  color: rgb(238, 29, 29);
+}
+
 .goal__title strong {
   font-size: 1.4rem;
   font-weight: 500;
 }
 
 .goal__progress {
+  max-width: 350px;
+
   margin-top: .5rem;
 }
 
@@ -59,18 +79,83 @@
   background-color: var(--accent-primary);
 }
 
-.goal__progress>span {
+.goal__progress>p {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
   color: var(--text-secondary);
   font-size: .9rem;
 }
 
+.goal__progress>p .progress__dot {
+  display: block;
+
+  border-radius: 50%;
+
+  height: 6px;
+  aspect-ratio: 1 / 1;
+
+  background-color: var(--text-secondary);
+}
+
+.goal__progress>p .progress__unitOfMeasure {
+  display: -webkit-box;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+
+  max-width: 90px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: -.2rem;
+
+  color: var(--text-secondary);
+}
+
+.goal__btn {
+  margin-top: 1rem;
+}
+
 .logs__goal hr {
+  margin-bottom: 2rem;
+  margin-top: .5rem;
+}
+
+
+
+/* PROGRESS LOGS */
+.logs__msg {
+  margin-top: 3rem;
+
+  text-align: center;
+}
+
+.logs__msg p {
   margin-bottom: 1rem;
-  margin-top: .3rem;
+
+  color: var(--text-secondary);
+}
+
+.logs__msg .error {
+  color: rgb(238, 29, 29);
 }
 
 .logs__items {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: .5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .logs__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    max-width: 700px;
+
+    margin-inline: auto;
+  }
 }

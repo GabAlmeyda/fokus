@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PageView from '../../components/layouts/PageView/PageView';
 import styles from './ProgressLogsPage.module.css';
 import { APP_URLS } from '../../helpers/app.helpers';
@@ -12,22 +12,27 @@ import { useEffect, useState } from 'react';
 import Dialog from '../../components/common/Dialog/Dialog';
 import Toast from '../../components/common/Toast/Toast';
 import Button from '../../components/common/Button/Button';
+import ProgressLogForm from '../../components/ui/ProgressLogsPage/ProgressLogForm/ProgressLogForm';
+import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverlay';
 
 export default function ProgressLogsPage() {
-  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+  const [isNewLogOpen, setIsNewLogOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [openLogId, setOpenLogId] = useState<string | null>(null);
+  const addLogMutation = useGoalMutations().addLogMutation;
   const removeLogMutation = useGoalMutations().removeLogMutation;
   const { goalId } = useParams<{ goalId: string }>();
-  const {
-    data: goal,
-    isFetching: goalIsFetching,
-    isError: goalIsError,
-  } = useGoalQueries({ goalId }).idQuery;
+  const { data: goal, isError: goalIsError } = useGoalQueries({
+    goalId,
+  }).idQuery;
   const {
     data: logs,
     isFetching: logsIsFetching,
+    isFetched: logsIsFetched,
     isError: logsIsError,
+    refetch: logsRefetch,
   } = useGoalQueries({
     goalId,
   }).logsQuery;
@@ -50,14 +55,14 @@ export default function ProgressLogsPage() {
 
   useEffect(() => {
     let timerId = undefined;
-    if (isToastOpen) {
-      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    if (toastMsg) {
+      timerId = setTimeout(() => setToastMsg(null), 5000);
     }
 
     return () => {
       if (timerId) clearTimeout(timerId);
     };
-  }, [isToastOpen]);
+  }, [toastMsg]);
 
   const handleDeleteClick = (confirmation: boolean) => {
     if (!confirmation) {
@@ -73,8 +78,24 @@ export default function ProgressLogsPage() {
       },
       {
         onError: () => {
-          setIsToastOpen(true);
+          setToastMsg('Erro ao tentar remover o registro');
         },
+        onSettled: () => {
+          setIsDialogOpen(false);
+          setOpenLogId(null);
+        },
+      },
+    );
+  };
+
+  const handleFormSubmit = (data: { value: number; date: Date }) => {
+    addLogMutation.mutate(
+      { ...data, goalId: goalId! },
+      {
+        onError: () => {
+          setToastMsg('Erro ao tentar adicionar o registro');
+        },
+        onSuccess: () => setIsNewLogOpen(false),
         onSettled: () => {
           setIsDialogOpen(false);
           setOpenLogId(null);
@@ -95,16 +116,33 @@ export default function ProgressLogsPage() {
             classNames={{ confirm: styles.dialog__confirm }}
           />
         )}
-        {isToastOpen && (
+        {toastMsg && (
           <Toast
-            isOpen={isToastOpen}
-            onClick={() => setIsToastOpen(false)}
+            isOpen={!!toastMsg}
+            onClick={() => setToastMsg(null)}
             bgColor="#f73838ff"
-            message="Erro ao tentar deletar o registro."
+            message={toastMsg}
             ariaLive="assertive"
           />
         )}
+        {(() => {
+          if (addLogMutation.isPending) {
+            return (
+              <LoadingOverlay message="Criando registro. Só um momento..." />
+            );
+          } else if (removeLogMutation.isPending) {
+            return (
+              <LoadingOverlay message="Removendo registro. Só um momento..." />
+            );
+          }
+        })()}
         <section className={styles.logs}>
+          {isNewLogOpen && (
+            <ProgressLogForm
+              onCloseClick={() => setIsNewLogOpen(false)}
+              onSubmit={handleFormSubmit}
+            />
+          )}
           <span className={styles.logs__goBack}>
             <Button
               variant="ghost-inverse"
@@ -119,6 +157,11 @@ export default function ProgressLogsPage() {
           <div className={styles.logs__goal}>
             <div className={styles.goal__title}>
               <p>Registros da meta</p>
+              {goalIsError && (
+                <p aria-live="assertive" className={styles.error}>
+                  Erro ao carregar informações da meta.
+                </p>
+              )}
               {!!goal && <strong>{goal.title}</strong>}
             </div>
 
@@ -132,68 +175,101 @@ export default function ProgressLogsPage() {
                       }}
                     ></span>
                   </div>
-                  <span>
+                  <p>
                     {(() => {
                       if (goal.type === 'qualitative') {
                         return goalProgress === 0
                           ? 'Não concluída'
                           : 'Concluída';
                       } else {
-                        return `${goalProgress}% concluída`;
+                        return (
+                          <>
+                            {`${goalProgress}% concluída`}{' '}
+                            <span className={styles.progress__dot}></span>
+                            {`${goal.currentValue}/${goal.targetValue}`}{' '}
+                            <span className={styles.progress__unitOfMeasure}>
+                              {goal.unitOfMeasure?.toLowerCase()}
+                            </span>
+                          </>
+                        );
                       }
                     })()}
-                  </span>
+                  </p>
                 </>
               )}
             </div>
 
+            <Button
+              className={styles.goal__btn}
+              onClick={() => setIsNewLogOpen(true)}
+            >
+              Adicionar novo registro
+            </Button>
+
             <hr />
           </div>
 
-          <div className={styles.goal__logs}>
-            {(() => {
-              if (goalIsFetching || logsIsFetching) {
-                return <Spinner />;
-              }
-              if (goalIsError) {
-                return <p>Não foi possível achar a meta selecionada.</p>;
-              }
-              if (logsIsError) {
-                return (
-                  <p>
-                    Não foi possível carregar os registros da meta selecionada.
-                  </p>
-                );
-              }
-              if ((logs?.length ?? 0) === 0) {
-                return <p>Nenhum registro realizado até o momento.</p>;
-              }
+          <div className={styles.logs__container}>
+            {logsIsError && (
+              <div className={styles.logs__msg}>
+                <p className={styles.error}>
+                  Aconteceu um erro e não foi possível carregar os registros.
+                </p>
+              </div>
+            )}
 
-              return (
-                <div className={styles.logs__items}>
-                  {logs?.map((l) => (
-                    <ProgressLog
-                      log={l}
-                      unitOfMeasure={goal?.unitOfMeasure}
-                      isOpen={openLogId === l.id}
-                      onToggle={() => {
-                        setOpenLogId((prev) => {
-                          if (!prev || prev !== l.id) {
-                            return l.id;
-                          }
+            {!goalIsError && !logsIsFetching && logsIsError && (
+              <div className={styles.logs__msg}>
+                <p>
+                  Não foi possível carregar os registros da meta selecionada.
+                </p>
+                <Button onClick={() => logsRefetch()}>Tentar novamente</Button>
+              </div>
+            )}
 
-                          return null;
-                        });
-                      }}
-                      onDeleteClick={() => {
-                        setIsDialogOpen(true);
-                      }}
-                      key={`log-${l.id}`}
-                    />
-                  ))}
+            {!goalIsError && logsIsFetching && !logs && <Spinner />}
+
+            {!goalIsError &&
+              logsIsFetched &&
+              !logsIsFetching &&
+              !logsIsError &&
+              !logs?.length && (
+                <div className={styles.logs__msg}>
+                  <p>Nenhum registro encontrado.</p>
+                  <Button
+                    onClick={() => {
+                      navigate(`${APP_URLS.goals}/${goalId}/logs/new`);
+                    }}
+                  >
+                    Adicione um novo registro
+                  </Button>
                 </div>
-              );
-            })()}
+              )}
+
+            {!goalIsError && !!logs?.length && (
+              <div className={styles.logs__items}>
+                {logs?.map((l) => (
+                  <ProgressLog
+                    log={l}
+                    unitOfMeasure={goal?.unitOfMeasure}
+                    isOpen={openLogId === l.id}
+                    onToggle={() => {
+                      setOpenLogId((prev) => {
+                        if (!prev || prev !== l.id) {
+                          return l.id;
+                        }
+
+                        return null;
+                      });
+                    }}
+                    onDeleteClick={() => {
+                      setIsDialogOpen(true);
+                    }}
+                    key={`log-${l.id}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>

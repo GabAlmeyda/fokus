@@ -103,13 +103,16 @@
 
 
 /* HABITS PART */
+.habits {
+  padding: 1rem;
+}
+
 .habits__completed,
 .habits__uncompleted {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: .5rem;
-
-  padding: 1rem;
 }
 
 .habits__completed {
@@ -132,13 +135,22 @@
 
 .habits__msg p {
   margin-bottom: 1rem;
+
+  color: var(--text-secondary);
+}
+
+.habits__msg .error {
+  color: rgb(238, 29, 29);
 }
 
 .habits__msg button {
-  display: inline-block!important;
+  display: inline-block !important;
 }
 
 @media screen and (min-width: 750px) {
+  .habits {
+    padding-inline: 2rem;
+  }
 
   .habits__completed,
   .habits__uncompleted {

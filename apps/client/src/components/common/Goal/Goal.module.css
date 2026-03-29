@@ -8,6 +8,8 @@
 
   height: 130px;
   min-width: 288px;
+  width: 100%;
+  max-width: 450px;
 
   padding: .5rem;
   border-radius: 10px;
