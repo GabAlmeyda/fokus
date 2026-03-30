@@ -74,6 +74,7 @@ api.interceptors.response.use(
 
 api.interceptors.request.use((config) => {
   const cookies = document.cookie.split(';');
+  console.log('COOKIES: ', cookies);
   for (const c of cookies) {
     const [name, value] = c.trim().split('=');
     if (name === 'xsrf_token') {
