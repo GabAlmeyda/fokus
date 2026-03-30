@@ -22,6 +22,7 @@ async function main() {
     cors({
       origin: env.FRONTEND_URL,
       credentials: true,
+      exposedHeaders: ['set-cookie'],
     }),
   );
   app.use(defaultRateLimiter);
