@@ -53,8 +53,7 @@ export function setTokens(
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
-  const id = randomUUID();
-  res.cookie('XSRF-TOKEN', id, {
+  res.cookie('xsrf_token', randomUUID(), {
     httpOnly: false,
     secure: true,
     partitioned: true,
@@ -66,5 +65,5 @@ export function setTokens(
 export function removeCookies(res: Response) {
   res.clearCookie('access_token', { path: '/' });
   res.clearCookie('refresh_token', { path: '/users/auth' });
-  res.clearCookie('XSRF-TOKEN', { path: '/' });
+  res.clearCookie('xsrf_token', { path: '/' });
 }
