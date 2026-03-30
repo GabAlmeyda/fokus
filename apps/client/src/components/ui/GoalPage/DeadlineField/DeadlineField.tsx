@@ -6,6 +6,8 @@ import styles from './DeadlineField.module.css';
 import FokusIcon from '../../../common/Icon/Icon';
 import { format } from 'date-fns';
 
+const date = new Date()
+
 interface DeadlineFieldProps {
   value?: Date | null;
   onChange: (date: Date) => void;
@@ -65,6 +67,7 @@ export default function DeadlineField({
             onChange(value);
             setIsOpen(false);
           }}
+          disabled={{before: date}}
           locale={ptBR}
           required={true}
           classNames={{
@@ -77,6 +80,7 @@ export default function DeadlineField({
             selected: styles.date__selected,
             today: styles.date__today,
             day: styles.date__day,
+            disabled: styles.date__disabled
           }}
         />
       </div>

@@ -140,3 +140,9 @@
 
   font-weight: 600;
 }
+
+.date__disabled {
+  background-color: #60a076;
+
+  color: #333a33;
+}

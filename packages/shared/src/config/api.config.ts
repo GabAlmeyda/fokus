@@ -1,1 +1,1 @@
-export const API_URL = `https://fokus-bgsm.onrender.com`;
+export const API_URL = `http://localhost:8080`;

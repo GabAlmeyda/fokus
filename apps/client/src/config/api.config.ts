@@ -9,8 +9,17 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
+  xsrfCookieName: 'xsrf_token',
+  xsrfHeaderName: 'X-XSRF-Token',
+});
+
+api.interceptors.request.use((config) => {
+  const matches = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  if (matches && matches[1]) {
+    config.headers['X-XSRF-Token'] = decodeURIComponent(matches[1]);
+  }
+
+  return config;
 });
 
 api.interceptors.response.use(
@@ -65,7 +74,7 @@ api.interceptors.request.use((config) => {
   const cookies = document.cookie.split(';');
   for (const c of cookies) {
     const [name, value] = c.trim().split('=');
-    if (name === 'XSRF-TOKEN') {
+    if (name === 'xsrf_token') {
       config.headers['X-XSRF-Token'] = value;
       break;
     }
