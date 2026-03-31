@@ -37,9 +37,11 @@ export function setTokens(
   res: Response,
   tokens: { accessToken: string; refreshToken: string },
 ) {
+  res.clearCookie('xsrf_token', { path: '/' });
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,
     sameSite: 'none',
+    partitioned: true,
     secure: true,
     maxAge: 1000 * 60 * 15, // 15 minutes
     path: '/',
@@ -47,6 +49,7 @@ export function setTokens(
   res.cookie('refresh_token', tokens.refreshToken, {
     httpOnly: true,
     sameSite: 'none',
+    partitioned: true,
     secure: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
@@ -55,9 +58,9 @@ export function setTokens(
     httpOnly: false,
     secure: true,
     sameSite: 'none',
+    partitioned: true,
     path: '/',
   });
-  res.clearCookie('XSRF-TOKEN', { path: '/' });
 }
 
 export function removeCookies(res: Response) {
