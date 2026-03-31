@@ -14,9 +14,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const matches = document.cookie.match(/xsrf_token=([^;]+)/);
   console.log('COOKIES: ', document.cookie);
-  console.log('MATCHES: ', matches);
+  const matches = document.cookie.match(/xsrf_token=([^;]+)/);
   if (matches && matches[1]) {
     config.headers['X-XSRF-Token'] = decodeURIComponent(matches[1]);
   }

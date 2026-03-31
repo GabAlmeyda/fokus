@@ -45,6 +45,7 @@ userRoutes.post('/auth/login', async (req, res) => {
       refreshToken: validation.data.refreshToken,
     });
 
+    console.log('SET-COOKIEX HEADER: ', res.get('Set-Cookie'));
     return res.status(statusCode).json(validation.data.user);
   }
 

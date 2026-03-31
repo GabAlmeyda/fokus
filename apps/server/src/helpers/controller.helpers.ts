@@ -37,7 +37,6 @@ export function setTokens(
   res: Response,
   tokens: { accessToken: string; refreshToken: string },
 ) {
-  res.clearCookie('xsrf_token', { path: '/' });
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,
     sameSite: 'none',
