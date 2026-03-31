@@ -1,5 +1,5 @@
-import { addDays, format, isToday, startOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { addDays, format, isToday, startOfWeek } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export function generateWeeklyDays(date: Date): {
   label: string;
@@ -29,5 +29,7 @@ export function generateWeeklyDays(date: Date): {
 export function generateHeaderDateString(date: Date) {
   const formattedDate = format(date, 'EEE, dd MMM, yyyy', { locale: ptBR });
 
-  return formattedDate[0].toUpperCase() + formattedDate.slice(1).replaceAll('.', '');
+  return (
+    formattedDate[0].toUpperCase() + formattedDate.slice(1).replaceAll('.', '')
+  );
 }

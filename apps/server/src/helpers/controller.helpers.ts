@@ -1,6 +1,5 @@
 import { ZodError } from 'zod';
 import type { Response } from 'express';
-import { randomUUID } from 'crypto';
 import {
   formatZodError,
   HTTPStatusCode,

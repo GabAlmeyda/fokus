@@ -146,7 +146,10 @@ export function useHabitMutations() {
     },
     onSuccess: async (_, habitId) => {
       await Promise.all([
-        queryClient.removeQueries({ queryKey: ['habit', habitId], exact: false }),
+        queryClient.removeQueries({
+          queryKey: ['habit', habitId],
+          exact: false,
+        }),
         queryClient.invalidateQueries({ queryKey: ['habits'] }),
       ]);
     },

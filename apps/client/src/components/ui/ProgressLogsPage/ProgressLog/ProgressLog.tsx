@@ -46,7 +46,7 @@ export default function ProgressLog({
         </p>
 
         <p className={styles.content__habitId}>
-          {!!log.habitId ? 'Meta atualizada por hábito' : 'Registro manual'}
+          {log.habitId ? 'Meta atualizada por hábito' : 'Registro manual'}
         </p>
 
         <div className={styles.log__menu}>

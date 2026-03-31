@@ -34,21 +34,25 @@ export class UserService implements IUserService {
     const hashedRegisterData = { ...registerData, password: hashedPassword };
 
     const userDoc = await this.userRepository.register(hashedRegisterData);
-    const user = mapUserDocToPublicDTO(userDoc);
+    const xsrfToken = randomUUID();
+    const auth = mapUserDocToPublicDTO(userDoc, xsrfToken);
 
     const accessTokenPayload: TokenPayloadDTO = {
-      id: user.id,
+      id: auth.user.id,
     };
     const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
     const refreshToken = await this.refreshTokenService.create({
-      userId: user.id,
+      userId: auth.user.id,
       familyId: randomUUID(),
     });
-    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refreshToken.token, xsrfToken };
+    return {
+      auth,
+      accessToken,
+      refreshToken: refreshToken.token,
+    };
   }
 
   async login(loginData: UserLoginDTO): Promise<AuthResponseDTO> {
@@ -63,7 +67,8 @@ export class UserService implements IUserService {
         ],
       );
     }
-    const user = mapUserDocToPublicDTO(userDoc);
+    const xsrfToken = randomUUID();
+    const auth = mapUserDocToPublicDTO(userDoc, xsrfToken);
 
     const verify = await argon2.verify(userDoc.password, loginData.password);
     if (!verify) {
@@ -78,34 +83,32 @@ export class UserService implements IUserService {
     }
 
     const accessTokenPayload: TokenPayloadDTO = {
-      id: user.id,
+      id: auth.user.id,
     };
     const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
     const refreshToken = await this.refreshTokenService.create({
-      userId: user.id,
+      userId: auth.user.id,
       familyId: randomUUID(),
     });
-    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refreshToken.token, xsrfToken };
+    return { auth, accessToken, refreshToken: refreshToken.token };
   }
 
   async refreshToken(token: string): Promise<AuthResponseDTO> {
     const refToken = await this.refreshTokenService.refresh(token);
 
-    const user = await this.findOneById(refToken.userId);
+    const auth = await this.findOneById(refToken.userId);
 
     const accessTokenPayload: TokenPayloadDTO = {
-      id: user.id,
+      id: auth.user.id,
     };
     const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
-    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refToken.token, xsrfToken };
+    return { auth, accessToken, refreshToken: refToken.token };
   }
 
   async logout(token: string): Promise<void> {
@@ -118,8 +121,9 @@ export class UserService implements IUserService {
       throw new AppServerError('NOT_FOUND', `User not found.`);
     }
 
-    const user = mapUserDocToPublicDTO(userDoc);
-    return user;
+    const xsrfToken = randomUUID();
+    const auth = mapUserDocToPublicDTO(userDoc, xsrfToken);
+    return auth;
   }
 
   async update(
@@ -131,8 +135,9 @@ export class UserService implements IUserService {
       throw new AppServerError('NOT_FOUND', `User not found.`);
     }
 
-    const user = mapUserDocToPublicDTO(userDoc);
-    return user;
+    const xsrfToken = randomUUID();
+    const auth = mapUserDocToPublicDTO(userDoc, xsrfToken);
+    return auth;
   }
 
   async delete(userId: EntityIdDTO): Promise<void> {

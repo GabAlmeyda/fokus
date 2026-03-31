@@ -31,11 +31,11 @@ export class UserController implements IUserController {
     try {
       const registerData = UserRegisterSchema.parse(req.body);
 
-      const { user, accessToken, refreshToken, xsrfToken } =
+      const { auth, accessToken, refreshToken } =
         await this.userService.register(registerData);
       return {
         statusCode: 201,
-        body: { user, accessToken, refreshToken, xsrfToken },
+        body: { auth, accessToken, refreshToken },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -48,11 +48,11 @@ export class UserController implements IUserController {
     try {
       const loginData = UserLoginSchema.parse(req.body);
 
-      const { user, accessToken, refreshToken, xsrfToken } =
+      const { auth, accessToken, refreshToken } =
         await this.userService.login(loginData);
       return {
         statusCode: 200,
-        body: { user, accessToken, refreshToken, xsrfToken },
+        body: { auth, accessToken, refreshToken },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -68,11 +68,11 @@ export class UserController implements IUserController {
         throw new AppServerError('BAD_REQUEST', 'Refresh token is missing.');
       }
 
-      const { user, accessToken, refreshToken, xsrfToken } =
+      const { auth, accessToken, refreshToken } =
         await this.userService.refreshToken(refToken);
       return {
         statusCode: HTTPStatusCode.OK,
-        body: { user, accessToken, refreshToken, xsrfToken },
+        body: { auth, accessToken, refreshToken },
       };
     } catch (err) {
       return formatHTTPErrorResponse(err);

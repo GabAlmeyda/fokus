@@ -7,7 +7,7 @@ export function parseGoal(goalId: string) {
     if (!storedGoal) return null;
 
     return GoalFormSchema.parse(JSON.parse(storedGoal));
-  } catch (err) {
+  } catch (_err) {
     console.error('Error while attempting to read stored data.');
     return null;
   }
@@ -20,7 +20,7 @@ export function parseHabit(habitId: string) {
     if (!storedHabit) return null;
 
     return HabitFormSchema.parse(JSON.parse(storedHabit));
-  } catch (err) {
+  } catch (_err) {
     console.error('Error while attempting to read stored data.');
     return null;
   }

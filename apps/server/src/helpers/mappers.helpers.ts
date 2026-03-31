@@ -15,12 +15,18 @@ import type {
 } from '@fokus/shared';
 import type { RefreshTokenResponseDTO } from '../types/refresh-token.types.js';
 
-export function mapUserDocToPublicDTO(user: UserDocument): UserResponseDTO {
+export function mapUserDocToPublicDTO(
+  user: UserDocument,
+  xsrfToken: string,
+): UserResponseDTO {
   return {
-    id: user._id.toString(),
-    email: user.email,
-    themeMode: user.themeMode,
-    name: user.name,
+    user: {
+      id: user._id.toString(),
+      email: user.email,
+      themeMode: user.themeMode,
+      name: user.name,
+    },
+    xsrfToken,
   };
 }
 

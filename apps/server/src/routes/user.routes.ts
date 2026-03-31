@@ -23,11 +23,11 @@ userRoutes.post('/auth/register', async (req, res) => {
     setTokens(res, {
       accessToken: validation.data.accessToken,
       refreshToken: validation.data.refreshToken,
-      xsrfToken: validation.data.xsrfToken,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
     return res.status(statusCode).json({
-      user: validation.data.user,
-      xsrfToken: validation.data.xsrfToken,
+      user: validation.data.auth.user,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
   }
 
@@ -47,13 +47,13 @@ userRoutes.post('/auth/login', async (req, res) => {
     setTokens(res, {
       accessToken: validation.data.accessToken,
       refreshToken: validation.data.refreshToken,
-      xsrfToken: validation.data.xsrfToken,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
 
     console.log('SET-COOKIEX HEADER: ', res.get('Set-Cookie'));
     return res.status(statusCode).json({
-      user: validation.data.user,
-      xsrfToken: validation.data.xsrfToken,
+      user: validation.data.auth.user,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
   }
 
@@ -73,12 +73,12 @@ userRoutes.post('/auth/refresh/me', async (req, res) => {
     setTokens(res, {
       accessToken: validation.data.accessToken,
       refreshToken: validation.data.refreshToken,
-      xsrfToken: validation.data.xsrfToken,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
 
     return res.status(statusCode).json({
-      user: validation.data.user,
-      xsrfToken: validation.data.xsrfToken,
+      user: validation.data.auth.user,
+      xsrfToken: validation.data.auth.xsrfToken,
     });
   }
   return res.status(statusCode).json(body);
