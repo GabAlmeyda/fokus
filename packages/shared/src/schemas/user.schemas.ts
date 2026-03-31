@@ -58,15 +58,23 @@ export const UserLoginSchema = UserBaseSchema.pick({
 }).openapi('UserLogin');
 export type UserLoginDTO = z.infer<typeof UserLoginSchema>;
 
-export const UserResponseSchema = UserBaseSchema.omit({
-  password: true,
-})
-  .extend({
-    id: EntityIdSchema.openapi({
-      description: 'User ID.',
-      example: '65f2a1b8c9d0e1f2a3b4c5d6',
-      readOnly: true,
-    }),
+export const UserResponseSchema = z.object({
+  user: UserBaseSchema.omit({
+    password: true,
   })
-  .openapi('UserResponse');
+    .extend({
+      id: EntityIdSchema.openapi({
+        description: 'User ID.',
+        example: '65f2a1b8c9d0e1f2a3b4c5d6',
+        readOnly: true,
+      }),
+    })
+    .openapi('UserResponse'),
+
+  xsrfToken: EntityIdSchema.openapi({
+    description: 'CSRF validation token.',
+    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+  }),
+});
+
 export type UserResponseDTO = z.infer<typeof UserResponseSchema>;

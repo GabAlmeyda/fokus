@@ -9,13 +9,13 @@ import type {
 } from '@fokus/shared';
 
 export function useUserQueries() {
-  const meQuery = useQuery<UserResponseDTO, HTTPErrorResponse>({
+  const meQuery = useQuery<UserResponseDTO['user'], HTTPErrorResponse>({
     queryKey: ['user'],
     queryFn: async () => {
       const response = await api.get<UserResponseDTO>('/users/me', {
         withCredentials: true,
       });
-      return response.data;
+      return response.data.user;
     },
     refetchOnWindowFocus: false,
     staleTime: Infinity,
@@ -45,7 +45,8 @@ export function useUserMutations() {
       return response.data;
     },
     onSuccess: async (newUser) => {
-      queryClient.setQueryData(['user'], newUser);
+      sessionStorage.setItem('xsrf-token', newUser.xsrfToken);
+      queryClient.setQueryData(['user'], newUser.user);
     },
   });
 
@@ -62,6 +63,7 @@ export function useUserMutations() {
       return response.data;
     },
     onSuccess: async (newUser) => {
+      sessionStorage.setItem('xsrf-token', newUser.xsrfToken);
       queryClient.setQueryData(['user'], newUser);
     },
   });
@@ -76,8 +78,9 @@ export function useUserMutations() {
         );
         return response.data;
       },
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['user'] });
+      onSuccess: async (newUser) => {
+        sessionStorage.setItem('xsrf-token', newUser.xsrfToken);
+        await queryClient.setQueryData(['user'], newUser.user);
       },
     },
   );

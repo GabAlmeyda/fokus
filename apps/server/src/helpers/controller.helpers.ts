@@ -35,7 +35,7 @@ export function formatHTTPErrorResponse(err: unknown): HTTPErrorResponse {
 
 export function setTokens(
   res: Response,
-  tokens: { accessToken: string; refreshToken: string },
+  tokens: { accessToken: string; refreshToken: string; xsrfToken: string },
 ) {
   res.cookie('access_token', tokens.accessToken, {
     httpOnly: true,
@@ -53,8 +53,8 @@ export function setTokens(
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     path: '/users/auth',
   });
-  res.cookie('xsrf_token', randomUUID(), {
-    httpOnly: false,
+  res.cookie('xsrf_token', tokens.xsrfToken, {
+    httpOnly: true,
     secure: true,
     sameSite: 'none',
     partitioned: true,

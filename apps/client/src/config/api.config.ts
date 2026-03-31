@@ -9,15 +9,14 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  xsrfCookieName: 'xsrf_token',
   xsrfHeaderName: 'X-XSRF-Token',
+  xsrfCookieName: 'xsrf_token',
 });
 
 api.interceptors.request.use((config) => {
-  console.log('COOKIES: ', document.cookie);
-  const matches = document.cookie.match(/xsrf_token=([^;]+)/);
-  if (matches && matches[1]) {
-    config.headers['X-XSRF-Token'] = decodeURIComponent(matches[1]);
+  const xsrfToken = sessionStorage.getItem('xsrf-token');
+  if (xsrfToken) {
+    config.headers['X-XSRF-Token'] = xsrfToken;
   }
 
   return config;

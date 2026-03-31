@@ -46,8 +46,9 @@ export class UserService implements IUserService {
       userId: user.id,
       familyId: randomUUID(),
     });
+    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refreshToken.token };
+    return { user, accessToken, refreshToken: refreshToken.token, xsrfToken };
   }
 
   async login(loginData: UserLoginDTO): Promise<AuthResponseDTO> {
@@ -86,8 +87,9 @@ export class UserService implements IUserService {
       userId: user.id,
       familyId: randomUUID(),
     });
+    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refreshToken.token };
+    return { user, accessToken, refreshToken: refreshToken.token, xsrfToken };
   }
 
   async refreshToken(token: string): Promise<AuthResponseDTO> {
@@ -101,8 +103,9 @@ export class UserService implements IUserService {
     const accessToken = jwt.sign(accessTokenPayload, env.JWT_SECRET, {
       expiresIn: '15m',
     });
+    const xsrfToken = randomUUID();
 
-    return { user, accessToken, refreshToken: refToken.token };
+    return { user, accessToken, refreshToken: refToken.token, xsrfToken };
   }
 
   async logout(token: string): Promise<void> {

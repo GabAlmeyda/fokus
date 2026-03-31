@@ -3,8 +3,9 @@ import { z } from 'zod';
 
 export const AuthResponseSchema = z.object({
   user: UserResponseSchema,
-  accessToken: z.jwt('Invalid JsonWebToken provided.'),
-  refreshToken: z.string("Expected type was 'string'."),
+  accessToken: z.jwt(),
+  refreshToken: z.string(),
+  xsrfToken: z.string(),
 });
 export type AuthResponseDTO = z.infer<typeof AuthResponseSchema>;
 
