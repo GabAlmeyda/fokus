@@ -1,10 +1,11 @@
-import { API_URL, HTTPStatusCode } from '@fokus/shared';
+import { HTTPStatusCode } from '@fokus/shared';
 import axios from 'axios';
 import { APP_URLS } from '../helpers/app.helpers';
 import { queryClient } from '../providers/ReactQueryProvider';
+import { env } from './env.config';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: env.BACKEND_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -26,7 +27,7 @@ api.interceptors.response.use(
   (success) => success,
   async (err) => {
     const originalRequest = err.config;
-    if (originalRequest.url === `${API_URL}/users/auth/refresh/me`) {
+    if (originalRequest.url === `${env.BACKEND_URL}/users/auth/refresh/me`) {
       return Promise.reject(err);
     }
 
@@ -38,7 +39,7 @@ api.interceptors.response.use(
 
       try {
         await api.post(
-          `${API_URL}/users/auth/refresh/me`,
+          `${env.BACKEND_URL}/users/auth/refresh/me`,
           {},
           { withCredentials: true },
         );

@@ -164,7 +164,10 @@ export default function HabitPage() {
         sessionStorage.removeItem('habit-data-update');
         navigate(APP_URLS.home, { replace: true });
       },
-      onError: () => setToastMsg('Erro ao tentar deletar o hábito.'),
+      onError: () => {
+        setToastMsg('Erro ao tentar deletar o hábito.');
+        setIsDialogOpen(false);
+      },
     });
   };
 
@@ -379,6 +382,7 @@ export default function HabitPage() {
                 isDisabled={
                   deleteMutation.isPending || updateMutation.isPending
                 }
+                customColor="#ee1d1d"
                 className={styles.deleteBtn}
                 onClick={() => setIsDialogOpen(true)}
               >

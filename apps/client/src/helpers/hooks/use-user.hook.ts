@@ -85,9 +85,9 @@ export function useUserMutations() {
     },
   );
 
-  const logoutMutation = useMutation<void, HTTPErrorResponse, void>({
+  const logoutMutation = useMutation<null, HTTPErrorResponse, void>({
     mutationFn: async () => {
-      const response = await api.post(
+      const response = await api.post<null>(
         '/users/auth/logout/me',
         {},
         { withCredentials: true },
@@ -137,7 +137,7 @@ export function useUserMutations() {
     retry: 0,
   });
 
-  const deleteMutation = useMutation<null, HTTPErrorResponse, null>({
+  const deleteMutation = useMutation<null, HTTPErrorResponse, void>({
     mutationFn: async () => {
       const response = await api.delete<null>('/users/me', {
         withCredentials: true,

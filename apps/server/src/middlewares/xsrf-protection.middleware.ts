@@ -12,8 +12,7 @@ export default function xsrfProtectionMiddleware(
   if (publicPaths.includes(req.path)) return next();
 
   const xsrfCookie = req.cookies.xsrf_token;
-  const xsrfHeader = req.headers['X-XSRF-token'];
-  console.log('XSRF: ', xsrfCookie, xsrfHeader);
+  const xsrfHeader = req.get('X-XSRF-Token');
   if (!xsrfCookie || !xsrfHeader || xsrfCookie !== xsrfHeader) {
     return next(new AppServerError('FORBIDDEN', 'CSRF validation failed.'));
   }

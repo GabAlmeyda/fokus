@@ -31,7 +31,14 @@ export default function Button({
           ${isSmall ? styles.small : ''} 
           ${props['className']}
         `}
-        style={customColor ? { backgroundColor: customColor } : undefined}
+        style={
+          customColor
+            ? {
+                backgroundColor: customColor,
+                border: `2px solid ${customColor}`,
+              }
+            : undefined
+        }
       >
         {children}
       </Link>
@@ -48,7 +55,11 @@ export default function Button({
         ${isSmall ? styles.small : ''} 
         ${props['className']}
       `}
-      style={customColor ? { backgroundColor: customColor } : undefined}
+      style={
+        customColor
+          ? { backgroundColor: customColor, border: `2px solid ${customColor}` }
+          : undefined
+      }
       disabled={isDisabled}
     >
       {children}

@@ -1,5 +1,3 @@
-export * from './config/api.config.js';
-
 export * from './types/http.types.js';
 
 export * from './schemas/user.schemas.js';

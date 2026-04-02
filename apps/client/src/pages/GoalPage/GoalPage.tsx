@@ -181,7 +181,10 @@ export default function GoalPage() {
         sessionStorage.removeItem('goal-data-update');
         navigate(APP_URLS.home, { replace: true });
       },
-      onError: () => setToastMsg('Erro ao tentar deletar a meta.'),
+      onError: () => {
+        setToastMsg('Erro ao tentar deletar a meta.');
+        setIsDialogOpen(false);
+      },
     });
   };
 
@@ -400,6 +403,7 @@ export default function GoalPage() {
                 isDisabled={
                   deleteMutation.isPending || updateMutation.isPending
                 }
+                customColor="#ee1d1d"
                 className={styles.deleteBtn}
                 onClick={() => setIsDialogOpen(true)}
               >

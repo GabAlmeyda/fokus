@@ -3,7 +3,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.config.js';
 import { swaggerDocs } from './config/docs/swagger.docs.js';
-import { API_URL } from '@fokus/shared';
 import { connectToMongoDB } from './config/connect-mongo.config.js';
 import userRoutes from './routes/user.routes.js';
 import categoryRoutes from './routes/category.routes.js';
@@ -22,7 +21,7 @@ async function main() {
     cors({
       origin: env.FRONTEND_URL,
       credentials: true,
-      exposedHeaders: ['set-cookie'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-XSRF-Token'],
     }),
   );
   app.use(defaultRateLimiter);
@@ -38,8 +37,8 @@ async function main() {
   app.use(errorMiddleware);
 
   app.listen(env.PORT, () => {
-    console.log(`\nServer running at \x1b[36m'${API_URL}'\x1b[0m`);
-    console.log(`See docs at \x1b[35m'${API_URL}/api-docs'\x1b[0m`);
+    console.log(`\nServer running at \x1b[36m'${env.BACKEND_URL}'\x1b[0m`);
+    console.log(`See docs at \x1b[35m'${env.BACKEND_URL}/api-docs'\x1b[0m`);
   });
 }
 

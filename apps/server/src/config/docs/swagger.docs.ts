@@ -6,11 +6,12 @@ import {
 } from '@asteasolutions/zod-to-openapi';
 extendZodWithOpenApi(z);
 import swaggerUi from 'swagger-ui-express';
-import { EntityIdSchema, API_URL } from '@fokus/shared';
+import { EntityIdSchema } from '@fokus/shared';
 import { registerUserDocs } from './user.docs.js';
 import { registerCategoryDocs } from './category.docs.js';
 import { registerHabitDocs } from './habit.docs.js';
 import { registerGoalDocs } from './goal.docs.js';
+import { env } from '../env.config.js';
 
 const registry = new OpenAPIRegistry();
 registry.registerComponent('securitySchemes', 'accessTokenCookie', {
@@ -42,7 +43,7 @@ export function generateOpenApiSpec() {
       version: '1.0.0',
       description: 'Documentação da API do Fokus.',
     },
-    servers: [{ url: API_URL }],
+    servers: [{ url: env.BACKEND_URL }],
   });
 }
 

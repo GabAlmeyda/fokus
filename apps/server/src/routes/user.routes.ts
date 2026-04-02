@@ -37,11 +37,9 @@ userRoutes.post('/auth/register', async (req, res) => {
 // Login route
 userRoutes.post('/auth/login', async (req, res) => {
   const { body: reqBody } = req;
-
   const { statusCode, body } = await userController.login({
     body: reqBody,
   });
-
   const validation = AuthResponseSchema.safeParse(body);
   if (validation.success) {
     setTokens(res, {
@@ -50,7 +48,6 @@ userRoutes.post('/auth/login', async (req, res) => {
       xsrfToken: validation.data.auth.xsrfToken,
     });
 
-    console.log('SET-COOKIEX HEADER: ', res.get('Set-Cookie'));
     return res.status(statusCode).json({
       user: validation.data.auth.user,
       xsrfToken: validation.data.auth.xsrfToken,
@@ -93,11 +90,10 @@ userRoutes.post('/auth/logout/me', async (req, res) => {
   return res.status(statusCode).json(body);
 });
 
-userRoutes.use(authMiddleware);
-
 // Find by ID route
 userRoutes.get(
   '/me',
+  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.get),
   async (req, res) => {
     const { user } = req as AuthRequest;
@@ -112,6 +108,7 @@ userRoutes.get(
 // Update route
 userRoutes.patch(
   '/me',
+  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
     const { body: reqBody, user } = req as AuthRequest;
@@ -127,6 +124,7 @@ userRoutes.patch(
 // Delete route
 userRoutes.delete(
   '/me',
+  authMiddleware,
   authUserRateLimiter(REQUESTS_RATE_LIMITER.delete),
   async (req, res) => {
     const { user } = req as AuthRequest;

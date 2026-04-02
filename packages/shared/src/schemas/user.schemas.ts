@@ -71,9 +71,9 @@ export const UserResponseSchema = z.object({
     })
     .openapi('UserResponse'),
 
-  xsrfToken: EntityIdSchema.openapi({
+  xsrfToken: z.string().openapi({
     description: 'CSRF validation token.',
-    example: '65f2a1b8c9d0e1f2a3b4c5d6',
+    example: '3c7181c7-f088-4a87-9897-75d2a93c1248',
   }),
 });
 

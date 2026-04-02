@@ -1,3 +1,5 @@
+import { env } from '../config/env.config';
+
 export const APP_URLS = {
   landingPage: '/landing-page',
   register: '/register',
@@ -5,5 +7,5 @@ export const APP_URLS = {
   home: '/app',
   habits: '/app/habits',
   goals: '/app/goals',
-  base: 'https://fokus-dev.vercel.app/',
+  base: env.FRONTEND_URL,
 };

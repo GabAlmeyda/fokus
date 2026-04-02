@@ -1,7 +1,7 @@
 import { useEffect, useState, type JSX } from 'react';
 import styles from './MenuBar.module.css';
 import Button from '../../../common/Button/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { APP_URLS } from '../../../../helpers/app.helpers';
 import {
   useUserMutations,
@@ -9,58 +9,124 @@ import {
 } from '../../../../helpers/hooks/use-user.hook';
 import FokusIcon from '../../../common/Icon/Icon';
 import Toast from '../../../common/Toast/Toast';
+import Dialog from '../../../common/Dialog/Dialog';
 
 export default function MenuBar(): JSX.Element {
-  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [dialogConfig, setDialogConfig] = useState<any | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const { data: user } = useUserQueries().meQuery;
   const updateMutation = useUserMutations().updateMutation;
+  const logoutMutation = useUserMutations().logoutMutation;
+  const deleteMutation = useUserMutations().deleteMutation;
   const [activeSidebar, setActiveSidebar] = useState<
     'navigation' | 'aside' | 'none'
   >('none');
 
   useEffect(() => {
     let timerId = undefined;
-    if (isToastOpen) {
-      timerId = setTimeout(() => setIsToastOpen(false), 5000);
+    if (toastMsg) {
+      timerId = setTimeout(() => setToastMsg(null), 5000);
     }
 
     return () => {
       if (timerId) clearTimeout(timerId);
     };
-  }, [isToastOpen]);
+  }, [toastMsg]);
 
   const handleToggleThemeClick = () => {
     const theme = user?.themeMode === 'light' ? 'dark' : 'light';
     updateMutation.mutate(
       { themeMode: theme },
       {
-        onError: () => setIsToastOpen(true),
+        onError: () => setToastMsg('Erro ao tentar atualizar dados da conta.'),
       },
     );
   };
 
+  const handleAccountBtnsClick = (event: React.MouseEvent) => {
+    const element = event.target as HTMLButtonElement;
+    if (!element) return;
+
+    if (element.dataset.action === 'logout') {
+      setDialogConfig({
+        title: 'Desconectar da sua conta',
+        message: 'Deseja desconectar da sua conta agora?',
+        alertBtnText: 'Desconectar',
+        onClick: (confirmation: boolean) =>
+          handleAccountBtnsConfirmation('logout', confirmation),
+        classNames: {
+          root: styles.dialogBtn__root,
+          cancel: styles.dialogBtn__disconnectCancel,
+          confirm: styles.dialogBtn__disconnectConfirm,
+        },
+      });
+    } else if (element.dataset.action === 'delete') {
+      setDialogConfig({
+        title: 'Deletar sua conta',
+        message:
+          'Deseja deletar sua conta? Isso apagará todos os seus dados registrados.',
+        alertBtnText: 'Deletar',
+        onClick: (confirmation: boolean) =>
+          handleAccountBtnsConfirmation('delete', confirmation),
+        classNames: {
+          root: styles.dialogBtn__root,
+          cancel: styles.dialogBtn__deleteCancel,
+          confirm: styles.dialogBtn__deleteConfirm,
+        },
+      });
+    }
+  };
+
+  const handleAccountBtnsConfirmation = (
+    action: 'logout' | 'delete',
+    confirmation: boolean,
+  ) => {
+    if (!confirmation) {
+      setDialogConfig(null);
+      return;
+    }
+
+    if (action === 'logout') {
+      logoutMutation.mutate(undefined, {
+        onSuccess: () => {
+          navigate(APP_URLS.login);
+        },
+        onError: () => {
+          setToastMsg('Erro ao tentar desconectar da conta.');
+        },
+      });
+    } else {
+      deleteMutation.mutate(undefined, {
+        onSuccess: () => {
+          navigate(APP_URLS.register);
+        },
+        onError: () => {
+          setToastMsg('Erro ao tentar deletar conta.');
+        },
+      });
+    }
+  };
+
   return (
     <>
-      {isToastOpen && (
+      {!!toastMsg && (
         <Toast
-          isOpen={isToastOpen}
-          onClick={() => setIsToastOpen(false)}
-          message="Erro ao atualizar dados da conta."
+          isOpen={!!toastMsg}
+          onClick={() => setToastMsg(null)}
+          message={toastMsg}
           bgColor="#f73838ff"
           ariaLive="assertive"
         />
       )}
+      {!!dialogConfig && <Dialog {...dialogConfig} />}
       <nav className={styles.menubar}>
-        <button
-          onClick={() => setActiveSidebar('navigation')}
-          data-sidebar="navigation"
-        >
+        <button onClick={() => setActiveSidebar('navigation')}>
           <FokusIcon iconKey="menu" />
         </button>
 
         <nav
           className={`${styles.navigation} ${activeSidebar === 'navigation' ? styles.open : ''}`}
-          data-sidebar="profile"
         >
           <div className={styles.l_menubar__goBack}>
             <Button
@@ -188,6 +254,24 @@ export default function MenuBar(): JSX.Element {
                 </a>
               </li>
             </ul>
+          </section>
+
+          <section className={styles.aside__btns}>
+            <Button
+              onClick={handleAccountBtnsClick}
+              variant="ghost-inverse"
+              data-action="logout"
+            >
+              Desconectar
+            </Button>
+            <Button
+              onClick={handleAccountBtnsClick}
+              customColor="#ee1d1d"
+              className={styles.btns__deleteAccount}
+              data-action="delete"
+            >
+              Deletar sua conta
+            </Button>
           </section>
         </div>
       </nav>
