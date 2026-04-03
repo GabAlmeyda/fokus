@@ -15,7 +15,7 @@
 }
 
 .footer p small{
-  color: var(--text-inverse);
+  color: var(--text-primary);
 }
 
 @media screen and (min-width: 1080px) {

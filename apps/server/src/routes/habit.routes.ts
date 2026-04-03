@@ -93,7 +93,6 @@ habitRoutes.patch(
   '/:habitId',
   authUserRateLimiter(REQUESTS_RATE_LIMITER.patch),
   async (req, res) => {
-    console.log('PROVIDED COOKIES: ', req.cookies);
     const { params, query, body: reqBody, user } = req as AuthRequest;
 
     const { statusCode, body } = await habitController.update({

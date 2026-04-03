@@ -9,15 +9,15 @@
   padding: .5rem;
   border-radius: 10px;
 
-  background-color: #a4dbb6;
-}
-
-.categoryField > p {
-  font-size: .9rem;
+  background-color: #0e2216;
 }
 
 .categoryField * {
-  color: #060806;
+  color: var(--white-clr);
+}
+
+.categoryField>p {
+  font-size: .9rem;
 }
 
 .categoryField__toggle,
@@ -47,17 +47,17 @@
   font-style: italic;
 }
 
-.categoryField__toggle > button {
+.categoryField__toggle>button {
   border: none;
-  border-left: 2px solid #333a33;
+  border-left: 2px solid #6b8272;
 
   background: none;
 
   font-size: 1.2rem;
 }
 
-.categoryField__toggle > button > svg * {
-  color: #333a33;
+.categoryField__toggle>button>svg * {
+  color: #6b8272;
 }
 
 .categoryField__items {
@@ -70,12 +70,12 @@
   height: 110px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--accent-inverse) #86b395;
+  scrollbar-color: var(--accent-inverse) #213120;
 
   padding-top: 1rem;
   padding-right: 5px;
 
-  background-color:#a4dbb6;
+  background-color: #0e2216;
 }
 
 .categoryField__items::-webkit-scrollbar {
@@ -84,17 +84,17 @@
 }
 
 .categoryField__items::-webkit-scrollbar-track {
-  background: #86b395;
+  background: #213120;
   border-radius: 10px;
 }
 
 .categoryField__items::-webkit-scrollbar-thumb {
   background-color: var(--accent-inverse);
   border-radius: 10px;
-  border: 2px solid #86b395;
+  border: 2px solid #213120;
 }
 
-.categoryField__items > button {
+.categoryField__items>button {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -105,18 +105,22 @@
   border: none;
   padding: .2rem .5rem;
 
-  background-color: transparent;
+  background-color: #0e2216;
 
   font-size: .9rem;
   text-overflow: ellipsis;
 
   cursor: pointer;
 }
-.categoryField__items > button:hover {
-  background-color: #86b395;
+
+.categoryField__items>button:hover {
+  background-color: #173322;
 }
-.categoryField__items > button.active {
+
+.categoryField__items>button.active {
   background-color: var(--accent-primary);
+  color: var(--black-clr);
+  font-weight: 500;
 }
 
 
@@ -144,6 +148,7 @@
 
   background-color: rgb(109, 143, 120);
 }
+
 .category__skeleton::after {
   content: "";
   position: absolute;
@@ -152,15 +157,15 @@
   bottom: 0;
   left: 0;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(154, 189, 165, 0.5),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(154, 189, 165, 0.5),
+      transparent);
   animation: shimmer 1.5s infinite;
 }
 
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }

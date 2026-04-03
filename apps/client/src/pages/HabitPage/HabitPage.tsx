@@ -111,7 +111,7 @@ export default function HabitPage() {
 
   const handleFormSubmit = (data: HabitFormDTO) => {
     if ((data.weekDays ?? []).length === 0) {
-      setError('weekDays', {
+      setError('weekDays', {  
         message: 'Ao menos um dia da semana precisa ser escolhido.',
       });
       return;
@@ -173,7 +173,7 @@ export default function HabitPage() {
 
   if (habitId !== 'new' && isFetching) {
     return (
-      <PageView customBgColor="#101b14">
+      <PageView customBgColor="#030c07">
         <main>
           <HabitPageFormSkeleton />
         </main>
@@ -183,7 +183,7 @@ export default function HabitPage() {
 
   if (habitId !== 'new' && error) {
     return (
-      <PageView customBgColor="#101b14">
+      <PageView customBgColor="#030c07">
         <main className={styles.habit__error}>
           {toastMsg && (
             <Toast
@@ -215,7 +215,7 @@ export default function HabitPage() {
   }
 
   return (
-    <PageView customBgColor="#101b14">
+    <PageView customBgColor="#030c07">
       <main>
         {isDialogOpen && (
           <Dialog
@@ -259,7 +259,6 @@ export default function HabitPage() {
               }}
               onPreviewClick={() => {}}
               onCheckClick={() => {}}
-              className={styles.preview__content}
             />
             <div className={styles.preview__line}></div>
           </div>
@@ -336,6 +335,7 @@ export default function HabitPage() {
                   <ReminderField
                     reminder={field.value}
                     setValue={setValue}
+                    errors={errors}
                     clearErrors={clearErrors}
                   />
                 )}
@@ -392,7 +392,7 @@ export default function HabitPage() {
           )}
         </section>
       </main>
-      <Footer customBgColor="#101b14" />
+      <Footer customBgColor="#030c07" />
     </PageView>
   );
 }
@@ -413,6 +413,7 @@ function HabitPageFormSkeleton() {
       </span>
       <div className={styles.skeleton__previewTittle}></div>
       <div className={styles.skeleton__previewCard}></div>
+      <hr />
       <div className={styles.skeleton__form}>
         <div className={styles.formSkeleton__title}></div>
         <div className={styles.formSkeleton__color}></div>

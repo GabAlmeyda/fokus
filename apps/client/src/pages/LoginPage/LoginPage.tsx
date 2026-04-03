@@ -54,7 +54,7 @@ export default function LoginPage(): JSX.Element {
   };
 
   return (
-    <PageView cssBgType="inverse">
+    <PageView cssBgType="primary">
       <main>
         <section className={styles.login}>
           <div className={styles.login__top}>

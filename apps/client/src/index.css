@@ -29,10 +29,10 @@
 
 
 html.dark {
-  --bg-primary: #101b14;
-  --bg-secondary: #1b251f;
-  --bg-muted: #2d3a31;
-  --bg-inverse: #2d5a42;
+  --bg-primary: #030c07;
+  --bg-secondary: #213120;
+  --bg-muted: #0e2216;
+  --bg-inverse: #10502e;
 
   --text-primary: #ececec;
   --text-secondary: #6b8272;
@@ -41,7 +41,6 @@ html.dark {
 
   --accent-primary: #00ff2f;
   --accent-inverse: #056117;
-  --t: #b9b71a;
 }
 
 html,

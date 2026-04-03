@@ -80,7 +80,8 @@ export default function DeadlineField({
             selected: styles.date__selected,
             today: styles.date__today,
             day: styles.date__day,
-            disabled: styles.date__disabled
+            disabled: styles.date__disabled,
+            chevron: styles.date__chevron,
           }}
         />
       </div>

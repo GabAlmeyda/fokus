@@ -134,6 +134,7 @@ export default function ProgressLogForm({
                       today: styles.date__today,
                       day: styles.date__day,
                       disabled: styles.date__disabled,
+                      chevron: styles.date__chevron
                     }}
                   />
                 </>

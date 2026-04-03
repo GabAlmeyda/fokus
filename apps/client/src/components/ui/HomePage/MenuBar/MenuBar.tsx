@@ -55,11 +55,6 @@ export default function MenuBar(): JSX.Element {
         alertBtnText: 'Desconectar',
         onClick: (confirmation: boolean) =>
           handleAccountBtnsConfirmation('logout', confirmation),
-        classNames: {
-          root: styles.dialogBtn__root,
-          cancel: styles.dialogBtn__disconnectCancel,
-          confirm: styles.dialogBtn__disconnectConfirm,
-        },
       });
     } else if (element.dataset.action === 'delete') {
       setDialogConfig({
@@ -70,9 +65,9 @@ export default function MenuBar(): JSX.Element {
         onClick: (confirmation: boolean) =>
           handleAccountBtnsConfirmation('delete', confirmation),
         classNames: {
-          root: styles.dialogBtn__root,
-          cancel: styles.dialogBtn__deleteCancel,
-          confirm: styles.dialogBtn__deleteConfirm,
+          root: styles.dialog__root,
+          cancel: styles.dialog__deleteCancel,
+          confirm: styles.dialog__deleteConfirm,
         },
       });
     }

@@ -89,8 +89,8 @@ export default function HabitField({
         </button>
         {(() => {
           if (isFetching) {
-            return Array.from({ length: 2 }).map(() => (
-              <div className={styles.habit__skeleton}></div>
+            return Array.from({ length: 2 }).map((_, i) => (
+              <div className={styles.habit__skeleton} key={i}></div>
             ));
           }
 

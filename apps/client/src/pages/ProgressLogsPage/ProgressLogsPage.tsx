@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PageView from '../../components/layouts/PageView/PageView';
 import styles from './ProgressLogsPage.module.css';
 import { APP_URLS } from '../../helpers/app.helpers';
@@ -17,7 +17,6 @@ import LoadingOverlay from '../../components/common/LoadingOverlay/LoadingOverla
 
 export default function ProgressLogsPage() {
   const [isNewLogOpen, setIsNewLogOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [openLogId, setOpenLogId] = useState<string | null>(null);
@@ -113,7 +112,11 @@ export default function ProgressLogsPage() {
             message="Deseja deletar o registro? Isso afetará a meta e o hábito relacionado. A ação não poderá ser desfeita."
             alertBtnText="Deletar"
             onClick={handleDeleteClick}
-            classNames={{ confirm: styles.dialog__confirm }}
+            classNames={{
+              root: styles.deleteBtn__root,
+              cancel: styles.deleteBtn__cancel,
+              confirm: styles.deleteBtn__confirm,
+            }}
           />
         )}
         {toastMsg && (
@@ -236,13 +239,6 @@ export default function ProgressLogsPage() {
               !logs?.length && (
                 <div className={styles.logs__msg}>
                   <p>Nenhum registro encontrado.</p>
-                  <Button
-                    onClick={() => {
-                      navigate(`${APP_URLS.goals}/${goalId}/logs/new`);
-                    }}
-                  >
-                    Adicione um novo registro
-                  </Button>
                 </div>
               )}
 

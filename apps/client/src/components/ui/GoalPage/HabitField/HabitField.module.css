@@ -9,7 +9,11 @@
   padding: .5rem;
   border-radius: 10px;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
+}
+
+.habitField * {
+  color: var(--white-clr);
 }
 
 .habitField:has(.habitField__items[aria-hidden=false]) {
@@ -27,16 +31,14 @@
 .habitField>p>span {
   height: 16px;
   width: 16px;
+
+  margin-right: .2rem;
 }
 
 .habitField>p svg {
   font-size: 1rem;
 
   cursor: help;
-}
-
-.habitField * {
-  color: #060806;
 }
 
 .habitField__toggle,
@@ -68,7 +70,7 @@
 
 .habitField__toggle>button {
   border: none;
-  border-left: 2px solid #333a33;
+  border-left: 2px solid #6b8272;
 
   background: none;
 
@@ -76,7 +78,7 @@
 }
 
 .habitField__toggle>button>svg * {
-  color: #333a33;
+  color: #6b8272;
 }
 
 .habitField__items {
@@ -91,14 +93,14 @@
 
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--accent-inverse) #86b395;
+  scrollbar-color: var(--accent-inverse) #213120;
 
   height: 150px;
 
   padding-top: 1rem;
   padding-right: 5px;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
 }
 
 .habitField__items::-webkit-scrollbar {
@@ -107,14 +109,14 @@
 }
 
 .habitField__items::-webkit-scrollbar-track {
-  background: #86b395;
+  background: #213120;
   border-radius: 10px;
 }
 
 .habitField__items::-webkit-scrollbar-thumb {
   background-color: var(--accent-inverse);
   border-radius: 10px;
-  border: 2px solid #86b395;
+  border: 2px solid #213120;
 }
 
 .habitField__items>button,
@@ -126,7 +128,7 @@
   flex-direction: column;
   align-items: center;
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow: hidden;
 
   width: 100%;
   height: 50px;
@@ -136,7 +138,7 @@
   padding: .2rem .5rem;
   padding-left: 10%;
 
-  background-color: #91c7a3;
+  background-color: #213120;
 
   font-size: .9rem;
   text-overflow: ellipsis;
@@ -148,12 +150,21 @@
   height: 30px;
 }
 
-.habitField__items>button:hover {
-  background-color: #86b395;
+.habitField__items>button:not(.active):hover {
+  filter: brightness(1.3);
 }
 
 .habitField__items>button.active {
   background-color: var(--accent-primary);
+}
+
+.habitField__items>button.active .habit__title {
+  color: var(--black-clr);
+  font-weight: 500;
+}
+.habitField__items>button.active .habit__unitOfMeasure {
+  color: #213120;
+  font-weight: 500;
 }
 
 .habit__color {
@@ -179,7 +190,7 @@
   width: 100%;
 
   text-align: left;
-  color: #333a33;
+  color: #6b8272;
   font-size: .8rem;
   font-style: italic;
 }
@@ -197,7 +208,7 @@
   background-color: inherit;
 
   font-size: .8rem;
-  color: #333a33;
+  color: #6b8272;
 }
 
 

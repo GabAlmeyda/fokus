@@ -8,7 +8,7 @@
 
   min-width: 288px;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
 }
 
 .targetValue>p {
@@ -32,7 +32,7 @@
   border-radius: 25px;
   border: none;
 
-  background-color: #6b8272;
+  background-color: #213120;
 }
 
 .targetValue__propToggle div {
@@ -46,7 +46,7 @@
 
   border-radius: 50px;
 
-  background-color: #ececec;
+  background-color: var(--white-clr);
 
   transition: transform .1s ease-out;
 }
@@ -69,10 +69,11 @@
 }
 
 .values__input {
-  background-color: #a4dbb6;
+  background-color: #213120;
+  border-bottom-color: #213120;
 }
-.values__input:focus-within {
-  background-color: #ececec;
+.values__input.error {
+  border-bottom-color: rgb(236, 30, 30);
 }
 
 .typeToggle__values+span {

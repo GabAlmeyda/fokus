@@ -245,7 +245,7 @@
   padding: .5rem;
   border-radius: 8px;
 
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-muted);
 }
 
 .user__theme>p {
@@ -264,14 +264,14 @@
 
   padding: .2rem 1rem;
 
-  background-color: var(--bg-muted);
+  background-color: var(--bg-secondary);
 
   cursor: pointer;
 }
 
 .theme__toggle>span * {
   font-size: 1.5rem;
-  color: var(--black-clr);
+  color: var(--text-secondary);
 }
 
 .theme__toggle>span.selected {
@@ -302,6 +302,7 @@
 /* BUTTONS */
 .aside__btns {
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 1rem;
 }
@@ -313,28 +314,16 @@
 
 
 /* DIALOG */
-.dialogBtn__root {
+.dialog__root {
   background-color: var(--bg-primary);
 }
 
-.dialogBtn__root h2,
-.dialogBtn__root p {
+.dialog__root h2,
+.dialog__root p {
   color: var(--text-primary);
 }
 
-.dialogBtn__deleteCancel {
-  border: 2px solid #ee1d1d !important;
-
-  background-color: #ee1d1d !important;
-
-  color: var(--white-clr) !important;
-}
-
-.dialogBtn__deleteCancel * {
-  color: var(--white-clr) !important;
-}
-
-.dialogBtn__deleteConfirm {
+.dialog__deleteCancel {
   border: 2px solid var(--accent-inverse) !important;
 
   background-color: transparent !important;
@@ -342,6 +331,18 @@
   color: var(--accent-inverse) !important;
 }
 
-.dialogBtn__deleteConfirm * {
+.dialog__deleteCancel * {
+  color: var(--white-clr) !important;
+}
+
+.dialog__deleteConfirm {
+  border: 2px solid #ee1d1d !important;
+
+  background-color: #ee1d1d !important;
+
+  color: var(--white-clr) !important;
+}
+
+.dialog__deleteConfirm * {
   color: var(--accent-inverse) !important;
 }

@@ -6,6 +6,8 @@
   min-width: 288px;
 
   margin-top: 1rem;
+
+  background-color: #030c07;
 }
 
 .weekDays p {
@@ -32,7 +34,7 @@
   border-radius: 5px;
   border: none;
 
-  background-color: transparent;
+  background-color: #030c07;
 
   font-size: .9rem;
   font-weight: 500;
@@ -41,12 +43,8 @@
   user-select: none;
 }
 
-.weekDays div button * {
-  color: #a4dbb6;
-}
-
 .weekDays div button:hover {
-  background-color: #2d3a31;
+  background: #05160d;
 }
 
 .weekDays div button.active {
@@ -57,4 +55,8 @@
 
 .weekDays div button.active * {
   color: #060806;
+}
+
+.weekDays div button * {
+  color: #6b8272;
 }

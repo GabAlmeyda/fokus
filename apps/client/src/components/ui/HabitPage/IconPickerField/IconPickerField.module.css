@@ -9,15 +9,15 @@
   padding: .5rem;
   border-radius: 10px;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
+}
+
+.iconPicker * {
+  color: var(--white-clr);
 }
 
 .iconPicker > p {
   font-size: .9rem;
-}
-
-.iconPicker * {
-  color: #060806;
 }
 
 .iconPicker__toggle,
@@ -33,12 +33,15 @@
 
 .iconPicker__toggle button {
   border: none;
+  border-left: 2px solid #6b8272;
 
-  background-color: transparent;
+  background: none;
+
+  font-size: 1.2rem;
 }
 
 .iconPicker__toggle button * {
-  color: #4e5f51;
+  color: #6b8272;
 }
 
 .iconPicker__icons {
@@ -52,7 +55,7 @@
   margin-top: .5rem;
   padding-top: 1rem;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
 }
 
 .iconPicker__icons > button {
@@ -64,12 +67,19 @@
   border-radius: 100%;
   border: none;
 
-  background-color: transparent;
+  background-color: #0e2216;
 
   font-size: 1.1rem;
 
   cursor: pointer;
 }
+.iconPicker__icons > button:hover {
+  filter: brightness(1.3);
+}
 .iconPicker__icons > button.active {
   background-color: var(--accent-primary);
+}
+
+.iconPicker__icons >button.active * {
+  color: var(--black-clr);
 }

@@ -80,13 +80,17 @@ export default function CategoryField({
         </button>
         {(() => {
           if (isFetching) {
-            return Array.from({ length: 5 }).map(() => (
-              <div className={styles.category__skeleton}></div>
+            return Array.from({ length: 5 }).map((_, i) => (
+              <div className={styles.category__skeleton} key={i}></div>
             ));
           }
 
           if (isError) {
-            return <p className={styles.category__errorMsg}>Erro ao retornar suas categorias.</p>;
+            return (
+              <p className={styles.category__errorMsg}>
+                Erro ao retornar suas categorias.
+              </p>
+            );
           }
 
           return Object.entries(categoriesMap).map(([categoryId, name]) => (

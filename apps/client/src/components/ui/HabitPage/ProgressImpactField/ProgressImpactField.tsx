@@ -105,7 +105,7 @@ export default function ProgressImpactField({
             placeholder="valor"
             aria-label="Valor do impacto do progresso, em número"
             aria-describedby="progress-error"
-            className={styles.values__input}
+            className={`${styles.values__input} ${!!errors.progressImpactValue ? styles.error : ''}`}
           />
           <Input
             {...register('unitOfMeasure')}
@@ -114,7 +114,7 @@ export default function ProgressImpactField({
             placeholder="unidade"
             aria-label="Unidade de medida"
             aria-describedby="progress-error"
-            className={styles.values__input}
+            className={`${styles.values__input} ${!!errors.unitOfMeasure ? styles.error : ''}`}
           />
         </div>
 

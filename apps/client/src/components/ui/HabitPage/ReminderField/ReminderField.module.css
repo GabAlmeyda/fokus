@@ -10,9 +10,13 @@
   padding: .5rem;
   border-radius: 10px;
 
-  background-color: #a4dbb6;
+  background-color: #0e2216;
 
   font-size: .9rem;
+}
+
+.reminder * {
+  color: var(--white-clr);
 }
 
 .reminder__propToggle {
@@ -28,7 +32,7 @@
   border-radius: 25px;
   border: none;
 
-  background-color: #6b8272;
+  background-color: #213120;
 }
 
 .reminder__propToggle div {
@@ -57,6 +61,10 @@
 
 .reminder input {
   background-color: transparent;
+}
+
+.reminder :last-child {
+  grid-column: 1 / -1;
 }
 
 .reminder__values {
@@ -102,8 +110,12 @@
   background-color: transparent;
 
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 500;
+}
+
+.reminder__values div input::placeholder {
+  color: #6b8272;
 }
 
 .reminder__values div input:focus {

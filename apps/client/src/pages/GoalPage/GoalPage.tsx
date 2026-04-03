@@ -190,7 +190,7 @@ export default function GoalPage() {
 
   if (goalId !== 'new' && goalIsFetching) {
     return (
-      <PageView customBgColor="#101b14">
+      <PageView customBgColor="#030c07">
         <main>
           <GoalPageFormSkeleton />
         </main>
@@ -200,7 +200,7 @@ export default function GoalPage() {
 
   if (goalId !== 'new' && goalError) {
     return (
-      <PageView customBgColor="#101b14">
+      <PageView customBgColor="#030c07">
         <main className={styles.goal__error}>
           {toastMsg && (
             <Toast
@@ -232,7 +232,7 @@ export default function GoalPage() {
   }
 
   return (
-    <PageView customBgColor="#101b14">
+    <PageView customBgColor="#030c07">
       <main>
         {isDialogOpen && (
           <Dialog
@@ -413,7 +413,7 @@ export default function GoalPage() {
           )}
         </section>
       </main>
-      <Footer customBgColor="#101b14" />
+      <Footer customBgColor="#030c07" />
     </PageView>
   );
 }
@@ -434,6 +434,7 @@ function GoalPageFormSkeleton() {
       </span>
       <div className={styles.skeleton__previewTittle}></div>
       <div className={styles.skeleton__previewCard}></div>
+      <hr />
       <div className={styles.skeleton__form}>
         <div className={styles.formSkeleton__title}></div>
         <div className={styles.formSkeleton__color}></div>

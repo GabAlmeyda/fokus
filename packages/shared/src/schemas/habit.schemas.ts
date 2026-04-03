@@ -44,17 +44,10 @@ const HabitBaseSchema = z.object({
       example: ['ter', 'sab'],
     }),
 
-  reminder: z
-    .string()
-    .regex(
-      /^([01][0-9]|2[0-3]):([0-5][0-9])$/,
-      "Formato de lembrete inválido. Formato esperado era 'HH:mm'.",
-    )
-    .nullable()
-    .openapi({
-      description: "Optional reminder of the habit, in format 'HH:mm'",
-      example: '09:30',
-    }),
+  reminder: z.string().nullable().openapi({
+    description: "Optional reminder of the habit, in format 'HH:mm'",
+    example: '09:30',
+  }),
 
   color: z
     .string()
@@ -62,7 +55,7 @@ const HabitBaseSchema = z.object({
     .toLowerCase()
     .regex(
       /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
-      "Formato hexadecimal inválido. Formatos permitidos são '#ABC' ou '#ABCDEF'.",
+      "Cor precisa estar no formato '#ABC' ou '#ABCDEF'.",
     )
     .default('#15E03B')
     .openapi({
@@ -124,6 +117,23 @@ function habitRefinement(data: HabitRefinementData, ctx: z.RefinementCtx) {
         `[habit-schema.ts (server)] Unhandled case '${exhaustiveCheck}'`,
       );
     }
+  }
+
+  if (data.reminder === '') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['reminder'],
+      message: 'Lembrete precisa ser informado.',
+    });
+  } else if (
+    data.reminder &&
+    !/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/.test(data.reminder)
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['reminder'],
+      message: "Lembrete precisa estar no formato 'HH:mm'",
+    });
   }
 }
 

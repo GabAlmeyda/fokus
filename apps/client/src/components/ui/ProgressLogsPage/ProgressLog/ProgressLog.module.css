@@ -47,6 +47,14 @@
   color: var(--text-secondary);
 }
 
+.content__date {
+  font-size: .8rem;
+}
+
+.content__value svg {
+  font-size: 1.2rem;
+}
+
 .content__habitId {
   position: absolute;
   bottom: 0;
@@ -89,7 +97,7 @@
   padding: .3rem;
   border-radius: 5px 0 5px 5px;
 
-  background-color: #7daf7d;
+  background-color: var(--bg-muted);
 }
 
 .menu__list::after {
@@ -104,13 +112,13 @@
 
   border-radius: 3px 0 0 0;
 
-  background-color: #7daf7d;
+  background-color: var(--bg-muted);
 
   transform: rotate(45deg);
 }
 
 .menu__list button {
-  background-color: transparent;
+  background-color: var(--bg-muted);
 
   margin-top: .2rem;
   border: none;
@@ -119,8 +127,4 @@
 
   white-space: nowrap;
   font-size: .9rem;
-}
-
-.menu__list button:hover {
-  background-color: #689268;
 }

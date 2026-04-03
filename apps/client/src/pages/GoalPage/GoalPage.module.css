@@ -24,10 +24,6 @@
   color: var(--white-clr);
 }
 
-.goal * {
-  color: #060806;
-}
-
 .goal__goBack,
 .skeleton__goBack {
   display: inline-block;
@@ -65,7 +61,8 @@
   user-select: text;
 }
 
-.preview__line {
+.preview__line,
+.goal__skeleton hr {
   height: 2px;
   width: 100%;
   max-width: 700px;
@@ -74,6 +71,7 @@
   margin-top: 1.5rem;
 
   background-color: #a4dbb6;
+  color: #a4dbb6;
 }
 
 @media screen and (min-width: 750px) {
@@ -136,7 +134,7 @@
 }
 
 .deleteBtn {
-  color: #ececec;
+  color: var(--white-clr);
 }
 
 .deleteBtn__root {
@@ -150,15 +148,16 @@
 }
 
 .deleteBtn__cancel {
-  border: 2px solid #ececec;
+  border: 2px solid var(--accent-primary)!important;
 
   background-color: transparent;
 
-  color: #ececec;
+  color: var(--accent-primary)!important;
 }
 
 .deleteBtn__confirm {
   background-color: rgb(238, 29, 29);
+  border-color: rgb(238, 29, 29)
 }
 
 
@@ -212,8 +211,6 @@
 
 .skeleton__previewCard {
   height: 130px;
-
-  margin-bottom: 5rem;
 }
 
 .skeleton__form {

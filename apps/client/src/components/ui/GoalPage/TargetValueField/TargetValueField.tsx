@@ -97,8 +97,8 @@ export default function TargetValueField({
             hasError={!!errors.targetValue}
             placeholder="valor"
             aria-label="Valor do objetivo da meta, em número"
-            aria-describedby="reminder-error"
-            className={styles.values__input}
+            aria-describedby="target-error"
+            className={`${styles.values__input} ${!!errors.targetValue ? styles.error : ''}`}
           />
           <Input
             {...register('unitOfMeasure')}
@@ -106,12 +106,12 @@ export default function TargetValueField({
             hasError={!!errors.unitOfMeasure}
             placeholder="unidade"
             aria-label="Unidade de medida"
-            aria-describedby="reminder-error"
-            className={styles.values__input}
+            aria-describedby="target-error"
+            className={`${styles.values__input} ${!!errors.unitOfMeasure ? styles.error : ''}`}
           />
         </div>
         <FormErrorMessage
-          id="reminder-error"
+          id="target-error"
           isHidden={!isOpen || (!errors.targetValue && !errors.unitOfMeasure)}
           message={errors.targetValue?.message || errors.unitOfMeasure?.message}
         />

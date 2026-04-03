@@ -56,6 +56,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 400;
+  color: var(--text-primary);
 }
 
 .content__bottom {

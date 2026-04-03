@@ -1,6 +1,5 @@
 .login {
   text-align: center;
-
 }
 
 .login__top {
@@ -10,7 +9,7 @@
 
   border-radius: 0 0 0 25px;
 
-  background-color: var(--bg-primary);
+  background-color: var(--bg-inverse);
 }
 
 .login__top h2 {
@@ -18,6 +17,7 @@
   bottom: 1rem;
   left: 0;
   right: 0;
+  color: var(--white-clr);
 }
 
 .login__formContainer {
@@ -38,7 +38,7 @@
 
   border-radius: 0 25px 0 0;
 
-  background-color: var(--bg-inverse);
+  background-color: var(--bg-primary);
 }
 .login__formContainer::after {
   content: '';
@@ -94,12 +94,12 @@
   margin-bottom: 2rem;
   padding-inline: 1rem;
 
-  background-color: var(--bg-inverse);
+  background-color: var(--bg-primary);
   width: 100%;
 }
 
 .login__register p {
-  color: var(--text-inverse);
+  color: var(--text-secondary);
   font-size: .9rem;
 }
 
