@@ -18,10 +18,9 @@ export default function HomePage(): JSX.Element {
 
   useEffect(() => {
     if (!toastMsg) return;
+    const timerId = setTimeout(() => setToastMsg(null), 5000);
 
-    const id = setTimeout(() => setToastMsg(null), 5000);
-
-    return () => clearTimeout(id);
+    return () => clearTimeout(timerId);
   }, [toastMsg]);
 
   const handleViewSwitcherClick = (event: React.MouseEvent<HTMLDivElement>) => {

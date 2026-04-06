@@ -99,14 +99,10 @@ export default function HabitPage() {
   }, [error]);
 
   useEffect(() => {
-    let timerId = undefined;
-    if (toastMsg) {
-      timerId = setTimeout(() => setToastMsg(null), 5000);
-    }
+    if (!toastMsg) return;
+    const timerId = setTimeout(() => setToastMsg(null), 5000);
 
-    return () => {
-      if (timerId) clearTimeout(timerId);
-    };
+    return () => clearTimeout(timerId);
   }, [toastMsg]);
 
   const handleFormSubmit = (data: HabitFormDTO) => {

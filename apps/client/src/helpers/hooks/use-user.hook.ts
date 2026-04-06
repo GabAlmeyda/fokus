@@ -80,7 +80,7 @@ export function useUserMutations() {
       },
       onSuccess: async (newUser) => {
         sessionStorage.setItem('xsrf-token', newUser.xsrfToken);
-        await queryClient.setQueryData(['user'], newUser.user);
+        queryClient.setQueryData(['user'], newUser.user);
       },
     },
   );
@@ -96,6 +96,7 @@ export function useUserMutations() {
     },
     onSuccess: async () => {
       queryClient.clear();
+      sessionStorage.clear();
     },
   });
 
@@ -146,6 +147,7 @@ export function useUserMutations() {
     },
     onSuccess: async () => {
       queryClient.clear();
+      sessionStorage.clear();
     },
   });
 

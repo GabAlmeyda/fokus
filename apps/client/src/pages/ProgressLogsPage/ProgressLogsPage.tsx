@@ -41,6 +41,12 @@ export default function ProgressLogsPage() {
   );
 
   useEffect(() => {
+    document.title = 'Fokus - Registros';
+  }, []);
+
+  useEffect(() => {
+    if (!openLogId) return;
+
     const callback = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setOpenLogId(null);
@@ -50,17 +56,13 @@ export default function ProgressLogsPage() {
     document.body.addEventListener('keydown', callback);
 
     return () => document.body.removeEventListener('keydown', callback);
-  }, []);
+  }, [openLogId]);
 
   useEffect(() => {
-    let timerId = undefined;
-    if (toastMsg) {
-      timerId = setTimeout(() => setToastMsg(null), 5000);
-    }
+    if (!toastMsg) return;
+    const timerId = setTimeout(() => setToastMsg(null), 5000);
 
-    return () => {
-      if (timerId) clearTimeout(timerId);
-    };
+    return () => clearTimeout(timerId);
   }, [toastMsg]);
 
   const handleDeleteClick = (confirmation: boolean) => {

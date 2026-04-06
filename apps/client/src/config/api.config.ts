@@ -1,4 +1,4 @@
-import { HTTPStatusCode } from '@fokus/shared';
+import { HTTPStatusCode, type UserResponseDTO } from '@fokus/shared';
 import axios from 'axios';
 import { APP_URLS } from '../helpers/app.helpers';
 import { queryClient } from '../providers/ReactQueryProvider';
@@ -38,12 +38,13 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post(
+        const response = await api.post<UserResponseDTO>(
           `${env.BACKEND_URL}/users/auth/refresh/me`,
           {},
           { withCredentials: true },
         );
-
+        sessionStorage.setItem('xsrf-token', response.data.xsrfToken);
+        
         return api(originalRequest);
       } catch (authErr: any) {
         queryClient.clear();

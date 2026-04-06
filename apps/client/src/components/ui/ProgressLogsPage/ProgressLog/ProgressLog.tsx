@@ -2,7 +2,7 @@ import type { ProgressLogResponseDTO } from '@fokus/shared';
 import styles from './ProgressLog.module.css';
 import { format } from 'date-fns';
 import FokusIcon from '../../../common/Icon/Icon';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ProgressLogsProps {
   log: Omit<ProgressLogResponseDTO, 'userId'>;
@@ -19,7 +19,20 @@ export default function ProgressLog({
   onToggle,
   onDeleteClick,
 }: ProgressLogsProps) {
-  useEffect(() => {}, []);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const callback = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        onToggle();
+      }
+    };
+    document.addEventListener('mousedown', callback);
+
+    return () => document.removeEventListener('mousedown', callback);
+  }, [isOpen]);
 
   return (
     <div className={styles.log}>
@@ -49,7 +62,7 @@ export default function ProgressLog({
           {log.habitId ? 'Meta atualizada por hábito' : 'Registro manual'}
         </p>
 
-        <div className={styles.log__menu}>
+        <div className={styles.log__menu} ref={menuRef}>
           <button
             onClick={onToggle}
             className={styles.menu__btn}
