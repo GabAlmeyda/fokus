@@ -13,7 +13,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function Button({
   customColor,
-  variant,
+  variant='primary',
   isLink = false,
   isSmall = false,
   isDisabled = false,

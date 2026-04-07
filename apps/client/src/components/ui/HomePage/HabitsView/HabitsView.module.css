@@ -68,20 +68,20 @@
   font-size: .9rem;
 }
 
-.week__day_today {
+.week__day.today {
   background-color: var(--bg-secondary);
 }
 
-.week__day_selected {
+.week__day.selected {
   background-color: var(--accent-primary);
 }
 
-.week__day_selected:hover {
-  filter: none;
+.week__day.selected * {
+  color: var(--black-clr);
 }
 
-.week__day_selected * {
-  color: var(--text-primary);
+.week__day.selected:hover {
+  filter: none;
 }
 
 @media screen and (min-width: 750px) {

@@ -21,6 +21,7 @@ export default function Footer({
           <a href="https://gabalmeyda.vercel.app" target="_blank">
             Gabriel Almeida
           </a>
+          .
         </small>
       </p>
     </footer>

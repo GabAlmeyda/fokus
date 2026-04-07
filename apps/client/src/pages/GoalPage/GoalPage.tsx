@@ -237,9 +237,9 @@ export default function GoalPage() {
             onClick={handleDeleteConfirmation}
             alertBtnText="Deletar"
             classNames={{
-              root: styles.deleteBtn__root,
-              cancel: styles.deleteBtn__cancel,
-              confirm: styles.deleteBtn__confirm,
+              root: styles.dialog__root,
+              cancel: styles.dialog__cancel,
+              confirm: styles.dialog__confirm,
             }}
           />
         )}

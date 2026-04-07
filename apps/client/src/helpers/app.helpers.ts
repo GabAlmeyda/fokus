@@ -7,5 +7,6 @@ export const APP_URLS = {
   home: '/app',
   habits: '/app/habits',
   goals: '/app/goals',
+  categories: '/app/categories',
   base: env.FRONTEND_URL,
 };

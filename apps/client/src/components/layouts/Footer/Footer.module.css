@@ -15,7 +15,7 @@
 }
 
 .footer p small{
-  color: var(--text-primary);
+  color: var(--white-clr);
 }
 
 @media screen and (min-width: 1080px) {

@@ -1,0 +1,95 @@
+/* TOP STYLES */
+.categories {
+  max-width: 1080px;
+
+  padding: 1rem;
+  margin-inline: auto;
+}
+
+.categories__goBack {
+  display: inline-block;
+
+  padding-block: .5rem;
+  margin-bottom: 3rem;
+}
+
+.categories__top {
+  max-width: 800px;
+
+  margin-inline: auto;
+}
+
+.top__btn {
+  margin-top: 1rem;
+}
+
+.categories__top hr {
+  margin-bottom: 2rem;
+  margin-top: .5rem;
+}
+
+
+
+/* CATEGORIES STYLES */
+.categories__msg {
+  margin-top: 3rem;
+
+  text-align: center;
+}
+
+.categories__msg p {
+  margin-bottom: 1rem;
+
+  color: var(--text-secondary);
+}
+
+.categories__msg .error {
+  color: rgb(238, 29, 29);
+}
+
+.categories__items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+
+.dialog__root h2,
+.dialog__root p {
+  color: var(--text-primary);
+}
+
+.dialog__cancel {
+  border: 2px solid var(--accent-inverse) !important;
+
+  background-color: transparent !important;
+
+  color: var(--accent-inverse) !important;
+}
+
+.dialog__cancel * {
+  color: var(--white-clr) !important;
+}
+
+.dialog__confirm {
+  border: 2px solid #ee1d1d !important;
+
+  background-color: #ee1d1d !important;
+
+  color: var(--white-clr) !important;
+}
+
+.dialog__confirm * {
+  color: var(--accent-inverse) !important;
+}
+
+@media screen and (min-width: 750px) {
+  .categories__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    max-width: 700px;
+
+    margin-inline: auto;
+  }
+}

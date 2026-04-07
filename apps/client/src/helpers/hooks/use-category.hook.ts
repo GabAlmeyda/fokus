@@ -50,7 +50,7 @@ export function useCategoryMutations() {
   const createMutation = useMutation<
     CategoryResponseDTO,
     HTTPErrorResponse,
-    CategoryCreateDTO
+    Omit<CategoryCreateDTO, 'userId'>
   >({
     mutationFn: async (data) => {
       const response = await api.post('/categories', data, {

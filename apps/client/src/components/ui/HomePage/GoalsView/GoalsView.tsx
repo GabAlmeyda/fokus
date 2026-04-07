@@ -58,9 +58,16 @@ export default function GoalsView({
   return (
     <div className={styles.goalsView}>
       <div className={styles.header}>
-        <span>
-          <FokusIcon iconKey="filter" /> Filtros
-        </span>
+        <div className={styles.header__top}>
+          <div>
+            <FokusIcon iconKey="filter" /> Filtros
+          </div>
+          <span>
+            <Button isSmall isLink to={APP_URLS.categories}>
+              Editar
+            </Button>
+          </span>
+        </div>
         <div
           className={styles.header__filters}
           role="group"
@@ -97,7 +104,9 @@ export default function GoalsView({
       <div className={styles.goals} id="goals">
         {!isFetching && error && (
           <div className={styles.goals__msg}>
-            <p className={styles.error}>Aconteceu um erro ao tentar retornar suas metas</p>
+            <p className={styles.error}>
+              Aconteceu um erro ao tentar retornar suas metas
+            </p>
             <Button onClick={() => refetch()}>Tentar novamente</Button>
           </div>
         )}

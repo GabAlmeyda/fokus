@@ -142,19 +142,33 @@
   gap: .5rem;
 }
 
-.deleteBtn__root {
-  background-color: var(--bg-secondary)!important;
+.dialog__root h2,
+.dialog__root p {
+  color: var(--text-primary);
 }
 
-.deleteBtn__root h2,
-.deleteBtn__root hr,
-.deleteBtn__root p {
-  color: var(--text-primary)!important;
+.dialog__cancel {
+  border: 2px solid var(--accent-inverse) !important;
+
+  background-color: transparent !important;
+
+  color: var(--accent-inverse) !important;
 }
 
-.deleteBtn__confirm {
-  background-color: rgb(238, 29, 29);
-  border-color: rgb(238, 29, 29);
+.dialog__cancel * {
+  color: var(--white-clr) !important;
+}
+
+.dialog__confirm {
+  border: 2px solid #ee1d1d !important;
+
+  background-color: #ee1d1d !important;
+
+  color: var(--white-clr) !important;
+}
+
+.dialog__confirm * {
+  color: var(--accent-inverse) !important;
 }
 
 @media screen and (min-width: 750px) {

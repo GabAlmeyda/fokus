@@ -24,11 +24,13 @@ const date = new Date();
 interface ProgressLogFormProps {
   onCloseClick: () => void;
   onSubmit: (data: { value: number; date: Date }) => void;
+  isPending?: boolean;
 }
 
 export default function ProgressLogForm({
   onCloseClick,
   onSubmit,
+  isPending = false,
 }: ProgressLogFormProps) {
   const {
     register,
@@ -94,9 +96,9 @@ export default function ProgressLogForm({
               id="log-value"
             />
             <FormErrorMessage
-              id="value-value"
+              id="value-error"
               isHidden={!errors.value}
-              message={errors?.value?.message}
+              message={errors.value?.message}
             />
           </div>
 
@@ -143,7 +145,9 @@ export default function ProgressLogForm({
           </div>
 
           <div className={styles.form__btn}>
-            <Button>Adicionar registro</Button>
+            <Button type="submit" isDisabled={isPending}>
+              {isPending ? 'Adicionando registro...' : 'Adicionar registro'}
+            </Button>
           </div>
         </form>
       </div>

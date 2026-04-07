@@ -76,7 +76,7 @@ export default function Goal({
       <Link
         to={`${APP_URLS.goals}/${goal.id}/logs`}
         className={styles.goal__logs}
-        title="Ver todos os registros da meta"
+        title="Editar registros da meta"
       >
         <FokusIcon iconKey="logs" />
       </Link>

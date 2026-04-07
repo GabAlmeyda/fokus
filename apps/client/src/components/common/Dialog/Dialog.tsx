@@ -39,7 +39,7 @@ export default function Dialog({
     };
   }, []);
 
-  const handleClick = (confirmation: boolean) => {  
+  const handleClick = (confirmation: boolean) => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
@@ -60,6 +60,7 @@ export default function Dialog({
           handleClick(false);
         }
       }}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <h2 className={styles.dialog__title}>{title}</h2>
       <hr />
@@ -78,7 +79,7 @@ export default function Dialog({
             onClick={() => handleClick(false)}
             className={classNames.cancel ?? ''}
             isSmall
-            variant='ghost-inverse'
+            variant="ghost-inverse"
             isDisabled={isExecuting}
           >
             Cancelar

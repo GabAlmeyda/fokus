@@ -137,27 +137,33 @@
   color: var(--white-clr);
 }
 
-.deleteBtn__root {
-  background-color: #2d3a31!important;
+.dialog__root h2,
+.dialog__root p {
+  color: var(--text-primary);
 }
 
-.deleteBtn__root h2,
-.deleteBtn__root hr,
-.deleteBtn__root p {
-  color: var(--white-clr)!important;
+.dialog__cancel {
+  border: 2px solid var(--accent-inverse) !important;
+
+  background-color: transparent !important;
+
+  color: var(--accent-inverse) !important;
 }
 
-.deleteBtn__cancel {
-  border: 2px solid var(--accent-primary)!important;
-
-  background-color: transparent;
-
-  color: var(--accent-primary)!important;
+.dialog__cancel * {
+  color: var(--white-clr) !important;
 }
 
-.deleteBtn__confirm {
-  background-color: rgb(238, 29, 29);
-  border-color: rgb(238, 29, 29)
+.dialog__confirm {
+  border: 2px solid #ee1d1d !important;
+
+  background-color: #ee1d1d !important;
+
+  color: var(--white-clr) !important;
+}
+
+.dialog__confirm * {
+  color: var(--accent-inverse) !important;
 }
 
 

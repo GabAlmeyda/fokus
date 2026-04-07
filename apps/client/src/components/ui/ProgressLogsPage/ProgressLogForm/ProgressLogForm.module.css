@@ -58,6 +58,7 @@
 .newLog__form label {
   font-size: .9rem;
   text-align: left;
+  color: #6b8272;
 }
 
 .newLog__form label[for='log-date'] {

@@ -93,6 +93,7 @@ export default function ProgressLogsPage() {
     addLogMutation.mutate(
       { ...data, goalId: goalId! },
       {
+        // TODO: specify the error to the user
         onError: () => {
           setToastMsg('Erro ao tentar adicionar o registro');
         },
@@ -115,9 +116,9 @@ export default function ProgressLogsPage() {
             alertBtnText="Deletar"
             onClick={handleDeleteClick}
             classNames={{
-              root: styles.deleteBtn__root,
-              cancel: styles.deleteBtn__cancel,
-              confirm: styles.deleteBtn__confirm,
+              root: styles.dialog__root,
+              cancel: styles.dialog__cancel,
+              confirm: styles.dialog__confirm,
             }}
           />
         )}
@@ -146,6 +147,7 @@ export default function ProgressLogsPage() {
             <ProgressLogForm
               onCloseClick={() => setIsNewLogOpen(false)}
               onSubmit={handleFormSubmit}
+              isPending={addLogMutation.isPending}
             />
           )}
           <span className={styles.logs__goBack}>
@@ -240,7 +242,7 @@ export default function ProgressLogsPage() {
               !logsIsError &&
               !logs?.length && (
                 <div className={styles.logs__msg}>
-                  <p>Nenhum registro encontrado.</p>
+                  <p>Nenhum registro criado.</p>
                 </div>
               )}
 

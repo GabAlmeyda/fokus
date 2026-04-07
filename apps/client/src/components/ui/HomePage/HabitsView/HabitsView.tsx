@@ -109,8 +109,8 @@ export default function HabitsView({
               onClick={() => setSelectedDay(day.fullDate)}
               className={`
                 ${styles.week__day} 
-                ${day.isToday ? styles.week__day_today : ''} 
-                ${day.fullDate === selectedDay ? styles.week__day_selected : ''}`}
+                ${day.isToday ? styles['today'] : ''} 
+                ${day.fullDate === selectedDay ? styles['selected'] : ''}`}
               key={`${day.fullDate}`}
             >
               <span className={styles.day__label}>{day.label}</span>
