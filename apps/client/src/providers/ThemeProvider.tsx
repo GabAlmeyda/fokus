@@ -12,6 +12,10 @@ export default function ThemeProvider({
       'dark',
       user?.themeMode === 'dark',
     );
+
+    if (user?.themeMode) {
+      localStorage.setItem('theme', user.themeMode);
+    }
   }, [user?.themeMode]);
 
   return <>{children}</>;

@@ -1,18 +1,28 @@
-import { createBrowserRouter } from 'react-router-dom';
-import LandingPage from '../pages/LandingPage/LandingPage';
-import RegisterPage from '../pages/RegisterPage/RegisterPage';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import ProtectedRoute from '../components/auth/ProtectedRoute/ProtectedRoute';
-import LoginPage from '../pages/LoginPage/LoginPage';
-import HomePage from '../pages/HomePage/HomePage';
-import HabitPage from '../pages/HabitPage/HabitPage';
-import GoalPage from '../pages/GoalPage/GoalPage';
 import GlobalErrorFallback from '../components/layouts/GlobalFallbackError/GlobalFallbackError';
-import ProgressLogsPage from '../pages/ProgressLogsPage/ProgressLogsPage';
-import CategoriesPage from '../pages/CategoriesPage/CategoriesPage';
+
+const LandingPage = lazy(() => import('../pages/LandingPage/LandingPage'));
+const RegisterPage = lazy(() => import('../pages/RegisterPage/RegisterPage'));
+const LoginPage = lazy(() => import('../pages/LoginPage/LoginPage'));
+const HomePage = lazy(() => import('../pages/HomePage/HomePage'));
+const HabitPage = lazy(() => import('../pages/HabitPage/HabitPage'));
+const GoalPage = lazy(() => import('../pages/GoalPage/GoalPage'));
+const ProgressLogsPage = lazy(
+  () => import('../pages/ProgressLogsPage/ProgressLogsPage'),
+);
+const CategoriesPage = lazy(
+  () => import('../pages/CategoriesPage/CategoriesPage'),
+);
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    element: (
+      <Suspense fallback={<div></div>}>
+        <Outlet />
+      </Suspense>
+    ),
     errorElement: <GlobalErrorFallback />,
     children: [
       {
@@ -31,7 +41,11 @@ export const router = createBrowserRouter([
   },
   // Protected routes
   {
-    element: <ProtectedRoute />,
+    element: (
+      <Suspense>
+        <ProtectedRoute />
+      </Suspense>
+    ),
     errorElement: <GlobalErrorFallback />,
     children: [
       {
@@ -52,10 +66,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/app/categories',
-        element: <CategoriesPage />
-      }
+        element: <CategoriesPage />,
+      },
     ],
   },
+  // Not Found Page
   {
     path: '*',
     element: '',

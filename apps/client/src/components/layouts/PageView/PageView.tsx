@@ -31,7 +31,7 @@ export default function PageView({
 
   return (
     <div
-      className={`${styles.pageView} ${props['className']}`}
+      className={`${styles.pageView} ${props['className'] ? props['className'] : ''}`}
       style={{ backgroundColor: finalBg }}
     >
       {children}

@@ -79,7 +79,7 @@ export default function ProgressLogsPage() {
       },
       {
         onError: () => {
-          setToastMsg('Erro ao tentar remover o registro');
+          setToastMsg('Não foi possível remover o registro. Que tal tentar novamente?');
         },
         onSettled: () => {
           setIsDialogOpen(false);
@@ -95,7 +95,7 @@ export default function ProgressLogsPage() {
       {
         // TODO: specify the error to the user
         onError: () => {
-          setToastMsg('Erro ao tentar adicionar o registro');
+          setToastMsg('Não foi possível adicionar o registro. Que tal tentar novamente?');
         },
         onSuccess: () => setIsNewLogOpen(false),
         onSettled: () => {

@@ -94,7 +94,7 @@ export default function HabitPage() {
     if (error?.statusCode === HTTPStatusCode.NOT_FOUND) {
       setToastMsg('O hábito selecionado não foi encontrado.');
     } else if (error) {
-      setToastMsg('Erro ao tentar retornar os dados do hábito.');
+      setToastMsg('Não foi possível retornar os dados do hábito. Que tal tentar novamente?');
     }
   }, [error]);
 
@@ -126,7 +126,7 @@ export default function HabitPage() {
             return;
           }
 
-          setToastMsg('Erro ao tentar criar o hábito.');
+          setToastMsg('Não foi possível criar o hábito. Que tal tentar novamente?');
         },
       });
     } else {
@@ -142,7 +142,7 @@ export default function HabitPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
-          onError: () => setToastMsg('Erro ao tentar atualizar o hábito.'),
+          onError: () => setToastMsg('Não foi possível atualizar o hábito. Que tal tentar novamente?'),
         },
       );
     }
@@ -161,7 +161,7 @@ export default function HabitPage() {
         navigate(APP_URLS.home, { replace: true });
       },
       onError: () => {
-        setToastMsg('Erro ao tentar deletar o hábito.');
+        setToastMsg('Não foi possível deletar o hábito. Que tal tentar novamente?');
         setIsDialogOpen(false);
       },
     });
@@ -202,7 +202,7 @@ export default function HabitPage() {
             </Button>
           </span>
           <div className={styles.error__msg}>
-            <p>Erro ao tentar retornar seu hábito.</p>
+            <p>Não conseguimos retornar as informações relacionadas ao hábito selecionado.</p>
             <Button onClick={() => refetch()}>Tentar novamente</Button>
           </div>
         </main>

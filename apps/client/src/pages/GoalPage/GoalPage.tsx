@@ -140,7 +140,7 @@ export default function GoalPage() {
             return;
           }
 
-          setToastMsg('Erro ao tentar criar a meta.');
+          setToastMsg('Não foi possível criar a meta. Que tal tentar novamente?');
         },
       });
     } else {
@@ -152,7 +152,7 @@ export default function GoalPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
-          onError: () => setToastMsg('Erro ao tentar atualizar a meta.'),
+          onError: () => setToastMsg('Não foi possível atualizar a meta. Que tal tentar novamente?'),
         },
       );
     }
@@ -178,7 +178,7 @@ export default function GoalPage() {
         navigate(APP_URLS.home, { replace: true });
       },
       onError: () => {
-        setToastMsg('Erro ao tentar deletar a meta.');
+        setToastMsg('Não foi possível deletar a meta. Que tal tentar novamente?');
         setIsDialogOpen(false);
       },
     });

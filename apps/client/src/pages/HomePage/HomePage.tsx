@@ -35,14 +35,14 @@ export default function HomePage(): JSX.Element {
     action: 'check' | 'uncheck',
   ) => {
     if (action === 'check') {
-      setToastMsg('Erro ao tentar marcar um hábito como concluído.');
+      setToastMsg('Não foi possível marcar o hábito como concluído. Que tal tentar novamente?');
     } else {
-      setToastMsg('Erro ao tentar desmarcar um hábito concluído.');
+      setToastMsg('Não foi possível desmarcar o hábito concluído. Que tal tentar novamente?');
     }
   };
 
   const handleCategoryReqError = (_: HTTPErrorResponse) => {
-    setToastMsg('Erro ao tentar carregar suas categorias.');
+    setToastMsg('Não foi possível carregar suas categorias. Que tal tentar novamente?');
   }
 
   return (

@@ -71,7 +71,7 @@ export default function CategoriesPage() {
 
     deleteMutation.mutate(openCategoryId!, {
       onError: () => {
-        setToastMsg('Erro ao tentar remover a categoria');
+        setToastMsg('Não foi possível remover a categoria. Que tal tentar novamente?');
       },
       onSettled: () => {
         setIsDialogOpen(false);
@@ -91,7 +91,7 @@ export default function CategoriesPage() {
             }));
             return;
           }
-          setToastMsg('Erro ao tentar adicionar a categoria');
+          setToastMsg('Não foi possível adicionar a categoria. Que tal tentar novamente?');
         },
         onSuccess: () => setCategoryFormType(null),
         onSettled: () => {
@@ -111,7 +111,7 @@ export default function CategoriesPage() {
               }));
               return;
             }
-            setToastMsg('Erro ao tentar atualizar a categoria');
+            setToastMsg('Não foi possível atualizar a categoria. Que tal tentar novamente?');
           },
           onSuccess: () => setCategoryFormType(null),
           onSettled: () => {

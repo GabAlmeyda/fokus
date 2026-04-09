@@ -27,5 +27,5 @@
 .input_error:focus-within {
   border-bottom-color: rgb(236, 30, 30);
 
-  background-image: linear-gradient(rgba(255, 100, 100, 0.753));
+  background-image: linear-gradient(rgba(243, 168, 168, 0.753));
 }

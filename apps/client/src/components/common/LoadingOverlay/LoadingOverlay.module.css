@@ -1,54 +1,40 @@
 .loadingOverlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   z-index: 5000;
+  justify-content: center;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   width: 300px;
+  height: fit-content;
 
-  padding: .5rem;
+  margin: auto;
   border-radius: 10px;
-  border: none;
+  padding: 1rem;
 
-  background-color: #2d3a31;
-
-  text-align: center;
-
-  user-select: none;
+  background-color: var(--bg-secondary);
 }
 
 .loadingOverlay * {
-  color: var(--white-clr);
-}
-
-.loadingOverlay__spinner {
-  height: 40px;
-  width: 40px;
-
-  border-radius: 50%;
-  border: 4px solid var(--bg-inverse);
-  border-top-color: var(--accent-primary);
-  margin-inline: auto;
-  margin-top: 3rem;
-
-  background-color: transparent;
-
-  animation: spin .9s ease-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  color: var(--text-primary);
 }
 
 ._backdrop {
   position: fixed;
-  z-index: 2000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4999;
+
   height: 100%;
   width: 100%;
-  z-index: 4999;
 
   background-color: rgba(0, 0, 0, 0.6);
 }
