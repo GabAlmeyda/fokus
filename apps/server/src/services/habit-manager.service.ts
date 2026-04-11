@@ -5,13 +5,13 @@ import type {
   ProgressLogCreateDTO,
 } from '@fokus/shared';
 import type {
-  IhabitCompletionService,
+  IhabitManageService,
   IHabitService,
 } from '../interfaces/habit.interfaces.js';
 import type { IGoalService } from '../interfaces/goal.interfaces.js';
 import type { IProgressLogService } from '../interfaces/progress-log.interfaces.js';
 
-export class HabitCompletionService implements IhabitCompletionService {
+export class HabitManagerService implements IhabitManageService {
   private readonly habitService;
   private readonly goalService;
   private readonly progressLogService;
@@ -76,5 +76,23 @@ export class HabitCompletionService implements IhabitCompletionService {
       userId,
     );
     return habit;
+  }
+
+  async deleteCompletely(
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ deletedLogsCount: number; updatedGoalsCount: number }> {
+    await this.habitService.delete(habitId, userId);
+    const deletedLogsCount = await this.progressLogService.deleteByFilter(
+      { entityType: 'habitId', entityId: habitId },
+      userId,
+    );
+    const updatedGoalsCount = await this.goalService.updateByFilter(
+      { habitId },
+      { habitId: null },
+      userId,
+    );
+
+    return { deletedLogsCount, updatedGoalsCount };
   }
 }

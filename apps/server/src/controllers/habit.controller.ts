@@ -13,7 +13,7 @@ import {
   HabitDateSchema,
 } from '@fokus/shared';
 import type {
-  IhabitCompletionService,
+  IhabitManageService,
   IHabitController,
   IHabitService,
 } from '../interfaces/habit.interfaces.js';
@@ -21,13 +21,13 @@ import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class HabitController implements IHabitController {
   private readonly habitService;
-  private readonly habitCompletionService;
+  private readonly habitManageService;
   constructor(
     habitService: IHabitService,
-    habitCompletionService: IhabitCompletionService,
+    habitManageService: IhabitManageService,
   ) {
     this.habitService = habitService;
-    this.habitCompletionService = habitCompletionService;
+    this.habitManageService = habitManageService;
   }
 
   async create(
@@ -115,7 +115,7 @@ export class HabitController implements IHabitController {
         date: req.query?.date,
       });
       const userId = EntityIdSchema.parse(req.userId);
-      const habit = await this.habitCompletionService.check(checkData, userId);
+      const habit = await this.habitManageService.check(checkData, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -132,23 +132,27 @@ export class HabitController implements IHabitController {
       });
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habit = await this.habitCompletionService.uncheck(
-        uncheckData,
-        userId,
-      );
+      const habit = await this.habitManageService.uncheck(uncheckData, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }
   }
 
-  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
+  async delete(
+    req: HTTPRequest<null>,
+  ): Promise<
+    HTTPResponse<{ deletedLogsCount: number; updatedGoalsCount: number }>
+  > {
     try {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      await this.habitService.delete(habitId, userId);
-      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
+      const stats = await this.habitManageService.deleteCompletely(
+        habitId,
+        userId,
+      );
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: stats };
     } catch (err) {
       return formatHTTPErrorResponse(err);
     }

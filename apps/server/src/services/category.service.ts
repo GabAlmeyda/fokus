@@ -97,7 +97,10 @@ export class CategoryService implements ICategoryService {
     return category;
   }
 
-  async delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
+  async delete(
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ updatedGoalsCount: number }> {
     const categoryDoc = await this.categoryRepository.delete(
       categoryId,
       userId,
@@ -109,10 +112,12 @@ export class CategoryService implements ICategoryService {
       );
     }
 
-    await this.goalService.updateByFilter(
+    const updatedGoalsCount = await this.goalService.updateByFilter(
       { categoryId },
       { categoryId: null },
       userId,
     );
+
+    return { updatedGoalsCount };
   }
 }

@@ -9,7 +9,7 @@ import { UserService } from '../services/user.service.js';
 import { RefreshTokenService } from '../services/refresh-token.service.js';
 import { CategoryService } from '../services/category.service.js';
 import { HabitService } from '../services/habit.service.js';
-import { HabitCompletionService } from '../services/habit-completion.service.js';
+import { HabitManagerService } from '../services/habit-manager.service.js';
 import { GoalService } from '../services/goal.services.js';
 import { ProgressLogService } from '../services/progress-log.services.js';
 
@@ -50,7 +50,7 @@ export const goalCompletionService = new GoalCompletionService(
   goalService,
   progressLogService,
 );
-export const habitCompletionService = new HabitCompletionService(
+export const habitManagerService = new HabitManagerService(
   habitService,
   goalService,
   progressLogService,
@@ -61,7 +61,7 @@ export const userController = new UserController(userService);
 export const categoryController = new CategoryController(categoryService);
 export const habitController = new HabitController(
   habitService,
-  habitCompletionService,
+  habitManagerService,
 );
 export const goalController = new GoalController(
   goalService,

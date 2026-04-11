@@ -140,13 +140,14 @@ export interface IHabitService {
 }
 
 /**
- * Service interface specialized in habit completion logic (checking/unchecking).
+ * Service interface responsible for complex habit operations that require
+ * multiples domains.
  * Uses the:
  * - *`HabitService`* layer.
  * - *`GoalService`* layer.
  * - *`ProgressLogService`* layer.
  */
-export interface IhabitCompletionService {
+export interface IhabitManageService {
   /**
    * Marks a habit as completed and adds a progress log to register the action.
    * @param checkData - The data to add a completion log.
@@ -173,6 +174,15 @@ export interface IhabitCompletionService {
     uncheckData: HabitCompletionLogDTO,
     userId: EntityIdDTO,
   ): Promise<HabitResponseDTO>;
+
+  /**
+   * Delete a habit of an authenticated user, updating all the user goals with the deleted habit to
+   * unlinking it and removing all the logs associated with it.
+   */
+  deleteCompletely(
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ deletedLogsCount: number; updatedGoalsCount: number }>;
 }
 
 /**
@@ -258,13 +268,18 @@ export interface IHabitController {
   uncheck(req: HTTPRequest<null>): Promise<HTTPResponse<HabitResponseDTO>>;
 
   /**
-   * Deletes a habit for the authenticated user.
+   * Deletes a habit, updating all the user goals with the deleted category to
+   * unlinking it and removing all the logs associated with it, for the authenticated user.
    * @param req - The request object containing the *`habitId`* in the params and the
    * authenticated *`userId`*.
    * @returns The HTTP response with:
-   * - 200 (Ok): On success, containing *`null`*.
+   * - 200 (Ok): On success, containing an object containing the number of deleted logs and updated goals.
    * - 400 (Bad Request): On failure, if the habit ID format is invalid.
    * - 404 (Not Found): On failure, if the habit is not found or unauthorized.
    */
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
+  delete(
+    req: HTTPRequest<null>,
+  ): Promise<
+    HTTPResponse<{ deletedLogsCount: number; updatedGoalsCount: number }>
+  >;
 }

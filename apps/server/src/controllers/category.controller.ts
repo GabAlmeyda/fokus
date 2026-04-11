@@ -99,16 +99,20 @@ export class CategoryController implements ICategoryController {
     }
   }
 
-  async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
+  async delete(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<{ updatedGoalsCount: number }>> {
     try {
       const categoryId = EntityIdSchema.parse(req.params?.categoryId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      await this.categoryService.delete(categoryId, userId);
+      const updatedGoalsCount = await this.categoryService.delete(
+        categoryId,
+        userId,
+      );
 
-      return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
+      return { statusCode: HTTPStatusCode.NO_CONTENT, body: updatedGoalsCount };
     } catch (err) {
-      console.log(err);
       return formatHTTPErrorResponse(err);
     }
   }

@@ -133,7 +133,8 @@ export function registerCategoryDocs(registry: OpenAPIRegistry) {
     method: 'delete',
     path: '/categories/{categoryId}',
     security: [{ accessTokenCookie: [] }],
-    summary: 'Deletes an authenticated user category, searching for its ID.',
+    summary:
+      'Deletes an authenticated user category, searching for its ID. This method also updates all the user goals with the deleted category to unlinking it',
     request: {
       params: z.object({
         categoryId: EntityIdSchema,
@@ -144,7 +145,11 @@ export function registerCategoryDocs(registry: OpenAPIRegistry) {
       ...INVALID_INPUT_ERRORS_DOCS,
       200: {
         description: 'Category deleted successfully.',
-        content: { 'application/json': { schema: CategoryResponseSchema } },
+        content: {
+          'application/json': {
+            schema: z.object({ updatedGoalsCount: z.number().min(0) }),
+          },
+        },
       },
       404: {
         description: 'Category not found.',

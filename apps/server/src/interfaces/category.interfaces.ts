@@ -132,10 +132,14 @@ export interface ICategoryService {
    * unlinking it.
    * @param categoryId - The category ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
+   * @returns An object containing the number of updated goals.
    * @throws *`AppServerError`* If:
    * - The category is not found or does not belong to the user.
    */
-  delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
+  delete(
+    categoryId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ updatedGoalsCount: number }>;
 }
 
 /**
@@ -200,13 +204,16 @@ export interface ICategoryController {
   ): Promise<HTTPResponse<CategoryResponseDTO>>;
 
   /**
-   * Deletes a category for the authenticated user.
+   * Deletes a category, updating all the user goals with the deleted category to
+   * unlinking it, for the authenticated user.
    * @param req - The request object containing the *`categoryId`* in the params
    * and the authenticated *`userId`*.
    * @returns The HTTP response with:
-   * - 200 (Ok): On success, returning *`null`*.
+   * - 200 (Ok): On success, returning an object containing the number of updated goals.
    * - 400 (Bad Request): On failure, if the category ID format is invalid.
    * - 404 (Not Found): On failure, if the category is not found or unauthorized.
    */
-  delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>>;
+  delete(
+    req: HTTPRequest<null>,
+  ): Promise<HTTPResponse<{ updatedGoalsCount: number }>>;
 }
