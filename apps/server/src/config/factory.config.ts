@@ -32,7 +32,6 @@ export const refreskTokenService = new RefreshTokenService(
   refreshTokenRepository,
 );
 export const userService = new UserService(userRepository, refreskTokenService);
-export const categoryService = new CategoryService(categoryRepository);
 export const progressLogService = new ProgressLogService(progressLogRepository);
 export const habitService = new HabitService(
   habitRepository,
@@ -42,6 +41,10 @@ export const goalService = new GoalService(
   goalRepository,
   habitService,
   progressLogService,
+);
+export const categoryService = new CategoryService(
+  categoryRepository,
+  goalService,
 );
 export const goalCompletionService = new GoalCompletionService(
   goalService,

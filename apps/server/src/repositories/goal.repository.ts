@@ -109,6 +109,19 @@ export class GoalRepository implements IGoalRepository {
     }
   }
 
+  async updateByFilter(
+    filter: { categoryId?: EntityIdDTO; habitId?: EntityIdDTO },
+    newData: Partial<GoalUpdateDTO>,
+    userId: EntityIdDTO,
+  ): Promise<number> {
+    const goalResult = await GoalModel.updateMany(
+      { ...filter, userId },
+      { $set: newData },
+    );
+
+    return goalResult.modifiedCount;
+  }
+
   async delete(
     goalId: EntityIdDTO,
     userId: EntityIdDTO,

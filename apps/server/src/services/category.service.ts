@@ -12,11 +12,17 @@ import type {
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import { mapCategoryDocToPublicDTO } from '../helpers/mappers.helpers.js';
+import type { IGoalService } from '../interfaces/goal.interfaces.js';
 
 export class CategoryService implements ICategoryService {
   private readonly categoryRepository;
-  constructor(categoryRepository: ICategoryRepository) {
+  private readonly goalService;
+  constructor(
+    categoryRepository: ICategoryRepository,
+    goalService: IGoalService,
+  ) {
     this.categoryRepository = categoryRepository;
+    this.goalService = goalService;
   }
 
   async create(newData: CategoryCreateDTO): Promise<CategoryResponseDTO> {
@@ -102,5 +108,11 @@ export class CategoryService implements ICategoryService {
         `Category with ID '${categoryId}' not found.`,
       );
     }
+
+    await this.goalService.updateByFilter(
+      { categoryId },
+      { categoryId: null },
+      userId,
+    );
   }
 }

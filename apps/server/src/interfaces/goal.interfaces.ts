@@ -63,6 +63,22 @@ export interface IGoalRepository {
   ): Promise<GoalDocument | null>;
 
   /**
+   * Updates all user goals based on a filter criteria.
+   * @param filter - The filter criteria to be searched for.
+   * @param newData - The new data to be updated.
+   * @param userId - The owner ID to ensure authorization.
+   * @returns The number of updated documents.
+   */
+  updateByFilter(
+    filter: {
+      categoryId?: EntityIdDTO;
+      habitId?: EntityIdDTO;
+    },
+    newData: Partial<GoalUpdateDTO>,
+    userId: EntityIdDTO,
+  ): Promise<number>;
+
+  /**
    * Deletes a user goal, searching for its ID.
    * @param goalId - The goal ID to be removed.
    * @param userId - The owner ID to ensure data authorization.
@@ -103,8 +119,8 @@ export interface IGoalService {
   ): Promise<GoalResponseDTO>;
 
   /**
-   * Returns user goals based on filters.
-   * @param filter - The filter criteria.
+   * Returns user goals by a filter criteria.
+   * @param filter - The filter criteria to be searched for..
    * @param userId - The owner ID to ensure data authorization.
    * @returns An array of sanitized goal data.
    */
@@ -139,6 +155,24 @@ export interface IGoalService {
     newData: GoalUpdateDTO,
     userId: EntityIdDTO,
   ): Promise<GoalResponseDTO>;
+
+  /**
+   * Updates all user goals by a filter criteria.
+   * @param filter - The filter criteria to be searched for.
+   * @param newData - The new data to be updated.
+   * @param userId - The owner ID to ensure authorization.
+   * @returns The number of updated goals
+   * @throws *`AppServerError`* If:
+   * - The provided data is not compatible with the registered data.
+   */
+  updateByFilter(
+    filter: {
+      categoryId?: EntityIdDTO;
+      habitId?: EntityIdDTO;
+    },
+    newData: Partial<GoalUpdateDTO>,
+    userId: EntityIdDTO,
+  ): Promise<number>;
 
   /**
    * Removes a user goal.

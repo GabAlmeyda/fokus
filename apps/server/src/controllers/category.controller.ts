@@ -108,6 +108,7 @@ export class CategoryController implements ICategoryController {
 
       return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {
+      console.log(err);
       return formatHTTPErrorResponse(err);
     }
   }

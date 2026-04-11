@@ -82,7 +82,8 @@ export interface ICategoryService {
    * Creates a new category for a specific user.
    * @param newData - The new category data.
    * @returns The sanitized category data.
-   * @throws *`AppServerError`* If the user already has a category with the same name.
+   * @throws *`AppServerError`* If:
+   * - The user already has a category with the same name.
    */
   create(newData: CategoryCreateDTO): Promise<CategoryResponseDTO>;
 
@@ -91,7 +92,8 @@ export interface ICategoryService {
    * @param categoryId - The category ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
    * @returns The sanitized category data.
-   * @throws *`AppServerError`* If the category is not found or does not belong to the user.
+   * @throws *`AppServerError`* If:
+   * - The category is not found or does not belong to the user.
    */
   findOneById(
     categoryId: EntityIdDTO,
@@ -126,11 +128,12 @@ export interface ICategoryService {
   ): Promise<CategoryResponseDTO>;
 
   /**
-   * Removes a user category.
+   * Removes a user category, updating all the user goals with the deleted category to
+   * unlinking it.
    * @param categoryId - The category ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
-   * @throws *`AppServerError`* If the category is not found or does not belong
-   * to the user.
+   * @throws *`AppServerError`* If:
+   * - The category is not found or does not belong to the user.
    */
   delete(categoryId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
 }

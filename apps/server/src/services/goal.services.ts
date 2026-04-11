@@ -194,6 +194,20 @@ export class GoalService implements IGoalService {
     }
   }
 
+  async updateByFilter(
+    filter: { categoryId?: EntityIdDTO; habitId?: EntityIdDTO },
+    newData: Partial<GoalUpdateDTO>,
+    userId: EntityIdDTO,
+  ): Promise<number> {
+    const updatedCount = await this.goalRepository.updateByFilter(
+      filter,
+      newData,
+      userId,
+    );
+
+    return updatedCount;
+  }
+
   async delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
     const goalDoc = await this.goalRepository.delete(goalId, userId);
     if (!goalDoc) {
