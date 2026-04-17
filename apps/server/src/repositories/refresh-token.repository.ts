@@ -1,4 +1,4 @@
-import type { EntityIdDTO } from 'packages/shared/dist/index.js';
+import type { EntityIdDTO } from '@fokus/shared';
 import { DatabaseError } from '../helpers/errors/database.errors.js';
 import type { IRefreshTokenRepository } from '../interfaces/refresh-token.interfaces.js';
 import {

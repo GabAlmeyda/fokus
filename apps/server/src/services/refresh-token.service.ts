@@ -1,4 +1,4 @@
-import type { EntityIdDTO } from 'packages/shared/dist/index.js';
+import type { EntityIdDTO } from '@fokus/shared';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import { mapRefreshTokenDocToPublicDTO } from '../helpers/mappers.helpers.js';
 import type {

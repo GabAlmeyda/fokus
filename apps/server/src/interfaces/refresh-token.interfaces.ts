@@ -1,4 +1,4 @@
-import type { EntityIdDTO } from 'packages/shared/dist/index.js';
+import type { EntityIdDTO } from '@fokus/shared';
 import type { RefreshTokenDocument } from '../models/refresh-token.model.js';
 import type {
   RefreshTokenCreateDTO,
