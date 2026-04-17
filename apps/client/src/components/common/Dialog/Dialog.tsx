@@ -39,12 +39,15 @@ export default function Dialog({
     };
   }, []);
 
+  useEffect(() => {
+    if (!isExecuting) document.body.style.overflow = '';
+  }, [isExecuting]);
+
   const handleClick = (confirmation: boolean) => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
     setIsExecuting(true);
-    document.body.style.overflow = '';
     onClick(confirmation);
   };
 

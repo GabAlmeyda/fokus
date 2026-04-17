@@ -82,6 +82,7 @@ export default function ProgressLogForm({
               placeholder="Nome"
               aria-describedby="name-error"
               id="category-name"
+              className={`${styles.form__input} ${!!errors.name ? styles.error : ''}`}
             />
             <FormErrorMessage
               id="name-error"

@@ -71,7 +71,9 @@ export default function CategoriesPage() {
 
     deleteMutation.mutate(openCategoryId!, {
       onError: () => {
-        setToastMsg('Não foi possível remover a categoria. Que tal tentar novamente?');
+        setToastMsg(
+          'Não foi possível remover a categoria. Que tal tentar novamente?',
+        );
       },
       onSettled: () => {
         setIsDialogOpen(false);
@@ -91,7 +93,9 @@ export default function CategoriesPage() {
             }));
             return;
           }
-          setToastMsg('Não foi possível adicionar a categoria. Que tal tentar novamente?');
+          setToastMsg(
+            'Não foi possível adicionar a categoria. Que tal tentar novamente?',
+          );
         },
         onSuccess: () => setCategoryFormType(null),
         onSettled: () => {
@@ -111,7 +115,9 @@ export default function CategoriesPage() {
               }));
               return;
             }
-            setToastMsg('Não foi possível atualizar a categoria. Que tal tentar novamente?');
+            setToastMsg(
+              'Não foi possível atualizar a categoria. Que tal tentar novamente?',
+            );
           },
           onSuccess: () => setCategoryFormType(null),
           onSettled: () => {
@@ -151,13 +157,22 @@ export default function CategoriesPage() {
         {(() => {
           if (createMutation.isPending) {
             return (
-              <LoadingOverlay message="Criando categoria. Só um momento..." />
+              <LoadingOverlay
+                message="Criando categoria. Só um momento..."
+                className={styles.loadingOverlay}
+              />
             );
           } else if (updateMutation.isPending) {
-            <LoadingOverlay message="Atualizando categoria. Só um momento..." />;
+            <LoadingOverlay
+              message="Atualizando categoria. Só um momento..."
+              className={styles.loadingOverlay}
+            />;
           } else if (deleteMutation.isPending) {
             return (
-              <LoadingOverlay message="Removendo categoria. Só um momento..." />
+              <LoadingOverlay
+                message="Removendo categoria. Só um momento..."
+                className={styles.loadingOverlay}
+              />
             );
           }
         })()}

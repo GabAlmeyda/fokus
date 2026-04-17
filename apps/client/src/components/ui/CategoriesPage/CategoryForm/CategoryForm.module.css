@@ -61,6 +61,14 @@
   color: #6b8272;
 }
 
+.form__input {
+  background-color: #213120;
+  border-bottom-color: #213120;
+}
+.form__input.error {
+  border-bottom-color: rgb(236, 30, 30);
+}
+
 .form__btn {
   margin-top: 5rem;
 }

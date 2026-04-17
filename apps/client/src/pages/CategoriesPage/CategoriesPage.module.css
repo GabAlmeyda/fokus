@@ -54,6 +54,20 @@
   gap: .5rem;
 }
 
+
+
+/* LOADING OVERLAY STYLES */
+.loadingOverlay {
+  background-color: #333a33;
+}
+
+.loadingOverlay p {
+  color: var(--white-clr);
+}
+
+
+
+/* DIALOG STYLES */
 .dialog__root h2,
 .dialog__root p {
   color: var(--text-primary);

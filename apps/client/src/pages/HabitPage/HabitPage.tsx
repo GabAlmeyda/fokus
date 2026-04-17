@@ -237,16 +237,19 @@ export default function HabitPage() {
             onClick={handleDeleteConfirmation}
             alertBtnText="Deletar"
             classNames={{
-              root: styles.deleteBtn__root,
-              cancel: styles.deleteBtn__cancel,
-              confirm: styles.deleteBtn__confirm,
+              root: styles.dialog__root,
+              cancel: styles.dialog__cancel,
+              confirm: styles.dialog__confirm,
             }}
           />
         )}
         {(() => {
           if (createMutation.isPending) {
             return (
-              <LoadingOverlay message="Criando hábito. Só um momento..." />
+              <LoadingOverlay
+                message="Criando hábito. Só um momento..."
+                className={styles.loadingOverlay}
+              />
             );
           } else if (updateMutation.isPending) {
             <LoadingOverlay message="Atualizando hábito. Só um momento..." />;

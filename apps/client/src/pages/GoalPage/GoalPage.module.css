@@ -148,6 +148,10 @@
   color: var(--white-clr);
 }
 
+.dialog__root {
+  background-color: #213120;
+}
+
 .dialog__root h2,
 .dialog__root p {
   color: var(--text-primary);
