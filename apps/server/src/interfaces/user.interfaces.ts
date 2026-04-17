@@ -130,6 +130,22 @@ export interface IUserService {
 }
 
 /**
+ * Service interface responsible for complex user operations that require
+ * multiples domains.
+ * Uses the:
+ * - *`HabitService`* layer.
+ * - *`GoalService`* layer.
+ * - *`CategoryService`* layer.
+ * - *`RefreshTokenService`* layer.
+ */
+export interface IUserManagerService {
+  /**
+   * Delete a user, removing all their habits, goals, categories and refresh tokens.
+   */
+  deleteCompletely(userId: EntityIdDTO): Promise<void>;
+}
+
+/**
  * Controller interface for managing user HTTP requests.
  * Orchestrates Service layer calls and sanitizes the returned data into a *`HTTPResponse`*
  * object.

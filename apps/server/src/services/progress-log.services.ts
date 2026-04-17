@@ -185,6 +185,9 @@ export class ProgressLogService implements IProgressLogService {
     if (!deleteFilter.date) {
       delete deleteFilter.date;
     }
+    if (!deleteFilter.entityId) {
+      delete deleteFilter.entityId;
+    }
 
     const deletedDocs = await this.progressLogRepository.deleteByFilter(
       deleteFilter,

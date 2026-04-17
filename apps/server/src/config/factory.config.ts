@@ -6,6 +6,7 @@ import { GoalRepository } from '../repositories/goal.repository.js';
 import { ProgressLogRepository } from '../repositories/progress-log.repository.js';
 
 import { UserService } from '../services/user.service.js';
+import { UserManagerService } from '../services/user-manager.service.js';
 import { RefreshTokenService } from '../services/refresh-token.service.js';
 import { CategoryService } from '../services/category.service.js';
 import { HabitService } from '../services/habit.service.js';
@@ -55,9 +56,18 @@ export const habitManagerService = new HabitManagerService(
   goalService,
   progressLogService,
 );
+export const userManagerService = new UserManagerService(
+  userService,
+  habitService,
+  goalService,
+  categoryService,
+);
 
 // Controllers
-export const userController = new UserController(userService);
+export const userController = new UserController(
+  userService,
+  userManagerService,
+);
 export const categoryController = new CategoryController(categoryService);
 export const habitController = new HabitController(
   habitService,

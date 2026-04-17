@@ -135,7 +135,10 @@ export class HabitService implements IHabitService {
     }
   }
 
-  async delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void> {
+  async delete(
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ deletedLogsCount: number }> {
     const doc = await this.habitRepository.delete(habitId, userId);
     if (!doc) {
       throw new AppServerError(
@@ -143,6 +146,26 @@ export class HabitService implements IHabitService {
         `Habit with ID '${habitId}' not found.`,
       );
     }
+    const deletedLogsCount = await this.progressLogService.deleteByFilter(
+      { entityType: 'habitId', entityId: habitId },
+      userId,
+    );
+
+    return { deletedLogsCount };
+  }
+
+  async deleteByUserId(
+    userId: EntityIdDTO,
+  ): Promise<{ deletedHabitsCount: number; deletedLogsCount: number }> {
+    const deletedHabitsCount =
+      await this.habitRepository.deleteByUserId(userId);
+
+    const deletedLogsCount = await this.progressLogService.deleteByFilter(
+      { entityType: 'habitId' },
+      userId,
+    );
+
+    return { deletedHabitsCount, deletedLogsCount };
   }
 
   private async getHabitStats(

@@ -137,4 +137,14 @@ export class GoalRepository implements IGoalRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async deleteByUserId(userId: EntityIdDTO): Promise<number> {
+    try {
+      const goalsResult = await GoalModel.deleteMany({ userId });
+
+      return goalsResult.deletedCount;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

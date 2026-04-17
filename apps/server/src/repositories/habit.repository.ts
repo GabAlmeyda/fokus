@@ -106,4 +106,14 @@ export class HabitRepository implements IHabitRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async deleteByUserId(userId: EntityIdDTO): Promise<number> {
+    try {
+      const habitResult = await HabitModel.deleteMany({ userId });
+
+      return habitResult.deletedCount;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

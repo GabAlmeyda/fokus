@@ -167,8 +167,9 @@ export interface IProgressLogService {
   ): Promise<ProgressLogResponseDTO>;
 
   /**
-   * Deletes an authenticated user progress logs by a filter criteria. If the *`filter.date`*
-   * is provided, it deletes a single log, otherwise, all the logs related with the provided *`filter.entityId`*
+   * Deletes an authenticated user progress logs by a filter criteria, with *`entityType`* being required.
+   * If only the *`filter.date`* is provided additionaly, it deletes a single log.
+   * If only the *`entityType`* is provided additionaly, all the logs related with the provided *`entityId`*
    * will be deleted.
    * @param filter - The filter criteria.
    * @param userId - The owner ID to ensure data authorization.

@@ -1,7 +1,7 @@
-import type {
-  EntityIdDTO,
-  ProgressLogCreateDTO,
-  ProgressLogFilterDTO,
+import {
+  type EntityIdDTO,
+  type ProgressLogCreateDTO,
+  type ProgressLogFilterDTO,
 } from '@fokus/shared';
 import type { IProgressLogRepository } from '../interfaces/progress-log.interfaces.js';
 import {
@@ -202,11 +202,13 @@ export class ProgressLogRepository implements IProgressLogRepository {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const deleteFilter: Record<string, any> = {
-        [filter.entityType]: filter.entityId,
         userId,
       };
       if (filter.date) {
         deleteFilter.date = filter.date;
+      }
+      if (filter.entityId) {
+        deleteFilter[filter.entityType] = filter.entityId;
       }
 
       const result = await ProgressLogModel.deleteMany(deleteFilter);

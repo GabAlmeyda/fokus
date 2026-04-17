@@ -13,7 +13,7 @@ import {
   HabitDateSchema,
 } from '@fokus/shared';
 import type {
-  IhabitManageService,
+  IhabitManagerService,
   IHabitController,
   IHabitService,
 } from '../interfaces/habit.interfaces.js';
@@ -21,13 +21,13 @@ import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
 
 export class HabitController implements IHabitController {
   private readonly habitService;
-  private readonly habitManageService;
+  private readonly habitManagerService;
   constructor(
     habitService: IHabitService,
-    habitManageService: IhabitManageService,
+    habitManagerService: IhabitManagerService,
   ) {
     this.habitService = habitService;
-    this.habitManageService = habitManageService;
+    this.habitManagerService = habitManagerService;
   }
 
   async create(
@@ -115,7 +115,7 @@ export class HabitController implements IHabitController {
         date: req.query?.date,
       });
       const userId = EntityIdSchema.parse(req.userId);
-      const habit = await this.habitManageService.check(checkData, userId);
+      const habit = await this.habitManagerService.check(checkData, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -132,7 +132,7 @@ export class HabitController implements IHabitController {
       });
       const userId = EntityIdSchema.parse(req.userId);
 
-      const habit = await this.habitManageService.uncheck(uncheckData, userId);
+      const habit = await this.habitManagerService.uncheck(uncheckData, userId);
       return { statusCode: HTTPStatusCode.OK, body: habit };
     } catch (err) {
       return formatHTTPErrorResponse(err);
@@ -148,7 +148,7 @@ export class HabitController implements IHabitController {
       const habitId = EntityIdSchema.parse(req.params?.habitId);
       const userId = EntityIdSchema.parse(req.userId);
 
-      const stats = await this.habitManageService.deleteCompletely(
+      const stats = await this.habitManagerService.deleteCompletely(
         habitId,
         userId,
       );

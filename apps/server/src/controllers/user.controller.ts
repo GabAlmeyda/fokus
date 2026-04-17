@@ -13,6 +13,7 @@ import {
 } from '@fokus/shared';
 import type {
   IUserController,
+  IUserManagerService,
   IUserService,
 } from '../interfaces/user.interfaces.js';
 import { formatHTTPErrorResponse } from '../helpers/controller.helpers.js';
@@ -21,8 +22,13 @@ import type { AuthResponseDTO } from '../types/auth.types.js';
 
 export class UserController implements IUserController {
   private readonly userService;
-  constructor(userService: IUserService) {
+  private readonly userManagerService;
+  constructor(
+    userService: IUserService,
+    userManagerService: IUserManagerService,
+  ) {
     this.userService = userService;
+    this.userManagerService = userManagerService;
   }
 
   async register(
@@ -135,7 +141,7 @@ export class UserController implements IUserController {
   async delete(req: HTTPRequest<null>): Promise<HTTPResponse<null>> {
     try {
       const userId = EntityIdSchema.parse(req.userId);
-      await this.userService.delete(userId);
+      await this.userManagerService.deleteCompletely(userId);
 
       return { statusCode: HTTPStatusCode.NO_CONTENT, body: null };
     } catch (err) {

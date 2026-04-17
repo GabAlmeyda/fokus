@@ -120,4 +120,13 @@ export class CategoryService implements ICategoryService {
 
     return { updatedGoalsCount };
   }
+
+  async deleteByUserId(
+    userId: EntityIdDTO,
+  ): Promise<{ deletedCategoriesCount: number }> {
+    const deletedCategoriesCount =
+      await this.categoryRepository.deleteByUserId(userId);
+
+    return { deletedCategoriesCount };
+  }
 }

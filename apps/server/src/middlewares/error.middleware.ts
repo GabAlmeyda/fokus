@@ -1,4 +1,4 @@
-import { HTTPStatusCode } from 'packages/shared/dist/index.js';
+import { HTTPStatusCode } from '@fokus/shared';
 import { AppServerError } from '../helpers/errors/app-server.errors.js';
 import type { NextFunction, Request, Response } from 'express';
 

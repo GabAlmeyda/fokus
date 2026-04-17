@@ -106,4 +106,14 @@ export class CategoryRepository implements ICategoryRepository {
       throw DatabaseError.fromMongoose(err);
     }
   }
+
+  async deleteByUserId(userId: EntityIdDTO): Promise<number> {
+    try {
+      const categoriesResult = await CategoryModel.deleteMany({ userId });
+
+      return categoriesResult.deletedCount;
+    } catch (err) {
+      throw DatabaseError.fromMongoose(err);
+    }
+  }
 }

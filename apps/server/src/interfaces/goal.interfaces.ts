@@ -88,6 +88,13 @@ export interface IGoalRepository {
     goalId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<GoalDocument | null>;
+
+  /**
+   * Deletes all user goals by their ID.
+   * @param userId - The ID to be searched for.
+   * @returns The count of deleted documents.
+   */
+  deleteByUserId(userId: EntityIdDTO): Promise<number>;
 }
 
 /**
@@ -182,6 +189,13 @@ export interface IGoalService {
    * - The goal is not found or unauthorized.
    */
   delete(goalId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
+
+  /**
+   * Removes all user goals by their ID.
+   * @param userId - The user ID to be searched for.
+   * @returns The number of deleted goals.
+   */
+  deleteByUserId(userId: EntityIdDTO): Promise<{ deletedGoalsCount: number }>;
 }
 
 /**

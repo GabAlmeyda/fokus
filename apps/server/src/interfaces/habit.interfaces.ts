@@ -71,6 +71,13 @@ export interface IHabitRepository {
     habitId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<HabitDocument | null>;
+
+  /**
+   * Deletes all user habits by their ID.
+   * @param userId - The ID to be searched for.
+   * @returns The count of deleted documents.
+   */
+  deleteByUserId(userId: EntityIdDTO): Promise<number>;
 }
 
 /**
@@ -131,12 +138,25 @@ export interface IHabitService {
   ): Promise<HabitResponseDTO>;
 
   /**
-   * Removes a user habit.
+   * Removes a user habit and all the logs associated with it.
    * @param habitId - The habit ID to be searched for.
    * @param userId - The owner ID to ensure authorization.
+   * @returns The number of deleted logs.
    * @throws *`AppServerError`* If the habit is not found or unauthorized.
    */
-  delete(habitId: EntityIdDTO, userId: EntityIdDTO): Promise<void>;
+  delete(
+    habitId: EntityIdDTO,
+    userId: EntityIdDTO,
+  ): Promise<{ deletedLogsCount: number }>;
+
+  /**
+   * Removes all user habits by their ID and all the logs associated with it.
+   * @param userId - The user ID to be searched for.
+   * @returns The number of deleted habit and deleted logs.
+   */
+  deleteByUserId(
+    userId: EntityIdDTO,
+  ): Promise<{ deletedHabitsCount: number; deletedLogsCount: number }>;
 }
 
 /**
@@ -147,7 +167,7 @@ export interface IHabitService {
  * - *`GoalService`* layer.
  * - *`ProgressLogService`* layer.
  */
-export interface IhabitManageService {
+export interface IhabitManagerService {
   /**
    * Marks a habit as completed and adds a progress log to register the action.
    * @param checkData - The data to add a completion log.
@@ -177,7 +197,7 @@ export interface IhabitManageService {
 
   /**
    * Delete a habit of an authenticated user, updating all the user goals with the deleted habit to
-   * unlinking it and removing all the logs associated with it.
+   * unlinking it.
    */
   deleteCompletely(
     habitId: EntityIdDTO,

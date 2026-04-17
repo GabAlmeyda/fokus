@@ -1,5 +1,7 @@
+import type { EntityIdDTO } from '@fokus/shared';
+
 export type ProgressLogDeleteDTO = {
-  entityId: string;
   entityType: 'habitId' | 'goalId';
+  entityId?: EntityIdDTO;
   date?: Date;
 };

@@ -218,6 +218,14 @@ export class GoalService implements IGoalService {
     }
   }
 
+  async deleteByUserId(
+    userId: EntityIdDTO,
+  ): Promise<{ deletedGoalsCount: number }> {
+    const deletedGoalsCount = await this.goalRepository.deleteByUserId(userId);
+
+    return { deletedGoalsCount };
+  }
+
   private async getGoalStats(
     userId: EntityIdDTO,
     goalId?: EntityIdDTO,

@@ -70,6 +70,13 @@ export interface ICategoryRepository {
     categoryId: string,
     userId: EntityIdDTO,
   ): Promise<CategoryDocument | null>;
+
+  /**
+   * Deletes all user categories by their ID.
+   * @param userId - The ID to be searched for.
+   * @returns The count of deleted documents.
+   */
+  deleteByUserId(userId: EntityIdDTO): Promise<number>;
 }
 
 /**
@@ -140,6 +147,15 @@ export interface ICategoryService {
     categoryId: EntityIdDTO,
     userId: EntityIdDTO,
   ): Promise<{ updatedGoalsCount: number }>;
+
+  /**
+   * Removes all user categories by their ID.
+   * @param userId - The user ID to be searched for.
+   * @returns The number of deleted categories.
+   */
+  deleteByUserId(
+    userId: EntityIdDTO,
+  ): Promise<{ deletedCategoriesCount: number }>;
 }
 
 /**
