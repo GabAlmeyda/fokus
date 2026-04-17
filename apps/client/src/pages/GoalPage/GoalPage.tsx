@@ -257,12 +257,12 @@ export default function GoalPage() {
         )}
         {(() => {
           if (createMutation.isPending) {
-            return <LoadingOverlay message="Criando meta. Só um momento..." />;
+            return <LoadingOverlay message="Criando meta. Só um momento..."  className={styles.loadingOverlay}/>;
           } else if (updateMutation.isPending) {
-            <LoadingOverlay message="Atualizando meta. Só um momento..." />;
+            return <LoadingOverlay message="Atualizando meta. Só um momento..." className={styles.loadingOverlay} />;
           } else if (deleteMutation.isPending) {
             return (
-              <LoadingOverlay message="Removendo meta. Só um momento..." />
+              <LoadingOverlay message="Removendo meta. Só um momento..." className={styles.loadingOverlay} />
             );
           }
         })()}

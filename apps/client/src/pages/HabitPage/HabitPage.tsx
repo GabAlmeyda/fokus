@@ -252,10 +252,18 @@ export default function HabitPage() {
               />
             );
           } else if (updateMutation.isPending) {
-            <LoadingOverlay message="Atualizando hábito. Só um momento..." />;
+            return (
+              <LoadingOverlay
+                message="Atualizando hábito. Só um momento..."
+                className={styles.loadingOverlay}
+              />
+            );
           } else if (deleteMutation.isPending) {
             return (
-              <LoadingOverlay message="Removendo hábito. Só um momento..." />
+              <LoadingOverlay
+                message="Removendo hábito. Só um momento..."
+                className={styles.loadingOverlay}
+              />
             );
           }
         })()}

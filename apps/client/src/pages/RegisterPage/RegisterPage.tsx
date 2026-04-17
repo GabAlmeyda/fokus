@@ -201,7 +201,7 @@ export default function RegisterPage(): JSX.Element {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer className={styles.footer} />
     </PageView>
   );
 }

@@ -138,7 +138,7 @@ export default function LoginPage(): JSX.Element {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer className={styles.footer} />
     </PageView>
   );
 }
