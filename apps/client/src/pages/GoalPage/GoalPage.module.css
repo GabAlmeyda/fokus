@@ -82,6 +82,17 @@
 
 
 
+/* LOADING OVERLAY STYLES */
+.loadingOverlay {
+  background-color: #333a33;
+}
+
+.loadingOverlay p {
+  color: var(--white-clr);
+}
+
+
+
 /* FORM PART */
 .goal__form {
   display: flex;

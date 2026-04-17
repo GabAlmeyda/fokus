@@ -25,6 +25,10 @@
   color: var(--text-primary);
 }
 
+.loadingOverlay p {
+  text-align: center;
+}
+
 ._backdrop {
   position: fixed;
   top: 0;

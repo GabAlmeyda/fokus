@@ -1,4 +1,5 @@
 import { useEffect, type JSX } from 'react';
+import heroImg from '../../assets/hero-img.svg';
 import notificationImage from '../../assets/notification-img.png';
 import organizationImage from '../../assets/organization-img.png';
 import routineImage from '../../assets/routine-img.png';
@@ -33,15 +34,13 @@ export default function LandingPage(): JSX.Element {
               <Button variant="primary" isLink to={APP_URLS.register}>
                 Crie agora sua conta
               </Button>
-              <Button variant="ghost-inverse" isLink to={APP_URLS.login}>
+              <Button variant="ghost-primary" isLink to={APP_URLS.login}>
                 Conecte-se agora
               </Button>
             </div>
 
-            <div className={styles.hero__imgs}>
-              <div className={styles.imgs__item}></div>
-              <div className={styles.imgs__item}></div>
-              <div className={styles.imgs__item}></div>
+            <div className={styles.hero__img}>
+              <img src={heroImg} alt="Pessoa organizando seus objetivos" />
             </div>
           </div>
 

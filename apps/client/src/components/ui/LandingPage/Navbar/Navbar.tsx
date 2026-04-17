@@ -13,10 +13,10 @@ export default function Navbar(): JSX.Element {
       </div>
 
       <div className={styles.navbar__btns}>
-        <Button variant="ghost-primary" isLink to={APP_URLS.login}>
+        <Button variant="ghost-primary" isLink to={APP_URLS.login} isSmall>
           Conecte-se
         </Button>
-        <Button isLink to={APP_URLS.register}>
+        <Button isLink to={APP_URLS.register} isSmall>
           Cadastre-se
         </Button>
       </div>

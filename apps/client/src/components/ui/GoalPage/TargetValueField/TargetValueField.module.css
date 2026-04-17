@@ -11,6 +11,10 @@
   background-color: #0e2216;
 }
 
+.targetValue * {
+  color: var(--white-clr);
+}
+
 .targetValue>p {
   font-size: .9rem;
 }

@@ -80,6 +80,17 @@
   font-style: italic;
 }
 
+.form__value {
+  border-bottom-color: #213120;
+
+  background-color: #213120;
+}
+.form__value.error {
+  border-bottom-color: rgb(236, 30, 30);
+}
+
+
+
 .form__btn {
   margin-top: 5rem;
 }
@@ -205,7 +216,9 @@
 .date__disabled {
   background-color: #2d3f33;
 
-  color: #6b8272;
-
   cursor: auto;
+}
+
+.date__disabled * {
+  color: #485a4d;
 }

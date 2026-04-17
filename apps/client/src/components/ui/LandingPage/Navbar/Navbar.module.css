@@ -4,8 +4,6 @@
 
   padding: .5rem 1rem;
 
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5);
-
   background-color: var(--accent-inverse);
 }
 
@@ -42,5 +40,13 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+
+    min-width: 350px;
+  } 
+
+  .navbar__btns > * {
+    flex: 1;
+    flex-shrink: 0;
+    min-width: fit-content;
   }
 }

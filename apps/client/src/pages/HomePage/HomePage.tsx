@@ -10,7 +10,9 @@ import Toast from '../../components/common/Toast/Toast';
 
 export default function HomePage(): JSX.Element {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'habits' | 'goals'>('habits');
+  const [activeView, setActiveView] = useState<'habits' | 'goals'>(
+    (sessionStorage.getItem('active-view') as 'habits' | 'goals') ?? 'habits',
+  );
 
   useEffect(() => {
     document.title = 'Fokus - Início';
@@ -28,6 +30,7 @@ export default function HomePage(): JSX.Element {
     if (!view) return;
 
     setActiveView(view as typeof activeView);
+    sessionStorage.setItem('active-view', view);
   };
 
   const handleHabitReqError = (
@@ -35,15 +38,21 @@ export default function HomePage(): JSX.Element {
     action: 'check' | 'uncheck',
   ) => {
     if (action === 'check') {
-      setToastMsg('Não foi possível marcar o hábito como concluído. Que tal tentar novamente?');
+      setToastMsg(
+        'Não foi possível marcar o hábito como concluído. Que tal tentar novamente?',
+      );
     } else {
-      setToastMsg('Não foi possível desmarcar o hábito concluído. Que tal tentar novamente?');
+      setToastMsg(
+        'Não foi possível desmarcar o hábito concluído. Que tal tentar novamente?',
+      );
     }
   };
 
   const handleCategoryReqError = (_: HTTPErrorResponse) => {
-    setToastMsg('Não foi possível carregar suas categorias. Que tal tentar novamente?');
-  }
+    setToastMsg(
+      'Não foi possível carregar suas categorias. Que tal tentar novamente?',
+    );
+  };
 
   return (
     <PageView cssBgType="primary">

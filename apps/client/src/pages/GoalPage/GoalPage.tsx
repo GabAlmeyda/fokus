@@ -104,6 +104,11 @@ export default function GoalPage() {
   useEffect(() => {
     document.title =
       goalId === 'new' ? 'Fokus - Nova meta' : 'Fokus - Atualizar meta';
+
+    return () => {
+      sessionStorage.removeItem('habit-data-new');
+      sessionStorage.removeItem('habit-data-update');
+    };
   }, []);
 
   useEffect(() => {
@@ -140,7 +145,9 @@ export default function GoalPage() {
             return;
           }
 
-          setToastMsg('Não foi possível criar a meta. Que tal tentar novamente?');
+          setToastMsg(
+            'Não foi possível criar a meta. Que tal tentar novamente?',
+          );
         },
       });
     } else {
@@ -152,7 +159,10 @@ export default function GoalPage() {
             sessionStorage.removeItem('habit-data-update');
             navigate(APP_URLS.home);
           },
-          onError: () => setToastMsg('Não foi possível atualizar a meta. Que tal tentar novamente?'),
+          onError: () =>
+            setToastMsg(
+              'Não foi possível atualizar a meta. Que tal tentar novamente?',
+            ),
         },
       );
     }
@@ -178,7 +188,9 @@ export default function GoalPage() {
         navigate(APP_URLS.home, { replace: true });
       },
       onError: () => {
-        setToastMsg('Não foi possível deletar a meta. Que tal tentar novamente?');
+        setToastMsg(
+          'Não foi possível deletar a meta. Que tal tentar novamente?',
+        );
         setIsDialogOpen(false);
       },
     });
@@ -243,9 +255,17 @@ export default function GoalPage() {
             }}
           />
         )}
-        {createMutation.isPending && (
-          <LoadingOverlay message="Criando meta. Só um momento..." />
-        )}
+        {(() => {
+          if (createMutation.isPending) {
+            return <LoadingOverlay message="Criando meta. Só um momento..." />;
+          } else if (updateMutation.isPending) {
+            <LoadingOverlay message="Atualizando meta. Só um momento..." />;
+          } else if (deleteMutation.isPending) {
+            return (
+              <LoadingOverlay message="Removendo meta. Só um momento..." />
+            );
+          }
+        })()}
         <section className={styles.goal}>
           <span className={styles.goal__goBack}>
             <Button
