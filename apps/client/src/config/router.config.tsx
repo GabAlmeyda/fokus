@@ -15,6 +15,7 @@ const ProgressLogsPage = lazy(
 const CategoriesPage = lazy(
   () => import('../pages/CategoriesPage/CategoriesPage'),
 );
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage'));
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +74,6 @@ export const router = createBrowserRouter([
   // Not Found Page
   {
     path: '*',
-    element: '',
+    element: <NotFoundPage />,
   },
 ]);

@@ -1,0 +1,51 @@
+/* NOT FOUND STYLES */
+.notFound {
+  padding-inline: 1rem;
+  padding-top: 3rem;
+}
+
+.notFound > * {
+  color: var(--white-clr);
+  text-align: center;
+}
+
+.notFound h1,
+.notFound h2 {
+  font-synthesis: initial;
+  font-variant: small-caps;
+}
+
+.notFound h1 {
+  font-size: 2.5rem;
+}
+
+.notFound__img {
+  width: 80%;
+  max-width: 300px;
+
+  margin-inline: auto;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.notFound__img img {
+  width: 100%;
+}
+
+.notFound p {
+  max-width: 400px;
+
+  margin-inline: auto;
+
+  color: #6b8272;
+}
+
+.notFound__btn {
+  margin-top: 1rem;
+}
+
+@media screen and (min-width: 750px) {
+  .notFound {
+    padding-inline: 2rem;
+  }
+}
